@@ -40,7 +40,7 @@ public class EnquireAddresseeMessage implements INormalMessage
 
     public EnquireAddresseeMessage(PacketBuffer buf)
     {
-        this.nameIn = buf.readString();
+        this.nameIn = buf.readString(32767);
         this.pos = buf.readBlockPos();
         this.world = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, buf.readResourceLocation());
         this.isEnder = buf.readBoolean();
@@ -50,7 +50,7 @@ public class EnquireAddresseeMessage implements INormalMessage
     @Override
     public void toBytes(PacketBuffer buf)
     {
-        buf.writeString(nameIn);
+        buf.writeString(nameIn, 32767);
         buf.writeBlockPos(pos);
         buf.writeResourceLocation(world.getLocation());
         buf.writeBoolean(isEnder);

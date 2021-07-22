@@ -22,14 +22,14 @@ public class AddresseeDataMessage implements INormalMessage
 
     public AddresseeDataMessage(PacketBuffer buf)
     {
-        this.name = buf.readString();
+        this.name = buf.readString(32767);
         this.ticks = buf.readInt();
     }
 
     @Override
     public void toBytes(PacketBuffer packetBuffer)
     {
-        packetBuffer.writeString(name);
+        packetBuffer.writeString(name, 32767);
         packetBuffer.writeInt(ticks);
     }
 
