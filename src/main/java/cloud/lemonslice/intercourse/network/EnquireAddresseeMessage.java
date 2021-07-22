@@ -109,7 +109,7 @@ public class EnquireAddresseeMessage implements INormalMessage
                                     PostboxContainer container = ((PostboxContainer) player.openContainer);
                                     ItemStack parcel = container.parcel.getStackInSlot(0);
 
-                                    parcel.getOrCreateTag().putString("Sender", name);
+                                    parcel.getOrCreateTag().putString("Sender", player.getName().getString());
 
                                     data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel, ticks));
                                     SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
