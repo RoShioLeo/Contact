@@ -1,0 +1,43 @@
+{
+    "multipart": [
+        {
+            "when": {
+                "facing": "north",
+                "half": "lower"
+            },
+            "apply": {
+                "model": "intercourse:block/green_postbox",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "half": "lower"
+            },
+            "apply": {
+                "model": "intercourse:block/green_postbox"
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "half": "lower"
+            },
+            "apply": {
+                "model": "intercourse:block/green_postbox",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "half": "lower"
+            },
+            "apply": {
+                "model": "intercourse:block/green_postbox",
+                "y": 270
+            }
+        }
+    ]
+}

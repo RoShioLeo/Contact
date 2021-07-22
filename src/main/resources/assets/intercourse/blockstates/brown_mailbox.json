@@ -1,0 +1,90 @@
+{
+    "multipart": [
+        {
+            "when": {
+                "facing": "north",
+                "half": "lower",
+                "open": "false"
+            },
+            "apply": {
+                "model": "intercourse:block/closed_mailbox"
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "half": "lower",
+                "open": "false"
+            },
+            "apply": {
+                "model": "intercourse:block/closed_mailbox",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "half": "lower",
+                "open": "false"
+            },
+            "apply": {
+                "model": "intercourse:block/closed_mailbox",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "half": "lower",
+                "open": "false"
+            },
+            "apply": {
+                "model": "intercourse:block/closed_mailbox",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "half": "lower",
+                "open": "true"
+            },
+            "apply": {
+                "model": "intercourse:block/opened_mailbox"
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "half": "lower",
+                "open": "true"
+            },
+            "apply": {
+                "model": "intercourse:block/opened_mailbox",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "half": "lower",
+                "open": "true"
+            },
+            "apply": {
+                "model": "intercourse:block/opened_mailbox",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "half": "lower",
+                "open": "true"
+            },
+            "apply": {
+                "model": "intercourse:block/opened_mailbox",
+                "y": 90
+            }
+        }
+    ]
+}

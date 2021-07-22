@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "[33,)"
+license = "BSD-3-Clause License for Code"
+# issueTrackerURL="http://my.issue.tracker/" #optional
+[[mods]]
+modId = "intercourse"
+version = "${file.jarVersion}"
+displayName = "Intercourse"
+# updateJSONURL="http://myurl.me/"
+# displayURL="http://example.com/"
+logoFile = "logo.png"
+credits = "Lemon Slice Studio"
+authors = "RoitoLeo, Gloridifice, MalayP"
+description = '''This is a mod that provides postal service.'''
+[[dependencies.intercourse]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.intercourse]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,1.17)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.intercourse]]
+modId = "silveroakoutpost"
+mandatory = true
+versionRange = "[0.3.5-Beta,)"
+ordering = "NONE"
+side = "BOTH"

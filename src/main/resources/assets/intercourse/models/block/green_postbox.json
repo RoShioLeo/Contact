@@ -1,0 +1,8 @@
+{
+    "parent": "intercourse:block/postbox",
+    "textures": {
+        "0": "intercourse:block/green_postbox_0",
+        "1": "intercourse:block/green_postbox_1",
+        "particle": "intercourse:block/green_postbox_0"
+    }
+}
