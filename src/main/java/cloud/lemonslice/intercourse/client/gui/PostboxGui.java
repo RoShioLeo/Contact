@@ -96,6 +96,10 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
         {
             SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, Intercourse.PROXY.getClientPlayer().getPosition(), Intercourse.PROXY.getClientPlayer().world.getDimensionKey(), container.isEnderMail(), true));
         }
+        else if (container.status == 5)
+        {
+            container.status = 0;
+        }
         else if (container.status != 0)
         {
             SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, Intercourse.PROXY.getClientPlayer().getPosition(), Intercourse.PROXY.getClientPlayer().world.getDimensionKey(), container.isEnderMail(), false));

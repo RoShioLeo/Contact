@@ -119,10 +119,12 @@ public class PostboxContainer extends Container
         if (!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity) playerIn).hasDisconnected())
         {
             playerIn.dropItem(parcel.getStackInSlot(0), false);
+            parcel.setStackInSlot(0, ItemStack.EMPTY);
         }
         else
         {
             playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), parcel.getStackInSlot(0));
+            parcel.setStackInSlot(0, ItemStack.EMPTY);
         }
     }
 

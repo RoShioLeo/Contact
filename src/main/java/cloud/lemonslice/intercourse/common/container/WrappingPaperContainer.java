@@ -19,6 +19,7 @@ public class WrappingPaperContainer extends Container
 {
     public final ItemStackHandler inputs = new ItemStackHandler(4);
     public boolean isPacked = false;
+    public boolean droppedPaper = false;
     private final boolean isEnder;
 
     public WrappingPaperContainer(int id, PlayerInventory inv, boolean isEnder)
@@ -111,11 +112,13 @@ public class WrappingPaperContainer extends Container
                 for (int j = 0; j < 4; ++j)
                 {
                     playerIn.dropItem(inputs.getStackInSlot(j), false);
+                    inputs.setStackInSlot(j, ItemStack.EMPTY);
                 }
 
-                if (!playerIn.abilities.isCreativeMode)
+                if (!playerIn.abilities.isCreativeMode && !droppedPaper)
                 {
                     playerIn.dropItem(isEnder ? new ItemStack(ItemsRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemsRegistry.WRAPPING_PAPER), false);
+                    droppedPaper = true;
                 }
             }
             else
@@ -123,11 +126,13 @@ public class WrappingPaperContainer extends Container
                 for (int i = 0; i < 4; ++i)
                 {
                     playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), inputs.getStackInSlot(i));
+                    inputs.setStackInSlot(i, ItemStack.EMPTY);
                 }
 
-                if (!playerIn.abilities.isCreativeMode)
+                if (!playerIn.abilities.isCreativeMode && !droppedPaper)
                 {
                     playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), isEnder ? new ItemStack(ItemsRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemsRegistry.WRAPPING_PAPER));
+                    droppedPaper = true;
                 }
             }
         }
