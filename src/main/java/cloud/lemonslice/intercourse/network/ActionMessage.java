@@ -1,9 +1,8 @@
 package cloud.lemonslice.intercourse.network;
 
-import cloud.lemonslice.intercourse.client.gui.NewMailToast;
+import cloud.lemonslice.intercourse.client.ClientProxy;
 import cloud.lemonslice.intercourse.common.container.WrappingPaperContainer;
 import cloud.lemonslice.silveroak.network.INormalMessage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -39,7 +38,7 @@ public class ActionMessage implements INormalMessage
         {
             if (action == 0)
             {
-                notifyNewMail(ctx);
+                ClientProxy.notifyNewMail(ctx);
             }
         }
         else if (ctx.getDirection() == NetworkDirection.PLAY_TO_SERVER)
@@ -55,11 +54,6 @@ public class ActionMessage implements INormalMessage
                 packParcel(ctx, player);
             }
         }
-    }
-
-    private static void notifyNewMail(NetworkEvent.Context ctx)
-    {
-        ctx.enqueueWork(() -> Minecraft.getInstance().getToastGui().add(new NewMailToast()));
     }
 
     private static void packParcel(NetworkEvent.Context ctx, ServerPlayerEntity player)

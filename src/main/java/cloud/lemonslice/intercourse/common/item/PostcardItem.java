@@ -1,11 +1,9 @@
 package cloud.lemonslice.intercourse.common.item;
 
 import cloud.lemonslice.intercourse.Intercourse;
-import cloud.lemonslice.intercourse.client.gui.PostcardEditGui;
-import cloud.lemonslice.intercourse.client.gui.PostcardReadGui;
+import cloud.lemonslice.intercourse.client.ClientProxy;
 import cloud.lemonslice.silveroak.common.item.NormalItem;
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -49,11 +47,11 @@ public class PostcardItem extends NormalItem implements IMailItem
         {
             if (itemstack.getOrCreateTag().contains("Sender"))
             {
-                Minecraft.getInstance().displayGuiScreen(new PostcardReadGui(itemstack));
+                ClientProxy.openPostcardToRead(itemstack);
             }
             else
             {
-                Minecraft.getInstance().displayGuiScreen(new PostcardEditGui(itemstack, playerIn, handIn));
+                ClientProxy.openPostcardToEdit(itemstack, playerIn, handIn);
             }
         }
         playerIn.addStat(Stats.ITEM_USED.get(this));
