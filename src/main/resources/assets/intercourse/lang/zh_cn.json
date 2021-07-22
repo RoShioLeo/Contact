@@ -49,12 +49,15 @@
     "info.intercourse.postbox.success": "已成功寄出",
     "info.intercourse.new_mail.title": "邮政服务",
     "info.intercourse.new_mail.desc": "新的邮件已送达",
+    "message.intercourse.mailbox.new_mail": "§2[邮政服务] §r新的邮件已送达您的邮箱，请查收",
     "message.intercourse.mailbox.binding": "§2[邮政服务] §r您已成功绑定当前邮箱",
     "message.intercourse.mailbox.switch": "§2[邮政服务] §r您的邮箱已切换绑定至当前邮箱",
     "message.intercourse.mailbox.pick_up": "§2[邮政服务] §r您已成功取件",
     "message.intercourse.mailbox.empty": "§2[邮政服务] §r当前无您的邮件",
     "message.intercourse.mailbox.full": "§2[邮政服务] §r当前邮箱已满！",
     "message.intercourse.mailbox.no_owner": "§2[邮政服务] §r当前邮箱不属于任何人",
+    "message.intercourse.mailbox.no_owner_tips": "§2[邮政服务] §r当前邮箱不属于任何人，潜行时右键来绑定该邮箱",
+    "message.intercourse.mailbox.others": "§2[邮政服务] §r当前邮箱属于 §o%s",
     "message.intercourse.mailbox.deliver": "§2[邮政服务] §r您的邮件已投递至对方邮箱",
     "message.intercourse.mailbox.deny": "§2[邮政服务] §r您已绑定过自己邮箱，请使用您自己的邮箱"
 }

@@ -4,6 +4,7 @@ import cloud.lemonslice.intercourse.common.handler.mail.MailboxManager;
 import cloud.lemonslice.intercourse.common.item.IMailItem;
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
 import cloud.lemonslice.silveroak.helper.VoxelShapeHelper;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,6 +34,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -139,7 +141,7 @@ public class MailboxBlock extends NormalHorizontalBlock
             {
                 BlockPos topPos = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
                 UUID mailboxOwner = data.PLAYERS_DATA.getMailboxOwner(worldIn.getDimensionKey(), topPos);
-                if (player.getHeldItem(handIn).isEmpty())
+                if (player.isSneaking())
                 {
                     // 检查邮箱主人，没有的话，录入
                     if (mailboxOwner == null)
@@ -198,14 +200,27 @@ public class MailboxBlock extends NormalHorizontalBlock
                             return ActionResultType.SUCCESS;
                         }
                         else
+                        {
                             player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.full"), false);
+                            return ActionResultType.SUCCESS;
+                        }
                     }
                     else
                     {
                         player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.no_owner"), false);
                     }
-                    return ActionResultType.FAIL;
+                    return ActionResultType.SUCCESS;
                 }
+                else if (mailboxOwner != null)
+                {
+                    GameProfile gameProfile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(mailboxOwner);
+                    if (gameProfile != null)
+                    {
+                        player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.others", gameProfile.getName()), false);
+                    }
+                    return ActionResultType.SUCCESS;
+                }
+                player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.no_owner_tips"), false);
                 return ActionResultType.FAIL;
             }).orElse(ActionResultType.FAIL);
         }

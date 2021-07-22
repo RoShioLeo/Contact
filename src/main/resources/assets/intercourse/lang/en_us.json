@@ -49,12 +49,15 @@
     "info.intercourse.postbox.success": "Mail sent",
     "info.intercourse.new_mail.title": "Postal Service",
     "info.intercourse.new_mail.desc": "New Mail Delivered",
-    "message.intercourse.mailbox.binding": "§2[Postal Service] §rSucceed in binding your mailbox.",
-    "message.intercourse.mailbox.switch": "§2[Postal Service] §rYour own mailbox has switched to this mailbox.",
-    "message.intercourse.mailbox.pick_up": "§2[Postal Service] §rYou have picked up your mail.",
-    "message.intercourse.mailbox.empty": "§2[Postal Service] §rThere is no mail for you now.",
+    "message.intercourse.mailbox.new_mail": "§2[Postal Service] §rNew mail was delivered to your mailbox",
+    "message.intercourse.mailbox.binding": "§2[Postal Service] §rSucceed in binding your mailbox",
+    "message.intercourse.mailbox.switch": "§2[Postal Service] §rYour own mailbox has switched to this mailbox",
+    "message.intercourse.mailbox.pick_up": "§2[Postal Service] §rYou have picked up your mail",
+    "message.intercourse.mailbox.empty": "§2[Postal Service] §rThere is no mail for you now",
     "message.intercourse.mailbox.full": "§2[Postal Service] §rThe mailbox is full!",
-    "message.intercourse.mailbox.no_owner": "§2[Postal Service] §rThe mailbox belongs to no one.",
-    "message.intercourse.mailbox.deliver": "§2[Postal Service] §rYour mail has been delivered.",
-    "message.intercourse.mailbox.deny": "§2[Postal Service] §rYou have bound your own mailbox. Please use your own mailbox."
+    "message.intercourse.mailbox.no_owner": "§2[Postal Service] §rThe mailbox belongs to no one",
+    "message.intercourse.mailbox.no_owner_tips": "§2[Postal Service] §rThe mailbox belongs to no one. Right-click when sneaking to binding mailbox",
+    "message.intercourse.mailbox.others": "§2[Postal Service] §rThe mailbox belongs to §o%s",
+    "message.intercourse.mailbox.deliver": "§2[Postal Service] §rYour mail has been delivered",
+    "message.intercourse.mailbox.deny": "§2[Postal Service] §rYou have bound your own mailbox. Please use your own mailbox"
 }

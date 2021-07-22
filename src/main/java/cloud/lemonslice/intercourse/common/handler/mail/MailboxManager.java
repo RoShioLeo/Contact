@@ -6,11 +6,13 @@ import cloud.lemonslice.intercourse.common.tileentity.MailboxTileEntity;
 import cloud.lemonslice.intercourse.network.ActionMessage;
 import cloud.lemonslice.intercourse.network.SimpleNetworkHandler;
 import com.google.common.collect.Lists;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -43,6 +45,11 @@ public final class MailboxManager
                     {
                         UUID uuid = mail.getUUID();
                         data.PLAYERS_DATA.addMailboxContents(uuid, mail.getContents());
+                        PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(uuid);
+                        if (player != null)
+                        {
+                            player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.new_mail"), false);
+                        }
                         updateState(uuid, data.PLAYERS_DATA);
                         READY_TO_REMOVE.add(mail);
                     }
