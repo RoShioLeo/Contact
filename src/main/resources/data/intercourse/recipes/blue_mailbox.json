@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "mailbox",
+    "pattern": [
+        "xxx",
+        "x*x",
+        " / "
+    ],
+    "key": {
+        "*": {
+            "tag": "forge:dyes/blue"
+        },
+        "x": {
+            "tag": "forge:ingots/iron"
+        },
+        "/": {
+            "tag": "forge:rods/wooden"
+        }
+    },
+    "result": {
+        "item": "intercourse:blue_mailbox"
+    }
+}

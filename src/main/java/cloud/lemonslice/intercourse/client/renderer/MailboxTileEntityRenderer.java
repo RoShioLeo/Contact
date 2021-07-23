@@ -1,6 +1,6 @@
 package cloud.lemonslice.intercourse.client.renderer;
 
-import cloud.lemonslice.intercourse.common.item.ItemsRegistry;
+import cloud.lemonslice.intercourse.common.item.ItemRegistry;
 import cloud.lemonslice.intercourse.common.tileentity.MailboxTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -30,7 +30,7 @@ public class MailboxTileEntityRenderer extends TileEntityRenderer<MailboxTileEnt
         if (tileEntityIn.isOpened())
         {
             Minecraft mc = Minecraft.getInstance();
-            ItemStack mail = new ItemStack(ItemsRegistry.MAIL);
+            ItemStack mail = new ItemStack(ItemRegistry.MAIL);
             ItemRenderer renderItem = mc.getItemRenderer();
 
             matrixStackIn.push();

@@ -22,7 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import java.util.List;
 
 import static cloud.lemonslice.intercourse.Intercourse.MODID;
-import static cloud.lemonslice.intercourse.common.container.ContainerTypesRegistry.RED_POSTBOX_CONTAINER;
+import static cloud.lemonslice.intercourse.common.container.ContainerTypeRegistry.RED_POSTBOX_CONTAINER;
 
 public class PostboxGui extends ContainerScreen<PostboxContainer>
 {

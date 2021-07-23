@@ -24,7 +24,7 @@ import java.util.List;
 
 public class PostcardItem extends NormalItem implements IMailItem
 {
-    private static final List<Style> STYLES = Lists.newArrayList();
+    public static final List<Style> STYLES = Lists.newArrayList();
     private final boolean isEnderType;
 
     public PostcardItem(String name, boolean isEnderType)
@@ -65,16 +65,7 @@ public class PostcardItem extends NormalItem implements IMailItem
         {
             for (Style style : STYLES)
             {
-                ItemStack postcard = new ItemStack(this);
-                CompoundNBT nbt = new CompoundNBT();
-                nbt.putString("ID", style.id);
-                nbt.putInt("PosX", style.textPosX);
-                nbt.putInt("PosY", style.textPosY);
-                nbt.putInt("Width", style.textWidth);
-                nbt.putInt("Height", style.textHeight);
-                nbt.putInt("Color", style.color);
-                postcard.getOrCreateTag().put("Info", nbt);
-                items.add(postcard);
+                items.add(getPostcard(style, isEnderType()));
             }
         }
     }
@@ -94,6 +85,20 @@ public class PostcardItem extends NormalItem implements IMailItem
     public boolean isEnderType()
     {
         return isEnderType;
+    }
+
+    public static ItemStack getPostcard(Style style, boolean isEnderType)
+    {
+        ItemStack postcard = new ItemStack(isEnderType ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD);
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putString("ID", style.id);
+        nbt.putInt("PosX", style.textPosX);
+        nbt.putInt("PosY", style.textPosY);
+        nbt.putInt("Width", style.textWidth);
+        nbt.putInt("Height", style.textHeight);
+        nbt.putInt("Color", style.color);
+        postcard.getOrCreateTag().put("Info", nbt);
+        return postcard;
     }
 
     public static class Style

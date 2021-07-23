@@ -1,7 +1,9 @@
 package cloud.lemonslice.intercourse.common.block;
 
-import cloud.lemonslice.intercourse.common.handler.mail.MailboxManager;
+import cloud.lemonslice.intercourse.common.handler.AdvancementManager;
+import cloud.lemonslice.intercourse.common.handler.MailboxManager;
 import cloud.lemonslice.intercourse.common.item.IMailItem;
+import cloud.lemonslice.intercourse.common.item.PostcardItem;
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
 import cloud.lemonslice.silveroak.helper.VoxelShapeHelper;
 import com.mojang.authlib.GameProfile;
@@ -12,6 +14,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -24,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.GlobalPos;
@@ -42,7 +46,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static cloud.lemonslice.intercourse.common.capability.CapabilityWorldPlayerMailboxData.WORLD_PLAYERS_DATA;
-import static cloud.lemonslice.intercourse.common.tileentity.TileEntityTypesRegistry.MAILBOX;
+import static cloud.lemonslice.intercourse.common.tileentity.TileEntityTypeRegistry.MAILBOX;
 
 public class MailboxBlock extends NormalHorizontalBlock
 {
@@ -155,6 +159,8 @@ public class MailboxBlock extends NormalHorizontalBlock
                             player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.switch"), false);
                         }
                         data.PLAYERS_DATA.setMailboxData(player.getUniqueID(), worldIn.getDimensionKey(), topPos);
+                        MailboxManager.updateState(worldIn, topPos);
+                        AdvancementManager.givePlayerAdvancement(worldIn.getServer(), (ServerPlayerEntity) player, new ResourceLocation("intercourse:root"));
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -165,9 +171,19 @@ public class MailboxBlock extends NormalHorizontalBlock
                     boolean isEmpty = true;
                     for (int i = 0; i < contents.getSlots(); ++i)
                     {
-                        if (!contents.getStackInSlot(i).isEmpty())
+                        ItemStack parcel = contents.getStackInSlot(i);
+                        if (!parcel.isEmpty())
                         {
-                            player.inventory.placeItemBackInInventory(worldIn, contents.getStackInSlot(i));
+                            if (parcel.getItem() instanceof PostcardItem)
+                            {
+                                AdvancementManager.givePlayerAdvancement(worldIn.getServer(), (ServerPlayerEntity) player, new ResourceLocation("intercourse:receive_postcard"));
+                            }
+                            if (parcel.getOrCreateTag().contains("AnotherWorld"))
+                            {
+                                AdvancementManager.givePlayerAdvancement(worldIn.getServer(), (ServerPlayerEntity) player, new ResourceLocation("intercourse:from_another_world"));
+                            }
+
+                            player.inventory.placeItemBackInInventory(worldIn, parcel);
                             isEmpty = false;
                         }
                     }
@@ -196,6 +212,7 @@ public class MailboxBlock extends NormalHorizontalBlock
                             data.PLAYERS_DATA.addMailboxContents(mailboxOwner, held);
                             player.setHeldItem(handIn, ItemStack.EMPTY);
                             player.sendStatusMessage(new TranslationTextComponent("message.intercourse.mailbox.deliver"), false);
+                            AdvancementManager.givePlayerAdvancement(player.getServer(), (ServerPlayerEntity) player, new ResourceLocation("intercourse:send_in_person"));
                             MailboxManager.updateState(worldIn, topPos);
                             return ActionResultType.SUCCESS;
                         }

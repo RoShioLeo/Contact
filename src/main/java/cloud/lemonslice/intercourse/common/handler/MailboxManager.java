@@ -1,13 +1,19 @@
-package cloud.lemonslice.intercourse.common.handler.mail;
+package cloud.lemonslice.intercourse.common.handler;
 
 import cloud.lemonslice.intercourse.common.capability.MailToBeSent;
 import cloud.lemonslice.intercourse.common.capability.PlayerMailboxData;
+import cloud.lemonslice.intercourse.common.config.ServerConfig;
+import cloud.lemonslice.intercourse.common.item.PostcardItem;
 import cloud.lemonslice.intercourse.common.tileentity.MailboxTileEntity;
 import cloud.lemonslice.intercourse.network.ActionMessage;
 import cloud.lemonslice.intercourse.network.SimpleNetworkHandler;
 import com.google.common.collect.Lists;
+import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.MerchantOffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -82,6 +89,25 @@ public final class MailboxManager
         });
     }
 
+    @SubscribeEvent
+    public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event)
+    {
+        if (!event.getWorld().isRemote)
+        {
+            if (event.getTarget() instanceof WanderingTraderEntity)
+            {
+                // TODO
+                if (!event.getTarget().getTags().contains("SellPostcard"))
+                {
+                    WanderingTraderEntity trader = (WanderingTraderEntity) event.getTarget();
+                    int i = event.getWorld().rand.nextInt(PostcardItem.STYLES.size());
+                    trader.getTags().add("SellPostcard");
+                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), false), 16, 100, 0.05F));
+                }
+            }
+        }
+    }
+
     public static void updateState(UUID uuid, PlayerMailboxData data)
     {
         GlobalPos posData = data.getMailboxPos(uuid);
@@ -113,7 +139,9 @@ public final class MailboxManager
         {
             time += 1200;
         }
-        time += 4 * (Math.abs(fromPos.getX() - toPos.getX()) + Math.abs(fromPos.getZ() - toPos.getZ()));
+        int distance = Math.abs(fromPos.getX() - toPos.getX()) + Math.abs(fromPos.getZ() - toPos.getZ());
+        if (distance > 9000) distance = 9000;
+        time += ServerConfig.Mail.postalSpeed.get() * distance;
         return time;
     }
 

@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 
 import static cloud.lemonslice.intercourse.Intercourse.ITEM_GROUP;
 
-public final class ItemsRegistry extends RegistryModule
+public final class ItemRegistry extends RegistryModule
 {
     public static final Item MAIL = new NormalItem("mail", ITEM_GROUP);
     public static final Item OPENED_MAIL = new NormalItem("opened_mail", ITEM_GROUP);

@@ -59,5 +59,15 @@
     "message.intercourse.mailbox.no_owner_tips": "§2[Postal Service] §rThe mailbox belongs to no one. Right-click when sneaking to binding mailbox",
     "message.intercourse.mailbox.others": "§2[Postal Service] §rThe mailbox belongs to §o%s",
     "message.intercourse.mailbox.deliver": "§2[Postal Service] §rYour mail has been delivered",
-    "message.intercourse.mailbox.deny": "§2[Postal Service] §rYou have bound your own mailbox. Please use your own mailbox"
+    "message.intercourse.mailbox.deny": "§2[Postal Service] §rYou have bound your own mailbox. Please use your own mailbox",
+    "advancements.intercourse.root.title": "Postal Service",
+    "advancements.intercourse.root.description": "The East Wind takes us all in the end",
+    "advancements.intercourse.receive_postcard.title": "Incoming Letter",
+    "advancements.intercourse.receive_postcard.description": "Receive a postcard",
+    "advancements.intercourse.send_postcard.title": "A Greeting",
+    "advancements.intercourse.send_postcard.description": "Send a postcard",
+    "advancements.intercourse.send_in_person.title": "Mailman",
+    "advancements.intercourse.send_in_person.description": "Put the mail into the other's mailbox in person",
+    "advancements.intercourse.from_another_world.title": "Parcel From Another World",
+    "advancements.intercourse.from_another_world.description": "Receive a parcel from another dimension"
 }

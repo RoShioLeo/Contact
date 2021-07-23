@@ -1,0 +1,28 @@
+{
+    "parent": "intercourse:root",
+    "display": {
+        "icon": {
+            "item": "intercourse:parcel"
+        },
+        "title": {
+            "translate": "advancements.intercourse.send_in_person.title"
+        },
+        "description": {
+            "translate": "advancements.intercourse.send_in_person.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "impossible": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "requirements": [
+        [
+            "impossible"
+        ]
+    ]
+}

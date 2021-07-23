@@ -1,90 +1,58 @@
 {
-    "multipart": [
-        {
-            "when": {
-                "facing": "north",
-                "half": "lower",
-                "open": "false"
-            },
-            "apply": {
-                "model": "intercourse:block/closed_mailbox"
-            }
+    "variants": {
+        "facing=north,half=lower,open=false": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "south",
-                "half": "lower",
-                "open": "false"
-            },
-            "apply": {
-                "model": "intercourse:block/closed_mailbox",
-                "y": 180
-            }
+        "facing=east,half=lower,open=false": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "west",
-                "half": "lower",
-                "open": "false"
-            },
-            "apply": {
-                "model": "intercourse:block/closed_mailbox",
-                "y": 270
-            }
+        "facing=south,half=lower,open=false": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "east",
-                "half": "lower",
-                "open": "false"
-            },
-            "apply": {
-                "model": "intercourse:block/closed_mailbox",
-                "y": 90
-            }
+        "facing=west,half=lower,open=false": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "north",
-                "half": "lower",
-                "open": "true"
-            },
-            "apply": {
-                "model": "intercourse:block/opened_mailbox"
-            }
+        "facing=north,half=lower,open=true": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "south",
-                "half": "lower",
-                "open": "true"
-            },
-            "apply": {
-                "model": "intercourse:block/opened_mailbox",
-                "y": 180
-            }
+        "facing=east,half=lower,open=true": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "west",
-                "half": "lower",
-                "open": "true"
-            },
-            "apply": {
-                "model": "intercourse:block/opened_mailbox",
-                "y": 270
-            }
+        "facing=south,half=lower,open=true": {
+            "model": "intercourse:block/mailbox_down"
         },
-        {
-            "when": {
-                "facing": "east",
-                "half": "lower",
-                "open": "true"
-            },
-            "apply": {
-                "model": "intercourse:block/opened_mailbox",
-                "y": 90
-            }
+        "facing=west,half=lower,open=true": {
+            "model": "intercourse:block/mailbox_down"
+        },
+        "facing=north,half=upper,open=false": {
+            "model": "intercourse:block/closed_mailbox_up"
+        },
+        "facing=south,half=upper,open=false": {
+            "model": "intercourse:block/closed_mailbox_up",
+            "y": 180
+        },
+        "facing=west,half=upper,open=false": {
+            "model": "intercourse:block/closed_mailbox_up",
+            "y": 270
+        },
+        "facing=east,half=upper,open=false": {
+            "model": "intercourse:block/closed_mailbox_up",
+            "y": 90
+        },
+        "facing=north,half=upper,open=true": {
+            "model": "intercourse:block/opened_mailbox_up"
+        },
+        "facing=south,half=upper,open=true": {
+            "model": "intercourse:block/opened_mailbox_up",
+            "y": 180
+        },
+        "facing=west,half=upper,open=true": {
+            "model": "intercourse:block/opened_mailbox_up",
+            "y": 270
+        },
+        "facing=east,half=upper,open=true": {
+            "model": "intercourse:block/opened_mailbox_up",
+            "y": 90
         }
-    ]
+    }
 }

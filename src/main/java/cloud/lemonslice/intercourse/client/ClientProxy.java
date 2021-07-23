@@ -5,7 +5,8 @@ import cloud.lemonslice.intercourse.client.gui.PostcardEditGui;
 import cloud.lemonslice.intercourse.client.gui.PostcardReadGui;
 import cloud.lemonslice.intercourse.client.renderer.MailboxTileEntityRenderer;
 import cloud.lemonslice.intercourse.common.CommonProxy;
-import cloud.lemonslice.intercourse.common.tileentity.TileEntityTypesRegistry;
+import cloud.lemonslice.intercourse.common.config.ClientConfig;
+import cloud.lemonslice.intercourse.common.tileentity.TileEntityTypeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Arrays;
 
-import static cloud.lemonslice.intercourse.common.block.BlocksRegistry.*;
+import static cloud.lemonslice.intercourse.common.block.BlockRegistry.*;
 
 public class ClientProxy extends CommonProxy
 {
@@ -46,7 +47,7 @@ public class ClientProxy extends CommonProxy
 
     public static void bindTileEntityRenderer()
     {
-        ClientRegistry.bindTileEntityRenderer(TileEntityTypesRegistry.MAILBOX, MailboxTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TileEntityTypeRegistry.MAILBOX, MailboxTileEntityRenderer::new);
     }
 
     private static void registerCutoutType(Block... blocks)
@@ -66,6 +67,9 @@ public class ClientProxy extends CommonProxy
 
     public static void notifyNewMail(NetworkEvent.Context ctx)
     {
-        ctx.enqueueWork(() -> Minecraft.getInstance().getToastGui().add(new NewMailToast()));
+        if (ClientConfig.GUI.showNewMailToast.get())
+        {
+            ctx.enqueueWork(() -> Minecraft.getInstance().getToastGui().add(new NewMailToast()));
+        }
     }
 }

@@ -13,8 +13,8 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-import static cloud.lemonslice.intercourse.common.container.ContainerTypesRegistry.GREEN_POSTBOX_CONTAINER;
-import static cloud.lemonslice.intercourse.common.container.ContainerTypesRegistry.RED_POSTBOX_CONTAINER;
+import static cloud.lemonslice.intercourse.common.container.ContainerTypeRegistry.GREEN_POSTBOX_CONTAINER;
+import static cloud.lemonslice.intercourse.common.container.ContainerTypeRegistry.RED_POSTBOX_CONTAINER;
 
 public class PostboxContainer extends Container
 {

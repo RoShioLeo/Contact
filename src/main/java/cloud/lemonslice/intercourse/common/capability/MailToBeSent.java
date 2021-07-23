@@ -10,7 +10,7 @@ public class MailToBeSent
 {
     private UUID uuid;
     private final ItemStackHandler contents;
-    private int ticks;
+    private long ticks;
 
     public MailToBeSent(CompoundNBT nbt)
     {
@@ -20,7 +20,7 @@ public class MailToBeSent
         contents.deserializeNBT(nbt.getCompound("MailContents"));
     }
 
-    public MailToBeSent(UUID uuid, ItemStack contents, int ticks)
+    public MailToBeSent(UUID uuid, ItemStack contents, long ticks)
     {
         this.uuid = uuid;
         this.contents = new ItemStackHandler();
@@ -52,7 +52,7 @@ public class MailToBeSent
     {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putString("MailUUID", uuid.toString());
-        nbt.putInt("MailTicks", ticks);
+        nbt.putLong("MailTicks", ticks);
         nbt.put("MailContents", contents.serializeNBT());
         return nbt;
     }
@@ -60,7 +60,7 @@ public class MailToBeSent
     public void readFromNBT(CompoundNBT nbt)
     {
         uuid = UUID.fromString(nbt.getString("MailUUID"));
-        ticks = nbt.getInt("MailTicks");
+        ticks = nbt.getLong("MailTicks");
         contents.deserializeNBT(nbt.getCompound("MailContents"));
     }
 }
