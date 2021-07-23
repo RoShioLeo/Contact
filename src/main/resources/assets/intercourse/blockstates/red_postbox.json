@@ -1,43 +1,34 @@
 {
-    "multipart": [
-        {
-            "when": {
-                "facing": "north",
-                "half": "lower"
-            },
-            "apply": {
-                "model": "intercourse:block/red_postbox",
-                "y": 180
-            }
+    "variants": {
+        "facing=north,half=lower": {
+            "model": "intercourse:block/red_postbox_down",
+            "y": 180
         },
-        {
-            "when": {
-                "facing": "south",
-                "half": "lower"
-            },
-            "apply": {
-                "model": "intercourse:block/red_postbox"
-            }
+        "facing=south,half=lower": {
+            "model": "intercourse:block/red_postbox_down"
         },
-        {
-            "when": {
-                "facing": "west",
-                "half": "lower"
-            },
-            "apply": {
-                "model": "intercourse:block/red_postbox",
-                "y": 90
-            }
+        "facing=west,half=lower": {
+            "model": "intercourse:block/red_postbox_down",
+            "y": 90
         },
-        {
-            "when": {
-                "facing": "east",
-                "half": "lower"
-            },
-            "apply": {
-                "model": "intercourse:block/red_postbox",
-                "y": 270
-            }
+        "facing=east,half=lower": {
+            "model": "intercourse:block/red_postbox_down",
+            "y": 270
+        },
+        "facing=north,half=upper": {
+            "model": "intercourse:block/red_postbox_up",
+            "y": 180
+        },
+        "facing=south,half=upper": {
+            "model": "intercourse:block/red_postbox_up"
+        },
+        "facing=west,half=upper": {
+            "model": "intercourse:block/red_postbox_up",
+            "y": 90
+        },
+        "facing=east,half=upper": {
+            "model": "intercourse:block/red_postbox_up",
+            "y": 270
         }
-    ]
+    }
 }

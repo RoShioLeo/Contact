@@ -1,0 +1,28 @@
+{
+    "display": {
+        "icon": {
+            "item": "intercourse:mail"
+        },
+        "title": {
+            "translate": "advancements.intercourse.root.title"
+        },
+        "description": {
+            "translate": "advancements.intercourse.root.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
+    "criteria": {
+        "impossible": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "requirements": [
+        [
+            "impossible"
+        ]
+    ]
+}

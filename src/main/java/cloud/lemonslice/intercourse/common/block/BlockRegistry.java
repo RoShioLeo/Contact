@@ -8,7 +8,7 @@ import net.minecraft.item.DyeColor;
 
 import static cloud.lemonslice.intercourse.Intercourse.ITEM_GROUP;
 
-public final class BlocksRegistry extends RegistryModule
+public final class BlockRegistry extends RegistryModule
 {
     public static final Block WHITE_MAILBOX = new MailboxBlock(DyeColor.WHITE);
     public static final Block ORANGE_MAILBOX = new MailboxBlock(DyeColor.ORANGE);

@@ -1,6 +1,6 @@
 package cloud.lemonslice.intercourse.common.container;
 
-import cloud.lemonslice.intercourse.common.item.ItemsRegistry;
+import cloud.lemonslice.intercourse.common.item.ItemRegistry;
 import cloud.lemonslice.intercourse.common.item.ParcelItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,7 +13,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-import static cloud.lemonslice.intercourse.common.container.ContainerTypesRegistry.WRAPPING_PAPER_CONTAINER;
+import static cloud.lemonslice.intercourse.common.container.ContainerTypeRegistry.WRAPPING_PAPER_CONTAINER;
 
 public class WrappingPaperContainer extends Container
 {
@@ -117,7 +117,7 @@ public class WrappingPaperContainer extends Container
 
                 if (!playerIn.abilities.isCreativeMode && !droppedPaper)
                 {
-                    playerIn.dropItem(isEnder ? new ItemStack(ItemsRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemsRegistry.WRAPPING_PAPER), false);
+                    playerIn.dropItem(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER), false);
                     droppedPaper = true;
                 }
             }
@@ -131,14 +131,14 @@ public class WrappingPaperContainer extends Container
 
                 if (!playerIn.abilities.isCreativeMode && !droppedPaper)
                 {
-                    playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), isEnder ? new ItemStack(ItemsRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemsRegistry.WRAPPING_PAPER));
+                    playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER));
                     droppedPaper = true;
                 }
             }
         }
         else
         {
-            ItemStack parcel = isEnder ? new ItemStack(ItemsRegistry.ENDER_PARCEL) : new ItemStack(ItemsRegistry.PARCEL);
+            ItemStack parcel = isEnder ? new ItemStack(ItemRegistry.ENDER_PARCEL) : new ItemStack(ItemRegistry.PARCEL);
             parcel.setTag(inputs.serializeNBT());
             if (!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity) playerIn).hasDisconnected())
             {

@@ -30,7 +30,7 @@ public class WrappingPaperItem extends NormalItem
         ItemStack itemStack = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote)
         {
-            NetworkHooks.openGui((ServerPlayerEntity) playerIn, getContainer(itemStack.getItem() == ItemsRegistry.ENDER_WRAPPING_PAPER));
+            NetworkHooks.openGui((ServerPlayerEntity) playerIn, getContainer(itemStack.getItem() == ItemRegistry.ENDER_WRAPPING_PAPER));
             if (!playerIn.abilities.isCreativeMode)
             {
                 itemStack.shrink(1);

@@ -3,7 +3,7 @@ package cloud.lemonslice.intercourse.client.color.block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
 
-import static cloud.lemonslice.intercourse.common.block.BlocksRegistry.*;
+import static cloud.lemonslice.intercourse.common.block.BlockRegistry.*;
 
 public final class BlockColorsRegistry
 {

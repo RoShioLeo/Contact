@@ -1,6 +1,6 @@
 package cloud.lemonslice.intercourse.client.gui;
 
-import cloud.lemonslice.intercourse.common.item.ItemsRegistry;
+import cloud.lemonslice.intercourse.common.item.ItemRegistry;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.toasts.IToast;
@@ -48,7 +48,7 @@ public class NewMailToast implements IToast
             }
         }
 
-        gui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGuiWithoutEntity(new ItemStack(ItemsRegistry.MAIL), 8, 8);
+        gui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGuiWithoutEntity(new ItemStack(ItemRegistry.MAIL), 8, 8);
         return ticks >= 5000L ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
     }
 }

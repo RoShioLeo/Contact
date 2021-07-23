@@ -3,9 +3,9 @@ package cloud.lemonslice.intercourse.common.tileentity;
 import cloud.lemonslice.intercourse.registry.RegistryModule;
 import net.minecraft.tileentity.TileEntityType;
 
-import static cloud.lemonslice.intercourse.common.block.BlocksRegistry.*;
+import static cloud.lemonslice.intercourse.common.block.BlockRegistry.*;
 
-public final class TileEntityTypesRegistry extends RegistryModule
+public final class TileEntityTypeRegistry extends RegistryModule
 {
     public static final TileEntityType<MailboxTileEntity> MAILBOX =
             (TileEntityType<MailboxTileEntity>) TileEntityType.Builder.create(MailboxTileEntity::new,

@@ -9,6 +9,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 
 import static cloud.lemonslice.intercourse.common.block.MailboxBlock.OPEN;
 import static cloud.lemonslice.intercourse.common.capability.CapabilityWorldPlayerMailboxData.WORLD_PLAYERS_DATA;
-import static cloud.lemonslice.intercourse.common.tileentity.TileEntityTypesRegistry.MAILBOX;
+import static cloud.lemonslice.intercourse.common.tileentity.TileEntityTypeRegistry.MAILBOX;
 
 public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
 {
@@ -69,7 +70,7 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
     {
         if (!world.isRemote)
         {
-            world.getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            world.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
                 boolean now = !data.PLAYERS_DATA.isMailboxEmpty(data.PLAYERS_DATA.getMailboxOwner(world.getDimensionKey(), pos));
                 if (now != isOpened)

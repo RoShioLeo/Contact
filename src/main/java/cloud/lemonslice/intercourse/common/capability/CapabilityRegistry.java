@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import static cloud.lemonslice.intercourse.Intercourse.MODID;
 
 @Mod.EventBusSubscriber
-public final class CapabilitiesRegistry
+public final class CapabilityRegistry
 {
     public static void init()
     {

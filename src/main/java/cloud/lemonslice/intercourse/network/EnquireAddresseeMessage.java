@@ -2,12 +2,15 @@ package cloud.lemonslice.intercourse.network;
 
 import cloud.lemonslice.intercourse.common.capability.MailToBeSent;
 import cloud.lemonslice.intercourse.common.container.PostboxContainer;
-import cloud.lemonslice.intercourse.common.handler.mail.MailboxManager;
+import cloud.lemonslice.intercourse.common.handler.AdvancementManager;
+import cloud.lemonslice.intercourse.common.handler.MailboxManager;
+import cloud.lemonslice.intercourse.common.item.PostcardItem;
 import cloud.lemonslice.silveroak.network.INormalMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.registry.Registry;
@@ -108,8 +111,27 @@ public class EnquireAddresseeMessage implements INormalMessage
                                 {
                                     PostboxContainer container = ((PostboxContainer) player.openContainer);
                                     ItemStack parcel = container.parcel.getStackInSlot(0);
-
                                     parcel.getOrCreateTag().putString("Sender", player.getName().getString());
+
+                                    if (parcel.getItem() instanceof PostcardItem)
+                                    {
+                                        AdvancementManager.givePlayerAdvancement(player.server, player, new ResourceLocation("intercourse:send_postcard"));
+                                    }
+
+                                    if (mailboxPos != null)
+                                    {
+                                        if (mailboxPos.getDimension() != world)
+                                        {
+                                            parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (World.OVERWORLD != world)
+                                        {
+                                            parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
+                                        }
+                                    }
 
                                     data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel, ticks));
                                     SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);

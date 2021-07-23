@@ -7,7 +7,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 
-public final class ContainerTypesRegistry extends RegistryModule
+public final class ContainerTypeRegistry extends RegistryModule
 {
     public final static ContainerType<?> WRAPPING_PAPER_CONTAINER = IForgeContainerType.create(((windowId, inv, data) -> new WrappingPaperContainer(windowId, inv, false))).setRegistryName("wrapping_paper");
     public final static ContainerType<?> RED_POSTBOX_CONTAINER = IForgeContainerType.create(((windowId, inv, data) -> new PostboxContainer(windowId, inv, true))).setRegistryName("red_postbox");
