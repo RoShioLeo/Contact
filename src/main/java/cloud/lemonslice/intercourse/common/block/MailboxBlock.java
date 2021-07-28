@@ -300,7 +300,7 @@ public class MailboxBlock extends NormalHorizontalBlock
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        return state.get(HALF) == DoubleBlockHalf.UPPER ? Lists.newArrayList(new ItemStack(this)) : Collections.emptyList();
+        return state.get(HALF) == DoubleBlockHalf.LOWER ? Lists.newArrayList(new ItemStack(this)) : Collections.emptyList();
     }
 
     @Override
