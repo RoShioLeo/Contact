@@ -1,10 +1,13 @@
 package cloud.lemonslice.intercourse.common.block;
 
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
+import com.google.common.collect.Lists;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +15,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.List;
 
 import static cloud.lemonslice.intercourse.common.capability.CapabilityWorldPlayerMailboxData.WORLD_PLAYERS_DATA;
 
@@ -59,5 +64,12 @@ public class CenterMailboxBlock extends NormalHorizontalBlock
             }).orElse(ActionResultType.FAIL);
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+    {
+        return Lists.newArrayList(new ItemStack(this));
     }
 }

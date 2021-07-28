@@ -67,6 +67,19 @@ public class PostcardItem extends NormalItem implements IMailItem
             {
                 items.add(getPostcard(style, isEnderType()));
             }
+
+            // TeaCon 特供
+            Style chineseSword = new Style("chinese_sword", 0xfff6f5ec);
+            Style teaSorcerer = new Style("tea_sorcerer", 0xff464547);
+            Style meiKai = new Style("meikai", 0xff72777b);
+            Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
+            Style waterSource = new Style("water_source", 0xff2585a6);
+
+            items.add(getPostcard(chineseSword, isEnderType()));
+            items.add(getPostcard(teaSorcerer, isEnderType()));
+            items.add(getPostcard(meiKai, isEnderType()));
+            items.add(getPostcard(iyoranotsu, isEnderType()));
+            items.add(getPostcard(waterSource, isEnderType()));
         }
     }
 
@@ -119,16 +132,26 @@ public class PostcardItem extends NormalItem implements IMailItem
             this.textHeight = textHeight;
             this.color = color;
         }
+
+        public Style(String id, int color)
+        {
+            this.id = id;
+            this.textPosX = 10;
+            this.textPosY = 12;
+            this.textWidth = 180;
+            this.textHeight = 108;
+            this.color = color;
+        }
     }
 
     static
     {
-        STYLES.add(new Style("stripes", 10, 12, 180, 108, 0xff4d4d4d));
-        STYLES.add(new Style("moonlit_night", 10, 10, 180, 96, 0xffbcc2d4));
-        STYLES.add(new Style("creeper", 10, 12, 180, 108, 0xff1a8047));
-        STYLES.add(new Style("spring_day", 10, 12, 180, 96, 0xff52b8cc));
-        STYLES.add(new Style("summer_night", 10, 12, 180, 96, 0xffbcc2d4));
-        STYLES.add(new Style("autumn_dusk", 10, 12, 180, 96, 0xff4d3f36));
-        STYLES.add(new Style("winter_day", 10, 12, 180, 96, 0xff8a9699));
+        STYLES.add(new Style("stripes", 0xff77787b));
+        STYLES.add(new Style("moonlit_night", 10, 10, 180, 96, 0xffd3d7d4));
+        STYLES.add(new Style("creeper", 0xff7fb80e));
+        STYLES.add(new Style("spring_day", 10, 12, 180, 96, 0xff7bbfea));
+        STYLES.add(new Style("summer_night", 10, 12, 180, 96, 0xffd3d7d4));
+        STYLES.add(new Style("autumn_dusk", 10, 12, 180, 96, 0xffb76f40));
+        STYLES.add(new Style("winter_day", 10, 12, 180, 96, 0xff76becc));
     }
 }

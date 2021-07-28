@@ -3,6 +3,7 @@ package cloud.lemonslice.intercourse.common.block;
 import cloud.lemonslice.intercourse.common.container.PostboxContainer;
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
 import cloud.lemonslice.silveroak.helper.VoxelShapeHelper;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,6 +16,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -36,6 +38,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 public class PostboxBlock extends NormalHorizontalBlock
 {
@@ -140,6 +144,13 @@ public class PostboxBlock extends NormalHorizontalBlock
         {
             return null;
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+    {
+        return state.get(HALF) == DoubleBlockHalf.UPPER ? Lists.newArrayList(new ItemStack(this)) : Collections.emptyList();
     }
 
     @Override

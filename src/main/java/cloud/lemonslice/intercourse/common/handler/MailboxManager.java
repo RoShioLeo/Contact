@@ -96,13 +96,13 @@ public final class MailboxManager
         {
             if (event.getTarget() instanceof WanderingTraderEntity)
             {
-                // TODO
                 if (!event.getTarget().getTags().contains("SellPostcard"))
                 {
                     WanderingTraderEntity trader = (WanderingTraderEntity) event.getTarget();
                     int i = event.getWorld().rand.nextInt(PostcardItem.STYLES.size());
                     trader.getTags().add("SellPostcard");
-                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), false), 16, 100, 0.05F));
+                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), false), 16, 10, 0.05F));
+                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), true), 16, 10, 0.05F));
                 }
             }
         }

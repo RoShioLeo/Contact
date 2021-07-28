@@ -1,5 +1,5 @@
 {
-    "parent": "intercourse:root",
+    "parent": "intercourse:receive_postcard",
     "display": {
         "icon": {
             "item": "intercourse:parcel"

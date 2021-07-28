@@ -2,7 +2,7 @@
     "parent": "intercourse:root",
     "display": {
         "icon": {
-            "item": "intercourse:postcard"
+            "item": "intercourse:opened_mail"
         },
         "title": {
             "translate": "advancements.intercourse.receive_postcard.title"
