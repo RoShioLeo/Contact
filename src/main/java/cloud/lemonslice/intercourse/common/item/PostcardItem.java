@@ -67,19 +67,6 @@ public class PostcardItem extends NormalItem implements IMailItem
             {
                 items.add(getPostcard(style, isEnderType()));
             }
-
-            // TeaCon 特供
-            Style chineseSword = new Style("chinese_sword", 0xfff6f5ec);
-            Style teaSorcerer = new Style("tea_sorcerer", 0xff464547);
-            Style meiKai = new Style("meikai", 0xff72777b);
-            Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
-            Style waterSource = new Style("water_source", 0xff2585a6);
-
-            items.add(getPostcard(chineseSword, isEnderType()));
-            items.add(getPostcard(teaSorcerer, isEnderType()));
-            items.add(getPostcard(meiKai, isEnderType()));
-            items.add(getPostcard(iyoranotsu, isEnderType()));
-            items.add(getPostcard(waterSource, isEnderType()));
         }
     }
 
