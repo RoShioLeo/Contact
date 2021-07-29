@@ -1,0 +1,79 @@
+{
+    "credit": "Made with Blockbench",
+    "ambientocclusion": false,
+    "textures": {
+        "0": "contact:block/mailbox_0",
+        "1": "contact:block/mailbox_1",
+        "2": "contact:item/mail",
+        "particle": "contact:block/mailbox_0"
+    },
+    "elements": [
+        {
+            "from": [7, 0, 7],
+            "to": [9, 16, 9],
+            "rotation": {
+                "angle": 0,
+                "axis": "y",
+                "origin": [16, 8, 15]
+            },
+            "faces": {
+                "north": {
+                    "uv": [14, 0, 13, 8],
+                    "texture": "#1"
+                },
+                "east": {
+                    "uv": [13, 0, 14, 8],
+                    "texture": "#1"
+                },
+                "south": {
+                    "uv": [14, 0, 13, 8],
+                    "texture": "#1"
+                },
+                "west": {
+                    "uv": [13, 0, 14, 8],
+                    "texture": "#1"
+                },
+                "down": {
+                    "uv": [14, 7.5, 13, 8],
+                    "texture": "#1"
+                }
+            }
+        }
+    ],
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [75, 45, 0],
+            "translation": [0, 2.5, 0],
+            "scale": [0.375, 0.375, 0.375]
+        },
+        "firstperson_righthand": {
+            "rotation": [0, 45, 0],
+            "scale": [0.4, 0.4, 0.4]
+        },
+        "firstperson_lefthand": {
+            "rotation": [0, 225, 0],
+            "scale": [0.4, 0.4, 0.4]
+        },
+        "ground": {
+            "translation": [0, 3, 0],
+            "scale": [0.25, 0.25, 0.25]
+        },
+        "gui": {
+            "rotation": [30, 225, 0],
+            "translation": [0, -3, 0],
+            "scale": [0.625, 0.625, 0.625]
+        },
+        "fixed": {
+            "scale": [0.5, 0.5, 0.5]
+        }
+    },
+    "groups": [
+        0,
+        {
+            "name": "group",
+            "origin": [10.5, 15, 13.5],
+            "color": 0,
+            "children": [1, 2, 3, 4, 5]
+        }, 6, 7, 8, 9, 10, 11, 12
+    ]
+}

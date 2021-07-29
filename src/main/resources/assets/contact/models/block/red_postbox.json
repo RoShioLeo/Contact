@@ -1,0 +1,8 @@
+{
+    "parent": "contact:block/postbox",
+    "textures": {
+        "0": "contact:block/red_postbox_0",
+        "1": "contact:block/red_postbox_1",
+        "particle": "contact:block/red_postbox_0"
+    }
+}
