@@ -13,8 +13,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = "${mod_version}-${mod_phase}"
-group = 'cloud.lemonslice.intercourse'
-archivesBaseName = 'Intercourse'
+group = 'cloud.lemonslice.contact'
+archivesBaseName = 'Contact'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
@@ -34,7 +34,7 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             mods {
-                intercourse {
+                contact {
                     source sourceSets.main
                 }
             }
@@ -48,7 +48,7 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             mods {
-                intercourse {
+                contact {
                     source sourceSets.main
                 }
             }
@@ -61,10 +61,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'info'
 
-            args '--mod', 'intercourse', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'contact', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                intercourse {
+                contact {
                     source sourceSets.main
                 }
             }
@@ -73,7 +73,7 @@ minecraft {
 }
 
 def info = [
-        "Specification-Title": "Intercourse",
+        "Specification-Title": "Contact",
         "Specification-Vendor": "Lemon Slice Studio",
         "Specification-Version": "1",
         "Implementation-Title": project.name,
@@ -110,58 +110,58 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     builtBy 'reobfJar'
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = "cloud.lemonslice.intercourse"
-            artifactId = "Intercourse-Forge-${minecraft_version}"
+//publishing {
+//    publications {
+//        release(MavenPublication) {
+//            groupId = "cloud.lemonslice.contact"
+//            artifactId = "Contact-Forge-${minecraft_version}"
+//
+//            artifact reobfArtifact
+//            pom {
+//                name = 'Contact for Minecraft 1.16.5'
+//                description = 'A Minecraft mod.'
+//                url = 'https://github.com/lemon-slice-studio/Contact'
+//                licenses {
+//                    license {
+//                        name = 'BSD-3-Clause'
+//                        url = 'https://github.com/lemon-slice-studio/Contact/blob/1.16/LICENSE'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id = 'RoitoLeo'
+//                        name = 'RoitoLeo'
+//                    }
+//                }
+//                issueManagement {
+//                    system = 'GitHub Issues'
+//                    url = 'https://github.com/lemon-slice-studio/Contact/issues'
+//                }
+//                scm {
+//                    url = 'https://github.com/lemon-slice-studio/Contact'
+//                    connection = 'scm:git:git://github.com/lemon-slice-studio/Contact.git'
+//                    developerConnection = 'scm:git:git@github.com:lemon-slice-studio/Contact.git'
+//                }
+//            }
+//        }
+//    }
+//    repositories {
+//        maven {
+//            name = "archive"
+//            url = "https://maven.lemonslice.cloud/releases"
+//            credentials {
+//                username = System.env.MAVEN_USERNAME
+//                password = System.env.MAVEN_PASSWORD
+//            }
+//        }
+//    }
+//}
 
-            artifact reobfArtifact
-            pom {
-                name = 'Intercourse for Minecraft 1.16.5'
-                description = 'A Minecraft mod.'
-                url = 'https://github.com/lemon-slice-studio/Intercourse'
-                licenses {
-                    license {
-                        name = 'BSD-3-Clause'
-                        url = 'https://github.com/lemon-slice-studio/Intercourse/blob/1.16/LICENSE'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'RoitoLeo'
-                        name = 'RoitoLeo'
-                    }
-                }
-                issueManagement {
-                    system = 'GitHub Issues'
-                    url = 'https://github.com/lemon-slice-studio/Intercourse/issues'
-                }
-                scm {
-                    url = 'https://github.com/lemon-slice-studio/Intercourse'
-                    connection = 'scm:git:git://github.com/lemon-slice-studio/Intercourse.git'
-                    developerConnection = 'scm:git:git@github.com:lemon-slice-studio/Intercourse.git'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "archive"
-            url = "https://maven.lemonslice.cloud/releases"
-            credentials {
-                username = System.env.MAVEN_USERNAME
-                password = System.env.MAVEN_PASSWORD
-            }
-        }
-    }
-}
-
-tasks.withType(PublishToMavenRepository) {
-    onlyIf {
-        System.env.MAVEN_USERNAME && System.env.MAVEN_PASSWORD
-    }
-}
+//tasks.withType(PublishToMavenRepository) {
+//    onlyIf {
+//        System.env.MAVEN_USERNAME && System.env.MAVEN_PASSWORD
+//    }
+//}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

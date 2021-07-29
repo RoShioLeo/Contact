@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "contact:block/center_mailbox"
+        },
+        "facing=east": {
+            "model": "contact:block/center_mailbox",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "contact:block/center_mailbox",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "contact:block/center_mailbox",
+            "y": 270
+        }
+    }
+}
