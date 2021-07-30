@@ -75,6 +75,7 @@ public class PostcardItem extends NormalItem implements IMailItem
             Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
             Style waterSource = new Style("water_source", 0xff2585a6);
             Style touhouLittleMaid = new Style("touhou_little_maid", 0xffffffff);
+            Style kleeIsland = new Style("klee_island", 10, 12, 180, 96, 0xff33a3dc);
 
             items.add(getPostcard(chineseSword, isEnderType()));
             items.add(getPostcard(teaSorcerer, isEnderType()));
@@ -82,6 +83,7 @@ public class PostcardItem extends NormalItem implements IMailItem
             items.add(getPostcard(iyoranotsu, isEnderType()));
             items.add(getPostcard(waterSource, isEnderType()));
             items.add(getPostcard(touhouLittleMaid, isEnderType()));
+            items.add(getPostcard(kleeIsland, isEnderType()));
         }
     }
 
