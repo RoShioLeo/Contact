@@ -9,11 +9,9 @@ import cloud.lemonslice.silveroak.network.INormalMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -27,26 +25,17 @@ import static cloud.lemonslice.contact.common.capability.CapabilityWorldPlayerMa
 public class EnquireAddresseeMessage implements INormalMessage
 {
     private final String nameIn;
-    private final BlockPos pos;
-    private final RegistryKey<World> world;
-    private final boolean isEnder;
     private final boolean shouldSend;
 
-    public EnquireAddresseeMessage(String name, BlockPos pos, RegistryKey<World> world, boolean isEnder, boolean shouldSend)
+    public EnquireAddresseeMessage(String name, boolean shouldSend)
     {
         this.nameIn = name;
-        this.pos = pos;
-        this.world = world;
-        this.isEnder = isEnder;
         this.shouldSend = shouldSend;
     }
 
     public EnquireAddresseeMessage(PacketBuffer buf)
     {
         this.nameIn = buf.readString(32767);
-        this.pos = buf.readBlockPos();
-        this.world = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, buf.readResourceLocation());
-        this.isEnder = buf.readBoolean();
         this.shouldSend = buf.readBoolean();
     }
 
@@ -54,9 +43,6 @@ public class EnquireAddresseeMessage implements INormalMessage
     public void toBytes(PacketBuffer buf)
     {
         buf.writeString(nameIn, 32767);
-        buf.writeBlockPos(pos);
-        buf.writeResourceLocation(world.getLocation());
-        buf.writeBoolean(isEnder);
         buf.writeBoolean(shouldSend);
     }
 
@@ -93,21 +79,22 @@ public class EnquireAddresseeMessage implements INormalMessage
                                 return;
                             }
                             GlobalPos mailboxPos = data.PLAYERS_DATA.getMailboxPos(uuid);
-                            int ticks = 0;
-                            if (!isEnder)
+                            if (player.openContainer instanceof PostboxContainer)
                             {
-                                if (mailboxPos != null)
+                                int ticks = 0;
+                                if (!((PostboxContainer) player.openContainer).isEnderMail())
                                 {
-                                    ticks = MailboxManager.getDeliveryTicks(world, pos, mailboxPos.getDimension(), mailboxPos.getPos());
+                                    if (mailboxPos != null)
+                                    {
+                                        ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), mailboxPos.getDimension(), mailboxPos.getPos());
+                                    }
+                                    else
+                                    {
+                                        ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), World.OVERWORLD, BlockPos.ZERO);
+                                    }
                                 }
-                                else
-                                {
-                                    ticks = MailboxManager.getDeliveryTicks(world, pos, World.OVERWORLD, BlockPos.ZERO);
-                                }
-                            }
-                            if (shouldSend)
-                            {
-                                if (player.openContainer instanceof PostboxContainer)
+
+                                if (shouldSend)
                                 {
                                     PostboxContainer container = ((PostboxContainer) player.openContainer);
                                     ItemStack parcel = container.parcel.getStackInSlot(0);
@@ -120,14 +107,14 @@ public class EnquireAddresseeMessage implements INormalMessage
 
                                     if (mailboxPos != null)
                                     {
-                                        if (mailboxPos.getDimension() != world)
+                                        if (mailboxPos.getDimension() != player.world.getDimensionKey())
                                         {
                                             parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
                                         }
                                     }
                                     else
                                     {
-                                        if (World.OVERWORLD != world)
+                                        if (World.OVERWORLD != player.world.getDimensionKey())
                                         {
                                             parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
                                         }
@@ -137,12 +124,12 @@ public class EnquireAddresseeMessage implements INormalMessage
                                     SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
                                     container.parcel.setStackInSlot(0, ItemStack.EMPTY);
                                 }
+                                else
+                                {
+                                    SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                                }
+                                return;
                             }
-                            else
-                            {
-                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-                            }
-                            return;
                         }
                     }
                     SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);

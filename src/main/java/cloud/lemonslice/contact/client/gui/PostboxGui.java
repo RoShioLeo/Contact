@@ -1,6 +1,5 @@
 package cloud.lemonslice.contact.client.gui;
 
-import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.common.container.PostboxContainer;
 import cloud.lemonslice.contact.network.EnquireAddresseeMessage;
 import cloud.lemonslice.contact.network.SimpleNetworkHandler;
@@ -94,7 +93,7 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     {
         if (container.status == 2)
         {
-            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, Contact.PROXY.getClientPlayer().getPosition(), Contact.PROXY.getClientPlayer().world.getDimensionKey(), container.isEnderMail(), true));
+            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, true));
         }
         else if (container.status == 5)
         {
@@ -102,7 +101,7 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
         }
         else if (container.status != 0)
         {
-            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, Contact.PROXY.getClientPlayer().getPosition(), Contact.PROXY.getClientPlayer().world.getDimensionKey(), container.isEnderMail(), false));
+            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, false));
         }
         this.nameField.setFocused2(false);
     }
