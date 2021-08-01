@@ -69,25 +69,25 @@ public class PostcardItem extends NormalItem implements IMailItem
             }
 
             // TeaCon 特供
-            Style chineseSword = new Style("chinese_sword", 0xfff6f5ec);
-            Style teaSorcerer = new Style("tea_sorcerer", 0xff464547);
-            Style meiKai = new Style("meikai", 0xffc77eb5);
-            Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
-            Style waterSource = new Style("water_source", 0xff2585a6);
-            Style touhouLittleMaid = new Style("touhou_little_maid", 0xffffffff);
-            Style kleeIsland = new Style("klee_island", 10, 12, 180, 96, 0xff33a3dc);
-            Style icarusWings1 = new Style("icarus_wings_1", 10, 12, 180, 0, 0xff464547);
-            Style icarusWings2 = new Style("icarus_wings_2", 108, 14, 80, 108, 0xff008792);
-
-            items.add(getPostcard(chineseSword, isEnderType()));
-            items.add(getPostcard(teaSorcerer, isEnderType()));
-            items.add(getPostcard(meiKai, isEnderType()));
-            items.add(getPostcard(iyoranotsu, isEnderType()));
-            items.add(getPostcard(waterSource, isEnderType()));
-            items.add(getPostcard(touhouLittleMaid, isEnderType()));
-            items.add(getPostcard(kleeIsland, isEnderType()));
-            items.add(getPostcard(icarusWings1, isEnderType()));
-            items.add(getPostcard(icarusWings2, isEnderType()));
+//            Style chineseSword = new Style("chinese_sword", 0xfff6f5ec);
+//            Style teaSorcerer = new Style("tea_sorcerer", 0xff464547);
+//            Style meiKai = new Style("meikai", 0xffc77eb5);
+//            Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
+//            Style waterSource = new Style("water_source", 0xff2585a6);
+//            Style touhouLittleMaid = new Style("touhou_little_maid", 0xffffffff);
+//            Style kleeIsland = new Style("klee_island", 10, 12, 180, 96, 0xff33a3dc);
+//            Style icarusWings1 = new Style("icarus_wings_1", 10, 12, 180, 0, 0xff464547);
+//            Style icarusWings2 = new Style("icarus_wings_2", 108, 14, 80, 108, 0xff008792);
+//
+//            items.add(getPostcard(chineseSword, isEnderType()));
+//            items.add(getPostcard(teaSorcerer, isEnderType()));
+//            items.add(getPostcard(meiKai, isEnderType()));
+//            items.add(getPostcard(iyoranotsu, isEnderType()));
+//            items.add(getPostcard(waterSource, isEnderType()));
+//            items.add(getPostcard(touhouLittleMaid, isEnderType()));
+//            items.add(getPostcard(kleeIsland, isEnderType()));
+//            items.add(getPostcard(icarusWings1, isEnderType()));
+//            items.add(getPostcard(icarusWings2, isEnderType()));
         }
     }
 
