@@ -123,7 +123,7 @@ public class PostcardReadGui extends Screen
 
     private PostcardEditGui.Point getScreenPoint(PostcardEditGui.Point pointIn)
     {
-        return new PostcardEditGui.Point(pointIn.x + (this.width - 200) / 2 + posX, pointIn.y + posY + 50);
+        return new PostcardEditGui.Point(pointIn.x + (this.width - 200) / 2 + posX, pointIn.y + posY + (this.height - 133) / 2);
     }
 
     @Override
@@ -132,11 +132,11 @@ public class PostcardReadGui extends Screen
         this.renderBackground(matrixStack);
         this.setListener(null);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2, 50, texture, new TexturePos(0, 0, 200, 133));
+        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2, (this.height - 133) / 2, texture, new TexturePos(0, 0, 200, 133));
 
         RenderSystem.enableBlend();
         RenderSystem.color4f(ColorHelper.getRedF(color), ColorHelper.getGreenF(color), ColorHelper.getBlueF(color), 0.8F);
-        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2 + 142, 45, POSTMARK, new TexturePos(0, 0, 64, 52));
+        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2 + 142, (this.height - 133) / 2 - 5, POSTMARK, new TexturePos(0, 0, 64, 52));
         RenderSystem.disableBlend();
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -107,7 +107,7 @@ public class PostcardEditGui extends Screen
     protected void init()
     {
         this.minecraft.keyboardListener.enableRepeatEvents(true);
-        this.buttonDone = this.addButton(new Button(this.width / 2 - 48, 186, 98, 20, DialogTexts.GUI_DONE, (button) ->
+        this.buttonDone = this.addButton(new Button(this.width / 2 - 48, (this.height + 140) / 2, 98, 20, DialogTexts.GUI_DONE, (button) ->
         {
             this.minecraft.displayGuiScreen(null);
             this.sendBookToServer();
@@ -411,7 +411,7 @@ public class PostcardEditGui extends Screen
         this.setListener(null);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2, 40, texture, new TexturePos(0, 0, 200, 133));
+        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2, (this.height - 150) / 2, texture, new TexturePos(0, 0, 200, 133));
 
         Page page = this.getPage();
 
@@ -455,7 +455,7 @@ public class PostcardEditGui extends Screen
 
     private void renderCursor(MatrixStack matrixStack, Point point, boolean isInsert)
     {
-        if (this.updateCount / 6 % 2 == 0)
+        if (this.updateCount / 6 % 2 == 0 && this.textHeight != 0)
         {
             point = this.getScreenPoint(point);
             if (!isInsert)
@@ -530,12 +530,12 @@ public class PostcardEditGui extends Screen
 
     private Point getTexturePoint(Point pointIn)
     {
-        return new Point(pointIn.x - (this.width - 200) / 2 - posX, pointIn.y - posY - 40);
+        return new Point(pointIn.x - (this.width - 200) / 2 - posX, pointIn.y - posY - (this.height - 150) / 2);
     }
 
     private Point getScreenPoint(Point pointIn)
     {
-        return new Point(pointIn.x + (this.width - 200) / 2 + posX, pointIn.y + posY + 40);
+        return new Point(pointIn.x + (this.width - 200) / 2 + posX, pointIn.y + posY + (this.height - 150) / 2);
     }
 
     static class Page

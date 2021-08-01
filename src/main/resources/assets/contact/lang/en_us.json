@@ -1,5 +1,5 @@
 {
-    "itemGroup.contact": "contact",
+    "itemGroup.contact": "Contact",
     "item.contact.mail": "Mail",
     "item.contact.opened_mail": "Opened Mail",
     "item.contact.parcel": "Parcel",
@@ -46,6 +46,8 @@
     "tooltip.contact.postcard.water_source": "Water Source",
     "tooltip.contact.postcard.touhou_little_maid": "Touhou Little Maid",
     "tooltip.contact.postcard.klee_island": "Klee's Island Adventure",
+    "tooltip.contact.postcard.icarus_wings_1": "Caeruleum",
+    "tooltip.contact.postcard.icarus_wings_2": "Fallen Down",
     "info.contact.postbox.addressee": "Addressee",
     "info.contact.postbox.not_found": "Not found",
     "info.contact.postbox.need_mail": "Please put mail in",
