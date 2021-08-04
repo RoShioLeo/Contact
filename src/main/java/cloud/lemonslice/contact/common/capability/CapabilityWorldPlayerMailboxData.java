@@ -48,7 +48,7 @@ public class CapabilityWorldPlayerMailboxData
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
         {
-            if (cap.equals(WORLD_PLAYERS_DATA))
+            if (WORLD_PLAYERS_DATA.equals(cap))
                 return data.cast();
             else
                 return LazyOptional.empty();
