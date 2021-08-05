@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 
 public class CapabilityWorldPlayerMailboxData
@@ -48,7 +49,7 @@ public class CapabilityWorldPlayerMailboxData
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
         {
-            if (cap.equals(WORLD_PLAYERS_DATA))
+            if (Objects.equals(cap, WORLD_PLAYERS_DATA))
                 return data.cast();
             else
                 return LazyOptional.empty();

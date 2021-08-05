@@ -78,6 +78,7 @@ public class PostcardItem extends NormalItem implements IMailItem
             Style kleeIsland = new Style("klee_island", 10, 12, 180, 96, 0xff33a3dc);
             Style icarusWings1 = new Style("icarus_wings_1", 10, 12, 180, 0, 0xff464547);
             Style icarusWings2 = new Style("icarus_wings_2", 108, 14, 80, 108, 0xff008792);
+            Style crockPot = new Style("crock_pot", 20, 24, 160, 84, 0xff4a3113);
 
             items.add(getPostcard(chineseSword, isEnderType()));
             items.add(getPostcard(teaSorcerer, isEnderType()));
@@ -88,6 +89,7 @@ public class PostcardItem extends NormalItem implements IMailItem
             items.add(getPostcard(kleeIsland, isEnderType()));
             items.add(getPostcard(icarusWings1, isEnderType()));
             items.add(getPostcard(icarusWings2, isEnderType()));
+            items.add(getPostcard(crockPot, isEnderType()));
         }
     }
 
