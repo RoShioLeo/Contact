@@ -110,58 +110,58 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     builtBy 'reobfJar'
 }
 
-//publishing {
-//    publications {
-//        release(MavenPublication) {
-//            groupId = "cloud.lemonslice.contact"
-//            artifactId = "Contact-Forge-${minecraft_version}"
-//
-//            artifact reobfArtifact
-//            pom {
-//                name = 'Contact for Minecraft 1.16.5'
-//                description = 'A Minecraft mod.'
-//                url = 'https://github.com/lemon-slice-studio/Contact'
-//                licenses {
-//                    license {
-//                        name = 'BSD-3-Clause'
-//                        url = 'https://github.com/lemon-slice-studio/Contact/blob/1.16/LICENSE'
-//                    }
-//                }
-//                developers {
-//                    developer {
-//                        id = 'RoitoLeo'
-//                        name = 'RoitoLeo'
-//                    }
-//                }
-//                issueManagement {
-//                    system = 'GitHub Issues'
-//                    url = 'https://github.com/lemon-slice-studio/Contact/issues'
-//                }
-//                scm {
-//                    url = 'https://github.com/lemon-slice-studio/Contact'
-//                    connection = 'scm:git:git://github.com/lemon-slice-studio/Contact.git'
-//                    developerConnection = 'scm:git:git@github.com:lemon-slice-studio/Contact.git'
-//                }
-//            }
-//        }
-//    }
-//    repositories {
-//        maven {
-//            name = "archive"
-//            url = "https://maven.lemonslice.cloud/releases"
-//            credentials {
-//                username = System.env.MAVEN_USERNAME
-//                password = System.env.MAVEN_PASSWORD
-//            }
-//        }
-//    }
-//}
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = "cloud.lemonslice.contact"
+            artifactId = "Contact-Forge-${minecraft_version}"
 
-//tasks.withType(PublishToMavenRepository) {
-//    onlyIf {
-//        System.env.MAVEN_USERNAME && System.env.MAVEN_PASSWORD
-//    }
-//}
+            artifact reobfArtifact
+            pom {
+                name = 'Contact for Minecraft 1.16.5'
+                description = 'A Minecraft mod.'
+                url = 'https://github.com/lemon-slice-studio/Contact'
+                licenses {
+                    license {
+                        name = 'BSD-3-Clause'
+                        url = 'https://github.com/lemon-slice-studio/Contact/blob/1.16/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'RoitoLeo'
+                        name = 'RoitoLeo'
+                    }
+                }
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = 'https://github.com/lemon-slice-studio/Contact/issues'
+                }
+                scm {
+                    url = 'https://github.com/lemon-slice-studio/Contact'
+                    connection = 'scm:git:git://github.com/lemon-slice-studio/Contact.git'
+                    developerConnection = 'scm:git:git@github.com:lemon-slice-studio/Contact.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "archive"
+            url = "https://maven.lemonslice.cloud/releases"
+            credentials {
+                username = System.env.MAVEN_USERNAME
+                password = System.env.MAVEN_PASSWORD
+            }
+        }
+    }
+}
+
+tasks.withType(PublishToMavenRepository) {
+    onlyIf {
+        System.env.MAVEN_USERNAME && System.env.MAVEN_PASSWORD
+    }
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
