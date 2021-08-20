@@ -2,8 +2,8 @@ package cloud.lemonslice.contact.common.item;
 
 import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.client.ClientProxy;
+import cloud.lemonslice.contact.resourse.PostcardHandler;
 import cloud.lemonslice.silveroak.common.item.NormalItem;
-import com.google.common.collect.Lists;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -13,6 +13,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -24,7 +25,6 @@ import java.util.List;
 
 public class PostcardItem extends NormalItem implements IMailItem
 {
-    public static final List<Style> STYLES = Lists.newArrayList();
     private final boolean isEnderType;
 
     public PostcardItem(String name, boolean isEnderType)
@@ -63,33 +63,10 @@ public class PostcardItem extends NormalItem implements IMailItem
     {
         if (this.isInGroup(group))
         {
-            for (Style style : STYLES)
+            for (ResourceLocation id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
             {
-                items.add(getPostcard(style, isEnderType()));
+                items.add(getPostcard(id, isEnderType()));
             }
-
-            // TeaCon 特供
-            Style chineseSword = new Style("chinese_sword", 0xfff6f5ec);
-            Style teaSorcerer = new Style("tea_sorcerer", 0xff464547);
-            Style meiKai = new Style("meikai", 0xffc77eb5);
-            Style iyoranotsu = new Style("iyoranotsu", 0xffc77eb5);
-            Style waterSource = new Style("water_source", 0xff2585a6);
-            Style touhouLittleMaid = new Style("touhou_little_maid", 0xffffffff);
-            Style kleeIsland = new Style("klee_island", 10, 12, 180, 96, 0xff33a3dc);
-            Style icarusWings1 = new Style("icarus_wings_1", 10, 12, 180, 0, 0xff464547);
-            Style icarusWings2 = new Style("icarus_wings_2", 108, 14, 80, 108, 0xff008792);
-            Style crockPot = new Style("crock_pot", 20, 24, 160, 84, 0xff4a3113);
-
-            items.add(getPostcard(chineseSword, isEnderType()));
-            items.add(getPostcard(teaSorcerer, isEnderType()));
-            items.add(getPostcard(meiKai, isEnderType()));
-            items.add(getPostcard(iyoranotsu, isEnderType()));
-            items.add(getPostcard(waterSource, isEnderType()));
-            items.add(getPostcard(touhouLittleMaid, isEnderType()));
-            items.add(getPostcard(kleeIsland, isEnderType()));
-            items.add(getPostcard(icarusWings1, isEnderType()));
-            items.add(getPostcard(icarusWings2, isEnderType()));
-            items.add(getPostcard(crockPot, isEnderType()));
         }
     }
 
@@ -101,6 +78,12 @@ public class PostcardItem extends NormalItem implements IMailItem
             IFormattableTextComponent background = new TranslationTextComponent("tooltip.contact.postcard." + stack.getOrCreateTag().getCompound("Info").getString("ID")).mergeStyle(TextFormatting.GRAY);
             tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).mergeStyle(TextFormatting.GRAY));
         }
+        if (stack.getOrCreateTag().contains("CardID"))
+        {
+            ResourceLocation id = new ResourceLocation(stack.getOrCreateTag().getString("CardID"));
+            IFormattableTextComponent background = new TranslationTextComponent("tooltip.postcard." + id.getNamespace() + "." + id.getPath()).mergeStyle(TextFormatting.GRAY);
+            tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).mergeStyle(TextFormatting.GRAY));
+        }
         this.addSenderInfoTooltip(stack, worldIn, tooltip, flagIn);
     }
 
@@ -110,58 +93,12 @@ public class PostcardItem extends NormalItem implements IMailItem
         return isEnderType;
     }
 
-    public static ItemStack getPostcard(Style style, boolean isEnderType)
+    public static ItemStack getPostcard(ResourceLocation id, boolean isEnderType)
     {
         ItemStack postcard = new ItemStack(isEnderType ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD);
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putString("ID", style.id);
-        nbt.putInt("PosX", style.textPosX);
-        nbt.putInt("PosY", style.textPosY);
-        nbt.putInt("Width", style.textWidth);
-        nbt.putInt("Height", style.textHeight);
-        nbt.putInt("Color", style.color);
-        postcard.getOrCreateTag().put("Info", nbt);
+        nbt.putString("CardID", id.toString());
+        postcard.setTag(nbt);
         return postcard;
-    }
-
-    public static class Style
-    {
-        public final String id;
-        public final int textPosX;
-        public final int textPosY;
-        public final int textWidth;
-        public final int textHeight;
-        public final int color;
-
-        public Style(String id, int posX, int posY, int textWidth, int textHeight, int color)
-        {
-            this.id = id;
-            this.textPosX = posX;
-            this.textPosY = posY;
-            this.textWidth = textWidth;
-            this.textHeight = textHeight;
-            this.color = color;
-        }
-
-        public Style(String id, int color)
-        {
-            this.id = id;
-            this.textPosX = 10;
-            this.textPosY = 12;
-            this.textWidth = 180;
-            this.textHeight = 108;
-            this.color = color;
-        }
-    }
-
-    static
-    {
-        STYLES.add(new Style("stripes", 0xff77787b));
-        STYLES.add(new Style("moonlit_night", 10, 10, 180, 96, 0xffd3d7d4));
-        STYLES.add(new Style("creeper", 0xff7fb80e));
-        STYLES.add(new Style("spring_day", 10, 12, 180, 96, 0xff7bbfea));
-        STYLES.add(new Style("summer_night", 10, 12, 180, 96, 0xffd3d7d4));
-        STYLES.add(new Style("autumn_dusk", 10, 12, 180, 96, 0xffb76f40));
-        STYLES.add(new Style("winter_day", 10, 12, 180, 96, 0xff76becc));
     }
 }

@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "id": "contact:crock_pot",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 20,
+        "y": 24,
+        "width": 160,
+        "height": 84,
+        "color": {
+            "alpha": 255,
+            "red": 74,
+            "green": 49,
+            "blue": 19
+        }
+    },
+    "postmark": {
+        "id": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 120,
+            "red": 107,
+            "green": 71,
+            "blue": 60
+        }
+    }
+}

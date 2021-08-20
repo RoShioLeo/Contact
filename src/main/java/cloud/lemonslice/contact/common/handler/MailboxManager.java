@@ -7,6 +7,7 @@ import cloud.lemonslice.contact.common.item.PostcardItem;
 import cloud.lemonslice.contact.common.tileentity.MailboxTileEntity;
 import cloud.lemonslice.contact.network.ActionMessage;
 import cloud.lemonslice.contact.network.SimpleNetworkHandler;
+import cloud.lemonslice.contact.resourse.PostcardHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -99,10 +101,11 @@ public final class MailboxManager
                 if (!event.getTarget().getTags().contains("SellPostcard"))
                 {
                     WanderingTraderEntity trader = (WanderingTraderEntity) event.getTarget();
-                    int i = event.getWorld().rand.nextInt(PostcardItem.STYLES.size());
+                    int i = event.getWorld().rand.nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
                     trader.getTags().add("SellPostcard");
-                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), false), 16, 10, 0.05F));
-                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(PostcardItem.STYLES.get(i), true), 16, 10, 0.05F));
+                    ResourceLocation[] list = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new ResourceLocation[0]);
+                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(list[i], true), 4, 10, 0.05F));
+                    trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(list[i], false), 4, 10, 0.05F));
                 }
             }
         }

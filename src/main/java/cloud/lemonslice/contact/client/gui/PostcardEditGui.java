@@ -2,8 +2,7 @@ package cloud.lemonslice.contact.client.gui;
 
 import cloud.lemonslice.contact.network.PostcardEditMessage;
 import cloud.lemonslice.contact.network.SimpleNetworkHandler;
-import cloud.lemonslice.silveroak.client.texture.TexturePos;
-import cloud.lemonslice.silveroak.helper.GuiHelper;
+import cloud.lemonslice.contact.resourse.PostcardStyle;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -26,7 +25,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.CharacterManager;
@@ -41,8 +39,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-import static cloud.lemonslice.contact.Contact.MODID;
-
 public class PostcardEditGui extends Screen
 {
     private final ItemStack postcard;
@@ -53,13 +49,7 @@ public class PostcardEditGui extends Screen
     private boolean isModified = false;
     private int updateCount = 0;
     private long lastClickTime = 0;
-
-    private final int posX;
-    private final int posY;
-    private final int textWidth;
-    private final int textHeight;
-    private final int color;
-    private final ResourceLocation texture;
+    private final PostcardStyle style;
 
     private final TextInputUtil textInputUtil;
     private Button buttonDone;
@@ -73,41 +63,32 @@ public class PostcardEditGui extends Screen
         this.editingPlayer = playerIn;
         this.hand = handIn;
         CompoundNBT compoundnbt = postcardIn.getTag();
-        String id;
         if (compoundnbt != null)
         {
+            if (compoundnbt.contains("Info"))
+            {
+                style = PostcardStyle.fromNBT(compoundnbt);
+            }
+            else if (compoundnbt.contains("CardID"))
+            {
+                style = PostcardStyle.fromNBT(compoundnbt);
+            }
+            else style = PostcardStyle.DEFAULT;
             INBT nbt = compoundnbt.get("Text");
             if (nbt != null)
             {
                 this.page = nbt.copy().getString();
             }
-
-            CompoundNBT compoundNBT = compoundnbt.getCompound("Info");
-            id = compoundNBT.getString("ID");
-            this.posX = compoundNBT.getInt("PosX");
-            this.posY = compoundNBT.getInt("PosY");
-            this.textWidth = compoundNBT.getInt("Width");
-            this.textHeight = compoundNBT.getInt("Height");
-            this.color = compoundNBT.getInt("Color");
         }
-        else
-        {
-            id = "stripes";
-            this.posX = 10;
-            this.posY = 12;
-            this.textWidth = 180;
-            this.textHeight = 108;
-            this.color = 0xff4d4d4d;
-        }
-        this.texture = new ResourceLocation(MODID, "textures/postcard/" + id + ".png");
-        this.textInputUtil = new TextInputUtil(() -> page, this::setText, this::getClipboardText, this::setClipboardText, (text) -> text.length() < 1024 && this.font.getWordWrappedHeight(text, textWidth) <= textHeight * 0.75);
+        else style = PostcardStyle.DEFAULT;
+        this.textInputUtil = new TextInputUtil(() -> page, this::setText, this::getClipboardText, this::setClipboardText, (text) -> text.length() < 1024 && this.font.getWordWrappedHeight(text, style.textWidth) <= style.textHeight * 0.75);
     }
 
     @Override
     protected void init()
     {
         this.minecraft.keyboardListener.enableRepeatEvents(true);
-        this.buttonDone = this.addButton(new Button(this.width / 2 - 48, (this.height + 140) / 2, 98, 20, DialogTexts.GUI_DONE, (button) ->
+        this.buttonDone = this.addButton(new Button(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20, 98, 20, DialogTexts.GUI_DONE, (button) ->
         {
             this.minecraft.displayGuiScreen(null);
             this.sendBookToServer();
@@ -154,7 +135,7 @@ public class PostcardEditGui extends Screen
             MutableInt mutableint = new MutableInt();
             MutableBoolean mutableboolean = new MutableBoolean();
             CharacterManager charactermanager = this.font.getCharacterManager();
-            charactermanager.func_238353_a_(page, textWidth, Style.EMPTY, true, (style, lineStartPos, lineEndPos) ->
+            charactermanager.func_238353_a_(page, style.textWidth, Style.EMPTY, true, (style, lineStartPos, lineEndPos) ->
             {
                 int lineCount = mutableint.getAndIncrement();
                 String lineTextRaw = page.substring(lineStartPos, lineEndPos);
@@ -411,13 +392,14 @@ public class PostcardEditGui extends Screen
         this.setListener(null);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GuiHelper.drawLayer(matrixStack, (this.width - 200) / 2, (this.height - 150) / 2, texture, new TexturePos(0, 0, 200, 133));
+        minecraft.getTextureManager().bindTexture(style.getCardTexture());
+        blit(matrixStack, (this.width - style.cardWidth) / 2, this.height / 2 - style.cardHeight * 2 / 3, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
 
         Page page = this.getPage();
 
         for (Line line : page.lines)
         {
-            this.font.drawText(matrixStack, line.lineTextComponent, (float) line.x, (float) line.y, color);
+            this.font.drawText(matrixStack, line.lineTextComponent, (float) line.x, (float) line.y, style.textColor);
         }
 
         this.renderSelection(page.selection);
@@ -455,16 +437,16 @@ public class PostcardEditGui extends Screen
 
     private void renderCursor(MatrixStack matrixStack, Point point, boolean isInsert)
     {
-        if (this.updateCount / 6 % 2 == 0 && this.textHeight != 0)
+        if (this.updateCount / 6 % 2 == 0 && style.textHeight != 0)
         {
             point = this.getScreenPoint(point);
             if (!isInsert)
             {
-                AbstractGui.fill(matrixStack, point.x, point.y - 1, point.x + 1, point.y + 9, color);
+                AbstractGui.fill(matrixStack, point.x, point.y - 1, point.x + 1, point.y + 9, style.textColor);
             }
             else
             {
-                this.font.drawString(matrixStack, "_", (float) point.x, (float) point.y, color);
+                this.font.drawString(matrixStack, "_", (float) point.x, (float) point.y, style.textColor);
             }
         }
 
@@ -530,12 +512,12 @@ public class PostcardEditGui extends Screen
 
     private Point getTexturePoint(Point pointIn)
     {
-        return new Point(pointIn.x - (this.width - 200) / 2 - posX, pointIn.y - posY - (this.height - 150) / 2);
+        return new Point(pointIn.x - (this.width - style.cardWidth) / 2 - style.textPosX, pointIn.y - style.textPosY - (this.height / 2 - style.cardHeight * 2 / 3));
     }
 
     private Point getScreenPoint(Point pointIn)
     {
-        return new Point(pointIn.x + (this.width - 200) / 2 + posX, pointIn.y + posY + (this.height - 150) / 2);
+        return new Point(pointIn.x + (this.width - style.cardWidth) / 2 + style.textPosX, pointIn.y + style.textPosY + (this.height / 2 - style.cardHeight * 2 / 3));
     }
 
     static class Page

@@ -56,85 +56,82 @@ public class EnquireAddresseeMessage implements INormalMessage
             return;
         }
 
-        if (ctx.getDirection() == NetworkDirection.PLAY_TO_SERVER)
+        ctx.enqueueWork(() ->
         {
-            ctx.enqueueWork(() ->
+            if (nameIn.isEmpty())
             {
-                if (nameIn.isEmpty())
+                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                return;
+            }
+            player.server.getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            {
+                String lowerIn = nameIn.toLowerCase(Locale.ROOT);
+                for (String name : data.PLAYERS_DATA.nameToUUID.keySet())
                 {
-                    SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-                    return;
-                }
-                player.server.getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
-                {
-                    String lowerIn = nameIn.toLowerCase(Locale.ROOT);
-                    for (String name : data.PLAYERS_DATA.nameToUUID.keySet())
+                    if (name.toLowerCase(Locale.ROOT).startsWith(lowerIn))
                     {
-                        if (name.toLowerCase(Locale.ROOT).startsWith(lowerIn))
+                        UUID uuid = data.PLAYERS_DATA.nameToUUID.get(name);
+                        if (data.PLAYERS_DATA.isMailboxFull(uuid))
                         {
-                            UUID uuid = data.PLAYERS_DATA.nameToUUID.get(name);
-                            if (data.PLAYERS_DATA.isMailboxFull(uuid))
+                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -2), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                            return;
+                        }
+                        GlobalPos mailboxPos = data.PLAYERS_DATA.getMailboxPos(uuid);
+                        if (player.openContainer instanceof PostboxContainer)
+                        {
+                            int ticks = 0;
+                            if (!((PostboxContainer) player.openContainer).isEnderMail())
                             {
-                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -2), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-                                return;
-                            }
-                            GlobalPos mailboxPos = data.PLAYERS_DATA.getMailboxPos(uuid);
-                            if (player.openContainer instanceof PostboxContainer)
-                            {
-                                int ticks = 0;
-                                if (!((PostboxContainer) player.openContainer).isEnderMail())
+                                if (mailboxPos != null)
                                 {
-                                    if (mailboxPos != null)
-                                    {
-                                        ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), mailboxPos.getDimension(), mailboxPos.getPos());
-                                    }
-                                    else
-                                    {
-                                        ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), World.OVERWORLD, BlockPos.ZERO);
-                                    }
-                                }
-
-                                if (shouldSend)
-                                {
-                                    PostboxContainer container = ((PostboxContainer) player.openContainer);
-                                    ItemStack parcel = container.parcel.getStackInSlot(0);
-                                    parcel.getOrCreateTag().putString("Sender", player.getName().getString());
-
-                                    if (parcel.getItem() instanceof PostcardItem)
-                                    {
-                                        AdvancementManager.givePlayerAdvancement(player.server, player, new ResourceLocation("contact:send_postcard"));
-                                    }
-
-                                    if (mailboxPos != null)
-                                    {
-                                        if (mailboxPos.getDimension() != player.world.getDimensionKey())
-                                        {
-                                            parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (World.OVERWORLD != player.world.getDimensionKey())
-                                        {
-                                            parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
-                                        }
-                                    }
-
-                                    data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel, ticks));
-                                    SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-                                    container.parcel.setStackInSlot(0, ItemStack.EMPTY);
+                                    ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), mailboxPos.getDimension(), mailboxPos.getPos());
                                 }
                                 else
                                 {
-                                    SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                                    ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), World.OVERWORLD, BlockPos.ZERO);
                                 }
-                                return;
                             }
+
+                            if (shouldSend)
+                            {
+                                PostboxContainer container = ((PostboxContainer) player.openContainer);
+                                ItemStack parcel = container.parcel.getStackInSlot(0);
+                                parcel.getOrCreateTag().putString("Sender", player.getName().getString());
+
+                                if (parcel.getItem() instanceof PostcardItem)
+                                {
+                                    AdvancementManager.givePlayerAdvancement(player.server, player, new ResourceLocation("contact:send_postcard"));
+                                }
+
+                                if (mailboxPos != null)
+                                {
+                                    if (mailboxPos.getDimension() != player.world.getDimensionKey())
+                                    {
+                                        parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
+                                    }
+                                }
+                                else
+                                {
+                                    if (World.OVERWORLD != player.world.getDimensionKey())
+                                    {
+                                        parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
+                                    }
+                                }
+
+                                data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel, ticks));
+                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                                container.parcel.setStackInSlot(0, ItemStack.EMPTY);
+                            }
+                            else
+                            {
+                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                            }
+                            return;
                         }
                     }
-                    SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-                });
+                }
+                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
             });
-        }
+        });
     }
 }

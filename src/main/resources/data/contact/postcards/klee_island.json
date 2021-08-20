@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "id": "contact:klee_island",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 10,
+        "y": 10,
+        "width": 180,
+        "height": 72,
+        "color": {
+            "alpha": 255,
+            "red": 51,
+            "green": 163,
+            "blue": 220
+        }
+    },
+    "postmark": {
+        "id": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 140,
+            "red": 239,
+            "green": 65,
+            "blue": 54
+        }
+    }
+}

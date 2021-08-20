@@ -4,7 +4,6 @@ import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.common.container.PostboxContainer;
 import cloud.lemonslice.silveroak.network.INormalMessage;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -37,33 +36,30 @@ public class AddresseeDataMessage implements INormalMessage
     public void process(Supplier<NetworkEvent.Context> supplier)
     {
         NetworkEvent.Context ctx = supplier.get();
-        if (ctx.getDirection() == NetworkDirection.PLAY_TO_CLIENT)
+        ctx.enqueueWork(() ->
         {
-            ctx.enqueueWork(() ->
+            if (Contact.PROXY.getClientPlayer().openContainer instanceof PostboxContainer)
             {
-                if (Contact.PROXY.getClientPlayer().openContainer instanceof PostboxContainer)
+                PostboxContainer container = ((PostboxContainer) Contact.PROXY.getClientPlayer().openContainer);
+                container.playerName = name;
+                container.time = ticks;
+                if (ticks == -1)
                 {
-                    PostboxContainer container = ((PostboxContainer) Contact.PROXY.getClientPlayer().openContainer);
-                    container.playerName = name;
-                    container.time = ticks;
-                    if (ticks == -1)
-                    {
-                        container.status = 3;
-                    }
-                    else if (ticks == -2)
-                    {
-                        container.status = 4;
-                    }
-                    else if (ticks == -3)
-                    {
-                        container.status = 5;
-                    }
-                    else
-                    {
-                        container.status = 2;
-                    }
+                    container.status = 3;
                 }
-            });
-        }
+                else if (ticks == -2)
+                {
+                    container.status = 4;
+                }
+                else if (ticks == -3)
+                {
+                    container.status = 5;
+                }
+                else
+                {
+                    container.status = 2;
+                }
+            }
+        });
     }
 }
