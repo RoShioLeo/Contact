@@ -68,6 +68,7 @@
     "message.contact.mailbox.others": "§2[邮政服务] §r当前邮箱属于 §o%s",
     "message.contact.mailbox.deliver": "§2[邮政服务] §r您的邮件已投递至对方邮箱",
     "message.contact.mailbox.deny": "§2[邮政服务] §r您已绑定过自己邮箱，请使用您自己的邮箱",
+    "message.contact.command.style_not_found": "没有找到名为'%s'的明信片款式",
     "advancements.contact.root.title": "邮政服务",
     "advancements.contact.root.description": "东风快递，使命必达",
     "advancements.contact.receive_postcard.title": "来信",

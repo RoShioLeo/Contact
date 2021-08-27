@@ -68,6 +68,7 @@
     "message.contact.mailbox.others": "§2[Postal Service] §rThe mailbox belongs to §o%s",
     "message.contact.mailbox.deliver": "§2[Postal Service] §rYour mail has been delivered",
     "message.contact.mailbox.deny": "§2[Postal Service] §rYou have bound your own mailbox. Please use your own mailbox",
+    "message.contact.command.style_not_found": "No postcard style was found by the name '%s'",
     "advancements.contact.root.title": "Postal Service",
     "advancements.contact.root.description": "The East Wind takes us all in the end",
     "advancements.contact.receive_postcard.title": "Incoming Letter",
