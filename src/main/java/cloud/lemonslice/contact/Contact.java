@@ -6,6 +6,7 @@ import cloud.lemonslice.contact.client.color.item.ItemColorsRegistry;
 import cloud.lemonslice.contact.common.CommonProxy;
 import cloud.lemonslice.contact.common.block.BlockRegistry;
 import cloud.lemonslice.contact.common.capability.CapabilityRegistry;
+import cloud.lemonslice.contact.common.command.ContactCommand;
 import cloud.lemonslice.contact.common.config.NormalConfigs;
 import cloud.lemonslice.contact.common.container.ContainerTypeRegistry;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
@@ -13,6 +14,8 @@ import cloud.lemonslice.contact.common.tileentity.TileEntityTypeRegistry;
 import cloud.lemonslice.contact.network.SimpleNetworkHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +41,7 @@ public final class Contact
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, NormalConfigs.SERVER_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, NormalConfigs.CLIENT_CONFIG);
         new BlockRegistry();
@@ -61,6 +65,11 @@ public final class Contact
         ClientProxy.bindTileEntityRenderer();
         BlockColorsRegistry.init();
         ItemColorsRegistry.init();
+    }
+
+    public void onCommandRegister(RegisterCommandsEvent event)
+    {
+        ContactCommand.register(event.getDispatcher());
     }
 
     public static void error(String format, Object... data)

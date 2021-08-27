@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -99,6 +100,12 @@ public class PostcardItem extends NormalItem implements IMailItem
         CompoundNBT nbt = new CompoundNBT();
         nbt.putString("CardID", id.toString());
         postcard.setTag(nbt);
+        return postcard;
+    }
+
+    public static ItemStack setText(ItemStack postcard, String text)
+    {
+        postcard.setTagInfo("Text", StringNBT.valueOf(text));
         return postcard;
     }
 }

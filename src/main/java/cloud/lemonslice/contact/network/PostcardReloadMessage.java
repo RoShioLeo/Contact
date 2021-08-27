@@ -47,6 +47,6 @@ public class PostcardReloadMessage implements INormalMessage
     @Override
     public void process(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> PostcardHandler.POSTCARD_MANAGER.setPostcards(postcards));
+        supplier.get().enqueueWork(() -> PostcardHandler.POSTCARD_MANAGER.getPostcardsFromServer(postcards));
     }
 }

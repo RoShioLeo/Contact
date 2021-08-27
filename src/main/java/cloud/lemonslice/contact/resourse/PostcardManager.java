@@ -64,13 +64,19 @@ public final class PostcardManager extends JsonReloadListener
         }
     }
 
-    public void setPostcards(Map<ResourceLocation, PostcardStyle> postcards)
+    public void getPostcardsFromServer(Map<ResourceLocation, PostcardStyle> postcards)
     {
         this.postcards = postcards;
+        Contact.info("Reloaded %d postcard styles from server", postcards.size());
     }
 
     public Map<ResourceLocation, PostcardStyle> getPostcards()
     {
         return postcards;
+    }
+
+    public PostcardStyle getPostcard(ResourceLocation id)
+    {
+        return postcards.getOrDefault(id, PostcardStyle.DEFAULT);
     }
 }

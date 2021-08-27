@@ -41,7 +41,7 @@ public final class PostcardHandler
             throw new JsonSyntaxException("Missing postcard data, expected to find object");
 
         JsonObject postcardData = JSONUtils.getJsonObject(json, "postcard");
-        String cardID = JSONUtils.getString(postcardData, "id");
+        String cardTexture = JSONUtils.getString(postcardData, "texture");
         int cardWidth = JSONUtils.getInt(postcardData, "width");
         int cardHeight = JSONUtils.getInt(postcardData, "height");
 
@@ -68,7 +68,7 @@ public final class PostcardHandler
             }
         }
 
-        String postmarkID = "contact:postmark";
+        String postmarkTexture = "contact:postmark";
         int postmarkPosX = 142;
         int postmarkPosY = -5;
         int postmarkWidth = 64;
@@ -77,6 +77,7 @@ public final class PostcardHandler
         if (json.has("postmark"))
         {
             JsonObject postmarkData = JSONUtils.getJsonObject(json, "postmark");
+            postmarkTexture = JSONUtils.getString(postmarkData, "texture");
             postmarkPosX = JSONUtils.getInt(postmarkData, "x");
             postmarkPosY = JSONUtils.getInt(postmarkData, "y");
             postmarkWidth = JSONUtils.getInt(postmarkData, "width");
@@ -92,7 +93,7 @@ public final class PostcardHandler
             }
         }
 
-        return new PostcardStyle(cardID, cardWidth, cardHeight, textPosX, textPosY, textWidth, textHeight, textColor, postmarkID, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
+        return new PostcardStyle(cardTexture, cardWidth, cardHeight, textPosX, textPosY, textWidth, textHeight, textColor, postmarkTexture, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
     }
 
     public static PostcardStyle read(PacketBuffer buffer)
@@ -119,7 +120,7 @@ public final class PostcardHandler
 
     public static void write(PacketBuffer buffer, PostcardStyle style)
     {
-        buffer.writeString(style.cardID, 32767);
+        buffer.writeString(style.cardTexture, 32767);
         buffer.writeInt(style.cardWidth);
         buffer.writeInt(style.cardHeight);
         buffer.writeInt(style.textPosX);
@@ -127,7 +128,7 @@ public final class PostcardHandler
         buffer.writeInt(style.textWidth);
         buffer.writeInt(style.textHeight);
         buffer.writeInt(style.textColor);
-        buffer.writeString(style.postmarkID, 32767);
+        buffer.writeString(style.postmarkTexture, 32767);
         buffer.writeInt(style.postmarkPosX);
         buffer.writeInt(style.postmarkPosY);
         buffer.writeInt(style.postmarkWidth);
@@ -138,7 +139,7 @@ public final class PostcardHandler
     public static void serialize(JsonObject json, PostcardStyle style)
     {
         JsonObject postcardData = new JsonObject();
-        postcardData.addProperty("id", style.cardID);
+        postcardData.addProperty("texture", style.cardTexture);
         postcardData.addProperty("width", style.cardWidth);
         postcardData.addProperty("height", style.cardHeight);
         json.add("postcard", postcardData);
@@ -157,7 +158,7 @@ public final class PostcardHandler
         json.add("text", textData);
 
         JsonObject postmarkData = new JsonObject();
-        postmarkData.addProperty("id", style.postmarkID);
+        postmarkData.addProperty("texture", style.postmarkTexture);
         postmarkData.addProperty("x", style.postmarkPosX);
         postmarkData.addProperty("y", style.postmarkPosY);
         postmarkData.addProperty("width", style.postmarkWidth);

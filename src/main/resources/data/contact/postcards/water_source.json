@@ -1,6 +1,6 @@
 {
     "postcard": {
-        "id": "contact:water_source",
+        "texture": "contact:water_source",
         "width": 200,
         "height": 133
     },
@@ -17,7 +17,7 @@
         }
     },
     "postmark": {
-        "id": "contact:postmark",
+        "texture": "contact:postmark",
         "x": 142,
         "y": -5,
         "width": 64,
