@@ -1,8 +1,8 @@
-**Postcard Style Customization Tutorial**
+# 自定义明信片款式教程
 
-1. Create a new json file in datapack `data/modid/postcard`.
+1. 在数据包路径 `data/modid/postcard` 中，创建一个 JSON 文件。
 
-   For example, we create `creeper.json` in `data/contact/postcard`
+   例如，我们先在 `data/contact/postcard` 创建文件 `creeper.json`
 
 2. ```json
     {
@@ -39,12 +39,10 @@
     }
     ```
 
-   `postcard` is mandatory. `text`  `postmark` and `color` is optional, but if you write one of them, please to write
-   completely.
+   `postcard` 为必填项。`text`  `postmark` 和 `color` 为可选项，一旦写上，请务必将子项写完整。
 
-   if `texture` is `contact:creeper`, you need to put in the path `assets/contact/textures/postcard/creeper.png`
+   如果 `texture` 项为 `contact:creeper` 你需要将 `assets/contact/textures/postcard/creeper.png`
 
-   `color` is from `0` to `255`.
+   `color` 各项的数值范围为 `0` 到 `255`.
 
-3. Don't forget to create translation key of style in the lang file. For `creeper.json`, the key
-   was `tooltip.postcard.contact.creeper`
+3. 最后不要忘记给你的明信片款式加上本地化文件。对于 `creeper.json`，翻译键名为 `tooltip.postcard.contact.creeper`
