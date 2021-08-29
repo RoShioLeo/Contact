@@ -12,7 +12,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class PostcardStyleArgument extends ResourceLocationArgument
 {
 
-    private static final DynamicCommandExceptionType POSTCARD_STYLE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslationTextComponent("message.contact.command.style_not_found", name));
+    private static final DynamicCommandExceptionType POSTCARD_STYLE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslationTextComponent("command.contact.style_not_found", name));
 
     public static PostcardStyleArgument postcardStyle()
     {
