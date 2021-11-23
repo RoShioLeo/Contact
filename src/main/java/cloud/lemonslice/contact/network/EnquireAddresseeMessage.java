@@ -66,6 +66,30 @@ public class EnquireAddresseeMessage implements INormalMessage
             player.server.getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
                 String lowerIn = nameIn.toLowerCase(Locale.ROOT);
+                if (lowerIn.equals("@e") && player.server.getPermissionLevel(player.getGameProfile()) >= 2)
+                {
+                    if (shouldSend)
+                    {
+                        if (player.openContainer instanceof PostboxContainer)
+                        {
+                            PostboxContainer container = ((PostboxContainer) player.openContainer);
+                            ItemStack parcel = container.parcel.getStackInSlot(0).copy();
+                            parcel.getOrCreateTag().putString("Sender", player.getName().getString());
+                            for (UUID uuid : data.PLAYERS_DATA.nameToUUID.values())
+                            {
+                                data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel.copy(), 0));
+                            }
+                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                            container.parcel.setStackInSlot(0, ItemStack.EMPTY);
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, 0), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                        return;
+                    }
+                }
                 for (String name : data.PLAYERS_DATA.nameToUUID.keySet())
                 {
                     if (name.toLowerCase(Locale.ROOT).startsWith(lowerIn))

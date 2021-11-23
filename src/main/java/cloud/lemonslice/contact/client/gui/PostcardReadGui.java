@@ -1,37 +1,27 @@
 package cloud.lemonslice.contact.client.gui;
 
 import cloud.lemonslice.contact.resourse.PostcardStyle;
+import cloud.lemonslice.silveroak.client.widget.ReadOnlyTextBox;
 import cloud.lemonslice.silveroak.helper.ColorHelper;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.text.CharacterManager;
-import net.minecraft.util.text.Style;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableInt;
-
-import java.util.List;
+import net.minecraft.util.text.StringTextComponent;
 
 public class PostcardReadGui extends Screen
 {
-    private String page = "";
     private final PostcardStyle style;
-
-    private PostcardEditGui.Page currentPage = PostcardEditGui.Page.EMPTY;
+    private final ItemStack postcard;
+    private ReadOnlyTextBox textBox;
 
     public PostcardReadGui(ItemStack postcardIn)
     {
         super(NarratorChatListener.EMPTY);
+        this.postcard = postcardIn;
         CompoundNBT compoundnbt = postcardIn.getTag();
         if (compoundnbt != null)
         {
@@ -44,11 +34,6 @@ public class PostcardReadGui extends Screen
                 style = PostcardStyle.fromNBT(compoundnbt);
             }
             else style = PostcardStyle.DEFAULT;
-            INBT nbt = compoundnbt.get("Text");
-            if (nbt != null)
-            {
-                this.page = nbt.copy().getString();
-            }
         }
         else style = PostcardStyle.DEFAULT;
     }
@@ -72,43 +57,9 @@ public class PostcardReadGui extends Screen
     @Override
     protected void init()
     {
-        this.currentPage = this.createPage();
+        this.textBox = new ReadOnlyTextBox(postcard, (this.width - style.cardWidth) / 2 + style.textPosX, style.textPosY + (this.height - style.cardHeight) / 2, style.textWidth, style.textHeight, 12, style.textColor, new StringTextComponent("Postcard"));
     }
 
-    private PostcardEditGui.Page createPage()
-    {
-        if (page.isEmpty())
-        {
-            return PostcardEditGui.Page.EMPTY;
-        }
-        else
-        {
-            IntList intlist = new IntArrayList();
-            List<PostcardEditGui.Line> lines = Lists.newArrayList();
-            MutableInt mutableint = new MutableInt();
-            MutableBoolean mutableboolean = new MutableBoolean();
-            CharacterManager charactermanager = this.font.getCharacterManager();
-            charactermanager.func_238353_a_(page, style.textWidth, Style.EMPTY, true, (style, lineStartPos, lineEndPos) ->
-            {
-                int lineCount = mutableint.getAndIncrement();
-                String lineTextRaw = page.substring(lineStartPos, lineEndPos);
-                mutableboolean.setValue(lineTextRaw.endsWith("\n"));
-                String lineText = StringUtils.stripEnd(lineTextRaw, " \n");
-                int y = lineCount * 12;
-                PostcardEditGui.Point point = this.getScreenPoint(new PostcardEditGui.Point(0, y));
-                intlist.add(lineStartPos);
-                lines.add(new PostcardEditGui.Line(style, lineText, point.x, point.y));
-            });
-            int[] linesStartPos = intlist.toIntArray();
-
-            return new PostcardEditGui.Page(page, new PostcardEditGui.Point(0, 0), true, linesStartPos, lines.toArray(new PostcardEditGui.Line[0]), new Rectangle2d[0]);
-        }
-    }
-
-    private PostcardEditGui.Point getScreenPoint(PostcardEditGui.Point pointIn)
-    {
-        return new PostcardEditGui.Point(pointIn.x + (this.width - style.cardWidth) / 2 + style.textPosX, pointIn.y + style.textPosY + (this.height - style.cardHeight) / 2);
-    }
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
@@ -126,11 +77,7 @@ public class PostcardReadGui extends Screen
         blit(matrixStack, (this.width - style.cardWidth) / 2 + style.postmarkPosX, (this.height - style.cardHeight) / 2 + style.postmarkPosY, style.postmarkWidth, style.postmarkHeight, 0, 0, style.postmarkWidth, style.postmarkHeight, style.postmarkWidth, style.postmarkHeight);
         RenderSystem.disableBlend();
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        for (PostcardEditGui.Line line : currentPage.lines)
-        {
-            this.font.drawText(matrixStack, line.lineTextComponent, (float) line.x, (float) line.y, style.textColor);
-        }
+        textBox.render(matrixStack, mouseX, mouseY, partialTicks);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }

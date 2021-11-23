@@ -44,6 +44,7 @@ public final class Contact
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, NormalConfigs.SERVER_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, NormalConfigs.CLIENT_CONFIG);
+        cloud.lemonslice.silveroak.network.SimpleNetworkHandler.init();
         new BlockRegistry();
         new ItemRegistry();
         new TileEntityTypeRegistry();
