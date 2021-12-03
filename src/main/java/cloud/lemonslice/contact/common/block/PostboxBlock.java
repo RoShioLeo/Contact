@@ -44,48 +44,16 @@ import java.util.List;
 public class PostboxBlock extends NormalHorizontalBlock
 {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+    private static final Component CONTAINER_NAME = new TranslatableComponent("container.contact.postbox");
+    private final boolean isRed;
     public static final VoxelShape LOWER_SHAPE;
     public static final VoxelShape UPPER_SHAPE;
-    private static final Component CONTAINER_NAME = new TranslatableComponent("container.contact.postbox");
-
-    static
-    {
-        VoxelShape bottom = VoxelShapeHelper.createVoxelShape(1, 0, 1, 14, 9, 14);
-        VoxelShape pillarBottom = VoxelShapeHelper.createVoxelShape(2, 9, 2, 12, 7, 12);
-        VoxelShape pillarTop = VoxelShapeHelper.createVoxelShape(2, 0, 2, 12, 11, 12);
-        VoxelShape topBottom = VoxelShapeHelper.createVoxelShape(0, 11, 0, 16, 3, 16);
-        VoxelShape topTop = VoxelShapeHelper.createVoxelShape(3, 14, 3, 10, 2, 10);
-        LOWER_SHAPE = Shapes.or(bottom, pillarBottom);
-        UPPER_SHAPE = Shapes.or(pillarTop, topBottom, topTop);
-    }
-
-    private final boolean isRed;
 
     public PostboxBlock(boolean isRed)
     {
         super(Properties.of(Material.STONE).noOcclusion().sound(SoundType.STONE).strength(1.5F, 6.0F));
         this.isRed = isRed;
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.UPPER));
-    }
-
-    protected static void removeBottomHalf(Level world, BlockPos pos, BlockState state, Player player)
-    {
-        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
-        if (doubleblockhalf == DoubleBlockHalf.UPPER)
-        {
-            BlockPos blockpos = pos.below();
-            BlockState blockstate = world.getBlockState(blockpos);
-            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER)
-            {
-                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
-                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
-            }
-        }
-    }
-
-    public static MenuProvider getContainer(boolean isRed)
-    {
-        return new SimpleMenuProvider((id, inventory, player) -> new PostboxContainer(id, inventory, isRed), CONTAINER_NAME);
     }
 
     @Override
@@ -120,6 +88,21 @@ public class PostboxBlock extends NormalHorizontalBlock
         else
         {
             return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        }
+    }
+
+    protected static void removeBottomHalf(Level world, BlockPos pos, BlockState state, Player player)
+    {
+        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
+        if (doubleblockhalf == DoubleBlockHalf.UPPER)
+        {
+            BlockPos blockpos = pos.below();
+            BlockState blockstate = world.getBlockState(blockpos);
+            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER)
+            {
+                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
+            }
         }
     }
 
@@ -183,5 +166,21 @@ public class PostboxBlock extends NormalHorizontalBlock
         BlockPos blockpos = pos.below();
         BlockState blockstate = worldIn.getBlockState(blockpos);
         return state.getValue(HALF) == DoubleBlockHalf.LOWER ? blockstate.isFaceSturdy(worldIn, blockpos, Direction.UP) : blockstate.is(this);
+    }
+
+    public static MenuProvider getContainer(boolean isRed)
+    {
+        return new SimpleMenuProvider((id, inventory, player) -> new PostboxContainer(id, inventory, isRed), CONTAINER_NAME);
+    }
+
+    static
+    {
+        VoxelShape bottom = VoxelShapeHelper.createVoxelShape(1, 0, 1, 14, 9, 14);
+        VoxelShape pillarBottom = VoxelShapeHelper.createVoxelShape(2, 9, 2, 12, 7, 12);
+        VoxelShape pillarTop = VoxelShapeHelper.createVoxelShape(2, 0, 2, 12, 11, 12);
+        VoxelShape topBottom = VoxelShapeHelper.createVoxelShape(0, 11, 0, 16, 3, 16);
+        VoxelShape topTop = VoxelShapeHelper.createVoxelShape(3, 14, 3, 10, 2, 10);
+        LOWER_SHAPE = Shapes.or(bottom, pillarBottom);
+        UPPER_SHAPE = Shapes.or(pillarTop, topBottom, topTop);
     }
 }

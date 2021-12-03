@@ -31,8 +31,6 @@ import static cloud.lemonslice.contact.common.item.ItemRegistry.MAIL;
 @Mod("contact")
 public final class Contact
 {
-    public static final String MODID = "contact";
-    public static final CommonProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab("contact")
     {
         @Override
@@ -41,7 +39,9 @@ public final class Contact
             return new ItemStack(MAIL.get());
         }
     };
-    private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final String MODID = "contact";
+    public static final CommonProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
     public Contact()
     {
@@ -55,21 +55,6 @@ public final class Contact
         ItemRegistry.ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockEntityTypeRegistry.BLOCK_ENTITY_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         ContainerTypeRegistry.MENU_TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-
-    public static void error(String format, Object... data)
-    {
-        Contact.LOGGER.log(Level.ERROR, String.format(format, data));
-    }
-
-    public static void warn(String format, Object... data)
-    {
-        Contact.LOGGER.log(Level.WARN, String.format(format, data));
-    }
-
-    public static void info(String format, Object... data)
-    {
-        Contact.LOGGER.log(Level.INFO, String.format(format, data));
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -89,5 +74,21 @@ public final class Contact
     public void onCommandRegister(RegisterCommandsEvent event)
     {
         ContactCommand.register(event.getDispatcher());
+    }
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public static void error(String format, Object... data)
+    {
+        Contact.LOGGER.log(Level.ERROR, String.format(format, data));
+    }
+
+    public static void warn(String format, Object... data)
+    {
+        Contact.LOGGER.log(Level.WARN, String.format(format, data));
+    }
+
+    public static void info(String format, Object... data)
+    {
+        Contact.LOGGER.log(Level.INFO, String.format(format, data));
     }
 }

@@ -41,6 +41,18 @@ public class PostcardStyle
         this.postmarkColor = postmarkColor;
     }
 
+    public ResourceLocation getCardTexture()
+    {
+        ResourceLocation origin = new ResourceLocation(cardTexture);
+        return new ResourceLocation(origin.getNamespace(), "textures/postcard/" + origin.getPath() + ".png");
+    }
+
+    public ResourceLocation getPostmarkTexture()
+    {
+        ResourceLocation origin = new ResourceLocation(postmarkTexture);
+        return new ResourceLocation(origin.getNamespace(), "textures/postcard/" + origin.getPath() + ".png");
+    }
+
     public static PostcardStyle fromNBT(CompoundTag nbt)
     {
         if (nbt.contains("Info"))
@@ -60,17 +72,5 @@ public class PostcardStyle
             return PostcardHandler.POSTCARD_MANAGER.getPostcards().getOrDefault(cardID, DEFAULT);
         }
         else return DEFAULT;
-    }
-
-    public ResourceLocation getCardTexture()
-    {
-        ResourceLocation origin = new ResourceLocation(cardTexture);
-        return new ResourceLocation(origin.getNamespace(), "textures/postcard/" + origin.getPath() + ".png");
-    }
-
-    public ResourceLocation getPostmarkTexture()
-    {
-        ResourceLocation origin = new ResourceLocation(postmarkTexture);
-        return new ResourceLocation(origin.getNamespace(), "textures/postcard/" + origin.getPath() + ".png");
     }
 }

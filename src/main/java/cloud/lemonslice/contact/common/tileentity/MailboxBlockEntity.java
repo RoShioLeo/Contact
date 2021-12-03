@@ -30,42 +30,6 @@ public class MailboxBlockEntity extends BlockEntity
         super(MAILBOX_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
     }
 
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MailboxBlockEntity pBlockEntity)
-    {
-        if (!pLevel.isClientSide)
-        {
-            if (pBlockEntity.refreshTicks >= 0)
-            {
-                pBlockEntity.refreshTicks--;
-            }
-            if (pBlockEntity.needRefresh || pBlockEntity.refreshTicks == 0)
-            {
-                pBlockEntity.refreshStatus();
-                BlockState down = pLevel.getBlockState(pPos.below());
-                if (down.getBlock() instanceof MailboxBlock && down.getValue(OPEN) != pBlockEntity.isOpened)
-                {
-                    pLevel.setBlockAndUpdate(pPos.below(), down.setValue(OPEN, pBlockEntity.isOpened));
-                    pBlockEntity.needRefresh = false;
-                }
-                else
-                {
-                    pBlockEntity.needRefresh = false;
-                    return;
-                }
-
-                if (pState.getBlock() instanceof MailboxBlock)
-                {
-                    pLevel.setBlockAndUpdate(pPos, pState.setValue(OPEN, pBlockEntity.isOpened));
-                }
-            }
-        }
-        else if (pBlockEntity.isOpened)
-        {
-            pBlockEntity.angel++;
-            pBlockEntity.angel %= 40;
-        }
-    }
-
     @Override
     public CompoundTag getUpdateTag()
     {
@@ -106,6 +70,42 @@ public class MailboxBlockEntity extends BlockEntity
                     refresh();
                 }
             });
+        }
+    }
+
+    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, MailboxBlockEntity pBlockEntity)
+    {
+        if (!pLevel.isClientSide)
+        {
+            if (pBlockEntity.refreshTicks >= 0)
+            {
+                pBlockEntity.refreshTicks--;
+            }
+            if (pBlockEntity.needRefresh || pBlockEntity.refreshTicks == 0)
+            {
+                pBlockEntity.refreshStatus();
+                BlockState down = pLevel.getBlockState(pPos.below());
+                if (down.getBlock() instanceof MailboxBlock && down.getValue(OPEN) != pBlockEntity.isOpened)
+                {
+                    pLevel.setBlockAndUpdate(pPos.below(), down.setValue(OPEN, pBlockEntity.isOpened));
+                    pBlockEntity.needRefresh = false;
+                }
+                else
+                {
+                    pBlockEntity.needRefresh = false;
+                    return;
+                }
+
+                if (pState.getBlock() instanceof MailboxBlock)
+                {
+                    pLevel.setBlockAndUpdate(pPos, pState.setValue(OPEN, pBlockEntity.isOpened));
+                }
+            }
+        }
+        else if (pBlockEntity.isOpened)
+        {
+            pBlockEntity.angel++;
+            pBlockEntity.angel %= 40;
         }
     }
 

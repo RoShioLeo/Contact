@@ -18,9 +18,9 @@ import static cloud.lemonslice.contact.common.container.ContainerTypeRegistry.WR
 public class WrappingPaperContainer extends AbstractContainerMenu
 {
     public final ItemStackHandler inputs = new ItemStackHandler(4);
-    private final boolean isEnder;
     public boolean isPacked = false;
     public boolean droppedPaper = false;
+    private final boolean isEnder;
 
     public WrappingPaperContainer(int id, Inventory inv, boolean isEnder)
     {

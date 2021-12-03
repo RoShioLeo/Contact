@@ -24,11 +24,6 @@ public class WrappingPaperItem extends NormalItem
         super(Contact.ITEM_GROUP);
     }
 
-    public static MenuProvider getContainer(boolean isEnder)
-    {
-        return new SimpleMenuProvider((id, inventory, player) -> new WrappingPaperContainer(id, inventory, isEnder), CONTAINER_NAME);
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn)
     {
@@ -42,5 +37,10 @@ public class WrappingPaperItem extends NormalItem
             }
         }
         return InteractionResultHolder.consume(itemStack);
+    }
+
+    public static MenuProvider getContainer(boolean isEnder)
+    {
+        return new SimpleMenuProvider((id, inventory, player) -> new WrappingPaperContainer(id, inventory, isEnder), CONTAINER_NAME);
     }
 }

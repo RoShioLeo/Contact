@@ -60,19 +60,11 @@ public class MailboxBlock extends NormalHorizontalBlock implements EntityBlock
 {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
+    public final DyeColor boxColor;
+    public final DyeColor flagColor;
     public static final VoxelShape LOWER_SHAPE;
     public static final VoxelShape UPPER_SHAPE_NORTH;
     public static final VoxelShape UPPER_SHAPE_EAST;
-
-    static
-    {
-        LOWER_SHAPE = VoxelShapeHelper.createVoxelShape(7, 0, 7, 2, 16, 2);
-        UPPER_SHAPE_NORTH = VoxelShapeHelper.createVoxelShape(3, 0, 1, 10, 9, 14);
-        UPPER_SHAPE_EAST = VoxelShapeHelper.createVoxelShape(1, 0, 3, 14, 9, 10);
-    }
-
-    public final DyeColor boxColor;
-    public final DyeColor flagColor;
 
     public MailboxBlock(DyeColor boxColor, DyeColor flagColor)
     {
@@ -85,26 +77,6 @@ public class MailboxBlock extends NormalHorizontalBlock implements EntityBlock
     public MailboxBlock(DyeColor boxColor)
     {
         this(boxColor, DyeColor.RED);
-    }
-
-    protected static void removeBottomHalf(Level world, BlockPos pos, BlockState state, Player player)
-    {
-        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
-        if (doubleblockhalf == DoubleBlockHalf.UPPER)
-        {
-            BlockPos blockpos = pos.below();
-            BlockState blockstate = world.getBlockState(blockpos);
-            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER)
-            {
-                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
-                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
-            }
-        }
-    }
-
-    @Nullable
-    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> blockEntityType, BlockEntityTicker<? super E> entityTicker) {
-        return MAILBOX_BLOCK_ENTITY.get() == blockEntityType ? (BlockEntityTicker<A>)entityTicker : null;
     }
 
     @Override
@@ -153,6 +125,21 @@ public class MailboxBlock extends NormalHorizontalBlock implements EntityBlock
         else
         {
             return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        }
+    }
+
+    protected static void removeBottomHalf(Level world, BlockPos pos, BlockState state, Player player)
+    {
+        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
+        if (doubleblockhalf == DoubleBlockHalf.UPPER)
+        {
+            BlockPos blockpos = pos.below();
+            BlockState blockstate = world.getBlockState(blockpos);
+            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER)
+            {
+                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
+            }
         }
     }
 
@@ -316,6 +303,12 @@ public class MailboxBlock extends NormalHorizontalBlock implements EntityBlock
         return createTickerHelper(pBlockEntityType, MailboxBlockEntity::tick);
     }
 
+    @Nullable
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> blockEntityType, BlockEntityTicker<? super E> entityTicker)
+    {
+        return MAILBOX_BLOCK_ENTITY.get() == blockEntityType ? (BlockEntityTicker<A>) entityTicker : null;
+    }
+
     @Override
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
@@ -328,5 +321,12 @@ public class MailboxBlock extends NormalHorizontalBlock implements EntityBlock
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState)
     {
         return MAILBOX_BLOCK_ENTITY.get().create(pPos, pState);
+    }
+
+    static
+    {
+        LOWER_SHAPE = VoxelShapeHelper.createVoxelShape(7, 0, 7, 2, 16, 2);
+        UPPER_SHAPE_NORTH = VoxelShapeHelper.createVoxelShape(3, 0, 1, 10, 9, 14);
+        UPPER_SHAPE_EAST = VoxelShapeHelper.createVoxelShape(1, 0, 3, 14, 9, 10);
     }
 }

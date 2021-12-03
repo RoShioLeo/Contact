@@ -30,9 +30,10 @@ public class PlayerMailboxData
 {
     public final Map<String, UUID> nameToUUID = Maps.newHashMap();
     public final Map<UUID, ItemStackHandler> uuidToContents = Maps.newHashMap();
-    public final List<MailToBeSent> mailList = Lists.newArrayList();
     private final Map<UUID, GlobalPos> uuidToLocation = Maps.newHashMap();
     private final Map<GlobalPos, UUID> locationToPlayer = Maps.newHashMap();
+
+    public final List<MailToBeSent> mailList = Lists.newArrayList();
 
     public ItemStackHandler getMailboxContents(UUID uuid)
     {

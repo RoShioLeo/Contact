@@ -28,11 +28,6 @@ public final class AdvancementProvider implements DataProvider
         this.generator = generatorIn;
     }
 
-    private static Path getPath(Path pathIn, Advancement advancementIn)
-    {
-        return pathIn.resolve("data/" + advancementIn.getId().getNamespace() + "/advancements/" + advancementIn.getId().getPath() + ".json");
-    }
-
     @Override
     public void run(HashCache cache)
     {
@@ -64,6 +59,11 @@ public final class AdvancementProvider implements DataProvider
         {
             consumer1.accept(consumer);
         }
+    }
+
+    private static Path getPath(Path pathIn, Advancement advancementIn)
+    {
+        return pathIn.resolve("data/" + advancementIn.getId().getNamespace() + "/advancements/" + advancementIn.getId().getPath() + ".json");
     }
 
     @Override

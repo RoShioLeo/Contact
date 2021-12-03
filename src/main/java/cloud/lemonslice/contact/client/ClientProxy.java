@@ -25,6 +25,18 @@ import static cloud.lemonslice.contact.common.block.BlockRegistry.*;
 public class ClientProxy extends CommonProxy
 {
 
+    @Override
+    public Level getClientWorld()
+    {
+        return Minecraft.getInstance().level;
+    }
+
+    @Override
+    public Player getClientPlayer()
+    {
+        return Minecraft.getInstance().player;
+    }
+
     public static void registerRenderType()
     {
         registerCutoutType(ORANGE_MAILBOX.get(), MAGENTA_MAILBOX.get(), LIGHT_BLUE_MAILBOX.get(), YELLOW_MAILBOX.get(),
@@ -59,17 +71,5 @@ public class ClientProxy extends CommonProxy
         {
             ctx.enqueueWork(() -> Minecraft.getInstance().getToasts().addToast(new NewMailToast()));
         }
-    }
-
-    @Override
-    public Level getClientWorld()
-    {
-        return Minecraft.getInstance().level;
-    }
-
-    @Override
-    public Player getClientPlayer()
-    {
-        return Minecraft.getInstance().player;
     }
 }

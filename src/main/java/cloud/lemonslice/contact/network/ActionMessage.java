@@ -24,18 +24,6 @@ public class ActionMessage implements INormalMessage
         this.action = buf.readInt();
     }
 
-    private static void packParcel(NetworkEvent.Context ctx, ServerPlayer player)
-    {
-        ctx.enqueueWork(() ->
-        {
-            if (player.containerMenu instanceof WrappingPaperContainer)
-            {
-                ((WrappingPaperContainer) player.containerMenu).isPacked = true;
-                player.closeContainer();
-            }
-        });
-    }
-
     @Override
     public void toBytes(FriendlyByteBuf packetBuffer)
     {
@@ -66,5 +54,17 @@ public class ActionMessage implements INormalMessage
                 packParcel(ctx, player);
             }
         }
+    }
+
+    private static void packParcel(NetworkEvent.Context ctx, ServerPlayer player)
+    {
+        ctx.enqueueWork(() ->
+        {
+            if (player.containerMenu instanceof WrappingPaperContainer)
+            {
+                ((WrappingPaperContainer) player.containerMenu).isPacked = true;
+                player.closeContainer();
+            }
+        });
     }
 }

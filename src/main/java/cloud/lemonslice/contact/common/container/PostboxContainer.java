@@ -18,7 +18,7 @@ import static cloud.lemonslice.contact.common.container.ContainerTypeRegistry.RE
 
 public class PostboxContainer extends AbstractContainerMenu
 {
-    public byte status = 0; // 0 for parcel-waiting, 1 for addressee-waiting, 2 for send-ready, 3 for not-found, 4 for full-mailbox, 5 for successful    public final ItemStackHandler parcel = new ItemStackHandler()
+    public final ItemStackHandler parcel = new ItemStackHandler()
     {
         @Override
         protected void onContentsChanged(int slot)
@@ -33,8 +33,10 @@ public class PostboxContainer extends AbstractContainerMenu
             }
         }
     };
+    public byte status = 0; // 0 for parcel-waiting, 1 for addressee-waiting, 2 for send-ready, 3 for not-found, 4 for full-mailbox, 5 for successful
     public int time = 0;
     public String playerName = "";
+
     public PostboxContainer(int id, Inventory inv, boolean isRed)
     {
         super(isRed ? RED_POSTBOX_CONTAINER.get() : GREEN_POSTBOX_CONTAINER.get(), id);
@@ -137,6 +139,4 @@ public class PostboxContainer extends AbstractContainerMenu
         Item mail = parcel.getStackInSlot(0).getItem();
         return mail instanceof IMailItem && ((IMailItem) mail).isEnderType();
     }
-
-
 }

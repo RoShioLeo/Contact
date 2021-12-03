@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class MailToBeSent
 {
-    private final ItemStackHandler contents;
     private UUID uuid;
+    private final ItemStackHandler contents;
     private long ticks;
 
     public MailToBeSent(CompoundTag nbt)

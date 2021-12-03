@@ -17,11 +17,11 @@ import net.minecraft.world.item.ItemStack;
 public class PostcardEditGui extends Screen
 {
     private final PostcardStyle style;
+    private EditableTextBox textBox;
+    private Button buttonDone;
     private final ItemStack postcard;
     private final Player editingPlayer;
     private final InteractionHand hand;
-    private EditableTextBox textBox;
-    private Button buttonDone;
 
     public PostcardEditGui(ItemStack postcardIn, Player playerIn, InteractionHand handIn)
     {

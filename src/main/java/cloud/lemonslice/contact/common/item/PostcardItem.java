@@ -41,21 +41,6 @@ public class PostcardItem extends NormalItem implements IMailItem
 //        return stack.getOrCreateTag().contains("Sender");
 //    }
 
-    public static ItemStack getPostcard(ResourceLocation id, boolean isEnderType)
-    {
-        ItemStack postcard = new ItemStack(isEnderType ? ItemRegistry.ENDER_POSTCARD.get() : ItemRegistry.POSTCARD.get());
-        CompoundTag nbt = new CompoundTag();
-        nbt.putString("CardID", id.toString());
-        postcard.setTag(nbt);
-        return postcard;
-    }
-
-    public static ItemStack setText(ItemStack postcard, String text)
-    {
-        postcard.addTagElement("Text", StringTag.valueOf(text));
-        return postcard;
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn)
     {
@@ -108,5 +93,20 @@ public class PostcardItem extends NormalItem implements IMailItem
     public boolean isEnderType()
     {
         return isEnderType;
+    }
+
+    public static ItemStack getPostcard(ResourceLocation id, boolean isEnderType)
+    {
+        ItemStack postcard = new ItemStack(isEnderType ? ItemRegistry.ENDER_POSTCARD.get() : ItemRegistry.POSTCARD.get());
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString("CardID", id.toString());
+        postcard.setTag(nbt);
+        return postcard;
+    }
+
+    public static ItemStack setText(ItemStack postcard, String text)
+    {
+        postcard.addTagElement("Text", StringTag.valueOf(text));
+        return postcard;
     }
 }
