@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "[38,)"
+license = "BSD-3-Clause License for Code"
+# issueTrackerURL="http://my.issue.tracker/" #optional
+[[mods]]
+modId = "contact"
+version = "${version}"
+displayName = "Contact"
+# updateJSONURL="http://myurl.me/"
+# displayURL="http://example.com/"
+logoFile = "logo.png"
+credits = "Lemon Slice Studio"
+authors = "RoitoLeo, Gloridifice, MalayP"
+description = '''This is a mod that provides postal service.'''
+[[dependencies.contact]]
+modId = "forge"
+mandatory = true
+versionRange = "[38,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.contact]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18,1.19)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.contact]]
+modId = "silveroakoutpost"
+mandatory = true
+versionRange = "[1.0.9-Alpha,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "texture": "contact:tea_sorcerer",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 10,
+        "y": 14,
+        "width": 180,
+        "height": 108,
+        "color": {
+            "alpha": 255,
+            "red": 70,
+            "green": 69,
+            "blue": 71
+        }
+    },
+    "postmark": {
+        "texture": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 160,
+            "red": 110,
+            "green": 107,
+            "blue": 65
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "texture": "contact:autumn_dusk",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 10,
+        "y": 12,
+        "width": 180,
+        "height": 96,
+        "color": {
+            "alpha": 255,
+            "red": 183,
+            "green": 111,
+            "blue": 64
+        }
+    },
+    "postmark": {
+        "texture": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 120,
+            "red": 182,
+            "green": 153,
+            "blue": 104
+        }
+    }
+}

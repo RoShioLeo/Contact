@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "texture": "contact:spring_day",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 10,
+        "y": 12,
+        "width": 180,
+        "height": 96,
+        "color": {
+            "alpha": 255,
+            "red": 123,
+            "green": 191,
+            "blue": 234
+        }
+    },
+    "postmark": {
+        "texture": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 120,
+            "red": 0,
+            "green": 166,
+            "blue": 172
+        }
+    }
+}

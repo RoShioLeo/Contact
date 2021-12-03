@@ -1,0 +1,32 @@
+{
+    "postcard": {
+        "texture": "contact:summer_night",
+        "width": 200,
+        "height": 133
+    },
+    "text": {
+        "x": 10,
+        "y": 12,
+        "width": 180,
+        "height": 96,
+        "color": {
+            "alpha": 255,
+            "red": 211,
+            "green": 215,
+            "blue": 212
+        }
+    },
+    "postmark": {
+        "texture": "contact:postmark",
+        "x": 142,
+        "y": -5,
+        "width": 64,
+        "height": 52,
+        "color": {
+            "alpha": 120,
+            "red": 153,
+            "green": 157,
+            "blue": 156
+        }
+    }
+}
