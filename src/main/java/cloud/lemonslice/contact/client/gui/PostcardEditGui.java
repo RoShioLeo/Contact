@@ -50,7 +50,7 @@ public class PostcardEditGui extends Screen
     {
         this.buttonDone = this.addButton(new Button(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20, 98, 20, DialogTexts.GUI_DONE, (button) ->
         {
-            this.minecraft.displayGuiScreen(null);
+            this.minecraft.setScreen(null);
             textBox.sendTextToServer();
         }));
         this.children.add(buttonDone);
@@ -61,7 +61,7 @@ public class PostcardEditGui extends Screen
         this.children.add(textBox);
         this.textBox.shouldRefresh();
 
-        this.setFocusedDefault(textBox);
+        this.setInitialFocus(textBox);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PostcardEditGui extends Screen
     }
 
     @Override
-    public void onClose()
+    public void removed()
     {
         textBox.onClose();
     }
@@ -83,7 +83,7 @@ public class PostcardEditGui extends Screen
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        minecraft.getTextureManager().bindTexture(style.getCardTexture());
+        minecraft.getTextureManager().bind(style.getCardTexture());
         blit(matrixStack, (this.width - style.cardWidth) / 2, this.height / 2 - style.cardHeight * 2 / 3, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
 
         textBox.render(matrixStack, mouseX, mouseY, partialTicks);

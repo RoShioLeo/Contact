@@ -28,7 +28,7 @@ public final class CapabilityRegistry
     @SubscribeEvent
     public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event)
     {
-        if (event.getObject().getDimensionKey() == World.OVERWORLD)
+        if (event.getObject().dimension() == World.OVERWORLD)
         {
             event.addCapability(new ResourceLocation(MODID, "players_data"), new CapabilityWorldPlayerMailboxData.Provider());
         }

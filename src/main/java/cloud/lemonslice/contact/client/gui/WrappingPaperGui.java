@@ -28,15 +28,15 @@ public class WrappingPaperGui extends ContainerScreen<WrappingPaperContainer>
     public WrappingPaperGui(WrappingPaperContainer screenContainer, PlayerInventory inv, ITextComponent titleIn)
     {
         super(screenContainer, inv, titleIn);
-        this.ySize = 133;
+        this.imageHeight = 133;
     }
 
     @Override
     protected void init()
     {
         super.init();
-        this.offsetX = (this.width - this.xSize) / 2;
-        this.offsetY = (this.height - this.ySize) / 2;
+        this.offsetX = (this.width - this.imageWidth) / 2;
+        this.offsetY = (this.height - this.imageHeight) / 2;
 
         this.buttonPack = new IconButton(offsetX + 124, offsetY + 15, 18, 19, new TranslationTextComponent("tooltip.contact.wrapping_paper.pack"), button -> pack(), this::buttonTooltip);
         this.children.add(this.buttonPack);
@@ -60,23 +60,23 @@ public class WrappingPaperGui extends ContainerScreen<WrappingPaperContainer>
     {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y)
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, TEXTURE, new TexturePos(0, 0, xSize, ySize));
+        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, TEXTURE, new TexturePos(0, 0, imageWidth, imageHeight));
 
         GuiHelper.renderButton(matrixStack, partialTicks, x, y, TEXTURE, buttonPack,
-                new TexturePos(xSize, 0, 18, 19),
-                new TexturePos(xSize, 19, 18, 19));
+                new TexturePos(imageWidth, 0, 18, 19),
+                new TexturePos(imageWidth, 19, 18, 19));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
     }
 }

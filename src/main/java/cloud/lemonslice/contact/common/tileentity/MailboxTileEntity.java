@@ -35,44 +35,44 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        this.load(this.getBlockState(), pkt.getTag());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        CompoundNBT nbtTag = this.write(new CompoundNBT());
-        return new SUpdateTileEntityPacket(getPos(), 1, nbtTag);
+        CompoundNBT nbtTag = this.save(new CompoundNBT());
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, nbtTag);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag)
+    public void load(BlockState state, CompoundNBT tag)
     {
-        super.read(state, tag);
+        super.load(state, tag);
         isOpened = tag.getBoolean("IsOpened");
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag)
+    public CompoundNBT save(CompoundNBT tag)
     {
         tag.putBoolean("IsOpened", isOpened);
-        return super.write(tag);
+        return super.save(tag);
     }
 
     public void refreshStatus()
     {
-        if (!world.isRemote)
+        if (!level.isClientSide)
         {
-            world.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            level.getServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
-                boolean now = !data.PLAYERS_DATA.isMailboxEmpty(data.PLAYERS_DATA.getMailboxOwner(world.getDimensionKey(), pos));
+                boolean now = !data.PLAYERS_DATA.isMailboxEmpty(data.PLAYERS_DATA.getMailboxOwner(level.dimension(), worldPosition));
                 if (now != isOpened)
                 {
                     needRefresh = true;
@@ -86,7 +86,7 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public void tick()
     {
-        if (!world.isRemote)
+        if (!level.isClientSide)
         {
             if (refreshTicks >= 0)
             {
@@ -95,10 +95,10 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
             if (needRefresh || refreshTicks == 0)
             {
                 refreshStatus();
-                BlockState down = world.getBlockState(pos.down());
-                if (down.getBlock() instanceof MailboxBlock && down.get(OPEN) != isOpened)
+                BlockState down = level.getBlockState(worldPosition.below());
+                if (down.getBlock() instanceof MailboxBlock && down.getValue(OPEN) != isOpened)
                 {
-                    world.setBlockState(pos.down(), down.with(OPEN, isOpened));
+                    level.setBlockAndUpdate(worldPosition.below(), down.setValue(OPEN, isOpened));
                     needRefresh = false;
                 }
                 else
@@ -107,10 +107,10 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
                     return;
                 }
 
-                updateContainingBlockInfo();
+                clearCache();
                 if (getBlockState().getBlock() instanceof MailboxBlock)
                 {
-                    world.setBlockState(pos, getBlockState().with(OPEN, isOpened));
+                    level.setBlockAndUpdate(worldPosition, getBlockState().setValue(OPEN, isOpened));
                 }
             }
         }
@@ -123,13 +123,13 @@ public class MailboxTileEntity extends TileEntity implements ITickableTileEntity
 
     private void refresh()
     {
-        if (this.hasWorld() && !this.world.isRemote)
+        if (this.hasLevel() && !this.level.isClientSide)
         {
             SUpdateTileEntityPacket packet = this.getUpdatePacket();
-            Stream<ServerPlayerEntity> playerEntity = ((ServerWorld) this.world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(this.pos.getX() >> 4, this.pos.getZ() >> 4), false);
+            Stream<ServerPlayerEntity> playerEntity = ((ServerWorld) this.level).getChunkSource().chunkMap.getPlayers(new ChunkPos(this.worldPosition.getX() >> 4, this.worldPosition.getZ() >> 4), false);
             for (ServerPlayerEntity player : playerEntity.collect(Collectors.toList()))
             {
-                player.connection.sendPacket(packet);
+                player.connection.send(packet);
             }
         }
     }

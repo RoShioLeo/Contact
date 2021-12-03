@@ -1,7 +1,7 @@
 package cloud.lemonslice.contact.common.container;
 
+import cloud.lemonslice.contact.common.config.ServerConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
-import cloud.lemonslice.contact.common.item.ParcelItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -31,9 +31,9 @@ public class WrappingPaperContainer extends Container
             addSlot(new SlotItemHandler(inputs, i, 35 + 20 * i, 16)
             {
                 @Override
-                public boolean isItemValid(@Nonnull ItemStack stack)
+                public boolean mayPlace(@Nonnull ItemStack stack)
                 {
-                    return !(stack.getItem() instanceof ParcelItem);
+                    return !ServerConfig.Mail.blacklist.get().contains(stack.getItem().getRegistryName().toString());
                 }
             });
         }
@@ -53,16 +53,16 @@ public class WrappingPaperContainer extends Container
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if (slot == null || !slot.getHasStack())
+        if (slot == null || !slot.hasItem())
         {
             return ItemStack.EMPTY;
         }
 
-        ItemStack newStack = slot.getStack(), oldStack = newStack.copy();
+        ItemStack newStack = slot.getItem(), oldStack = newStack.copy();
 
         boolean isMerged;
 
@@ -70,17 +70,17 @@ public class WrappingPaperContainer extends Container
 
         if (index < 4)
         {
-            isMerged = mergeItemStack(newStack, 31, 40, true)
-                    || mergeItemStack(newStack, 4, 31, false);
+            isMerged = moveItemStackTo(newStack, 31, 40, true)
+                    || moveItemStackTo(newStack, 4, 31, false);
         }
         else if (index < 31)
         {
-            isMerged = mergeItemStack(newStack, 0, 4, false)
-                    || mergeItemStack(newStack, 31, 40, true);
+            isMerged = moveItemStackTo(newStack, 0, 4, false)
+                    || moveItemStackTo(newStack, 31, 40, true);
         }
         else
         {
-            isMerged = mergeItemStack(newStack, 0, 31, false);
+            isMerged = moveItemStackTo(newStack, 0, 31, false);
         }
 
         if (!isMerged)
@@ -90,11 +90,11 @@ public class WrappingPaperContainer extends Container
 
         if (newStack.getCount() == 0)
         {
-            slot.putStack(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         }
         else
         {
-            slot.onSlotChanged();
+            slot.setChanged();
         }
 
         slot.onTake(playerIn, newStack);
@@ -103,7 +103,7 @@ public class WrappingPaperContainer extends Container
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn)
+    public void removed(PlayerEntity playerIn)
     {
         if (!isPacked)
         {
@@ -111,13 +111,13 @@ public class WrappingPaperContainer extends Container
             {
                 for (int j = 0; j < 4; ++j)
                 {
-                    playerIn.dropItem(inputs.getStackInSlot(j), false);
+                    playerIn.drop(inputs.getStackInSlot(j), false);
                     inputs.setStackInSlot(j, ItemStack.EMPTY);
                 }
 
-                if (!playerIn.abilities.isCreativeMode && !droppedPaper)
+                if (!playerIn.abilities.instabuild && !droppedPaper)
                 {
-                    playerIn.dropItem(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER), false);
+                    playerIn.drop(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER), false);
                     droppedPaper = true;
                 }
             }
@@ -125,13 +125,13 @@ public class WrappingPaperContainer extends Container
             {
                 for (int i = 0; i < 4; ++i)
                 {
-                    playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), inputs.getStackInSlot(i));
+                    playerIn.inventory.placeItemBackInInventory(playerIn.getCommandSenderWorld(), inputs.getStackInSlot(i));
                     inputs.setStackInSlot(i, ItemStack.EMPTY);
                 }
 
-                if (!playerIn.abilities.isCreativeMode && !droppedPaper)
+                if (!playerIn.abilities.instabuild && !droppedPaper)
                 {
-                    playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER));
+                    playerIn.inventory.placeItemBackInInventory(playerIn.getCommandSenderWorld(), isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER) : new ItemStack(ItemRegistry.WRAPPING_PAPER));
                     droppedPaper = true;
                 }
             }
@@ -142,17 +142,17 @@ public class WrappingPaperContainer extends Container
             parcel.setTag(inputs.serializeNBT());
             if (!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity) playerIn).hasDisconnected())
             {
-                playerIn.dropItem(parcel, false);
+                playerIn.drop(parcel, false);
             }
             else
             {
-                playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), parcel);
+                playerIn.inventory.placeItemBackInInventory(playerIn.getCommandSenderWorld(), parcel);
             }
         }
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
     }

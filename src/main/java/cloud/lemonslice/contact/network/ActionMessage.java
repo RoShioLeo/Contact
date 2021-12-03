@@ -60,10 +60,10 @@ public class ActionMessage implements INormalMessage
     {
         ctx.enqueueWork(() ->
         {
-            if (player.openContainer instanceof WrappingPaperContainer)
+            if (player.containerMenu instanceof WrappingPaperContainer)
             {
-                ((WrappingPaperContainer) player.openContainer).isPacked = true;
-                player.closeScreen();
+                ((WrappingPaperContainer) player.containerMenu).isPacked = true;
+                player.closeContainer();
             }
         });
     }

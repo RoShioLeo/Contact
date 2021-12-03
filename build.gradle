@@ -1,16 +1,18 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 version = "${mod_version}-${mod_phase}"
 group = 'cloud.lemonslice.contact'
@@ -95,7 +97,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compile fg.deobf("cloud.lemonslice.silveroak:SilveroakOutpost-Forge-1.16.5:0.4.5-Alpha")
+    compileOnly fg.deobf("cloud.lemonslice.silveroak:SilveroakOutpost-Forge-1.16.5:0.4.5-Alpha")
 }
 
 jar {

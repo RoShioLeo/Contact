@@ -25,18 +25,18 @@ public class WrappingPaperItem extends NormalItem
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack itemStack = playerIn.getHeldItem(handIn);
-        if (!worldIn.isRemote)
+        ItemStack itemStack = playerIn.getItemInHand(handIn);
+        if (!worldIn.isClientSide)
         {
             NetworkHooks.openGui((ServerPlayerEntity) playerIn, getContainer(itemStack.getItem() == ItemRegistry.ENDER_WRAPPING_PAPER));
-            if (!playerIn.abilities.isCreativeMode)
+            if (!playerIn.abilities.instabuild)
             {
                 itemStack.shrink(1);
             }
         }
-        return ActionResult.resultConsume(itemStack);
+        return ActionResult.consume(itemStack);
     }
 
     public static INamedContainerProvider getContainer(boolean isEnder)

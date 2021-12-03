@@ -43,7 +43,7 @@ public class PostboxContainer extends Container
         addSlot(new SlotItemHandler(parcel, 0, 16, 17)
         {
             @Override
-            public boolean isItemValid(@Nonnull ItemStack stack)
+            public boolean mayPlace(@Nonnull ItemStack stack)
             {
                 return stack.getItem() instanceof IMailItem;
             }
@@ -64,16 +64,16 @@ public class PostboxContainer extends Container
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if (slot == null || !slot.getHasStack())
+        if (slot == null || !slot.hasItem())
         {
             return ItemStack.EMPTY;
         }
 
-        ItemStack newStack = slot.getStack(), oldStack = newStack.copy();
+        ItemStack newStack = slot.getItem(), oldStack = newStack.copy();
 
         boolean isMerged;
 
@@ -81,17 +81,17 @@ public class PostboxContainer extends Container
 
         if (index == 0)
         {
-            isMerged = mergeItemStack(newStack, 28, 37, true)
-                    || mergeItemStack(newStack, 1, 28, false);
+            isMerged = moveItemStackTo(newStack, 28, 37, true)
+                    || moveItemStackTo(newStack, 1, 28, false);
         }
         else if (index < 28)
         {
-            isMerged = mergeItemStack(newStack, 0, 1, false)
-                    || mergeItemStack(newStack, 28, 37, true);
+            isMerged = moveItemStackTo(newStack, 0, 1, false)
+                    || moveItemStackTo(newStack, 28, 37, true);
         }
         else
         {
-            isMerged = mergeItemStack(newStack, 0, 28, false);
+            isMerged = moveItemStackTo(newStack, 0, 28, false);
         }
 
         if (!isMerged)
@@ -101,11 +101,11 @@ public class PostboxContainer extends Container
 
         if (newStack.getCount() == 0)
         {
-            slot.putStack(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         }
         else
         {
-            slot.onSlotChanged();
+            slot.setChanged();
         }
 
         slot.onTake(playerIn, newStack);
@@ -114,22 +114,22 @@ public class PostboxContainer extends Container
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn)
+    public void removed(PlayerEntity playerIn)
     {
         if (!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity) playerIn).hasDisconnected())
         {
-            playerIn.dropItem(parcel.getStackInSlot(0), false);
+            playerIn.drop(parcel.getStackInSlot(0), false);
             parcel.setStackInSlot(0, ItemStack.EMPTY);
         }
         else
         {
-            playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), parcel.getStackInSlot(0));
+            playerIn.inventory.placeItemBackInInventory(playerIn.getCommandSenderWorld(), parcel.getStackInSlot(0));
             parcel.setStackInSlot(0, ItemStack.EMPTY);
         }
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
     }

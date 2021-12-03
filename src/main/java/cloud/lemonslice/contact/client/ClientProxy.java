@@ -28,7 +28,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public World getClientWorld()
     {
-        return Minecraft.getInstance().world;
+        return Minecraft.getInstance().level;
     }
 
     @Override
@@ -52,24 +52,24 @@ public class ClientProxy extends CommonProxy
 
     private static void registerCutoutType(Block... blocks)
     {
-        Arrays.asList(blocks).forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.getCutout()));
+        Arrays.asList(blocks).forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.cutout()));
     }
 
     public static void openPostcardToEdit(ItemStack itemstack, PlayerEntity playerIn, Hand handIn)
     {
-        Minecraft.getInstance().displayGuiScreen(new PostcardEditGui(itemstack, playerIn, handIn));
+        Minecraft.getInstance().setScreen(new PostcardEditGui(itemstack, playerIn, handIn));
     }
 
     public static void openPostcardToRead(ItemStack itemstack)
     {
-        Minecraft.getInstance().displayGuiScreen(new PostcardReadGui(itemstack));
+        Minecraft.getInstance().setScreen(new PostcardReadGui(itemstack));
     }
 
     public static void notifyNewMail(NetworkEvent.Context ctx)
     {
         if (ClientConfig.GUI.showNewMailToast.get())
         {
-            ctx.enqueueWork(() -> Minecraft.getInstance().getToastGui().add(new NewMailToast()));
+            ctx.enqueueWork(() -> Minecraft.getInstance().getToasts().addToast(new NewMailToast()));
         }
     }
 }

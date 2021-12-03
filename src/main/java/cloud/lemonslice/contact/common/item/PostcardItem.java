@@ -30,7 +30,7 @@ public class PostcardItem extends NormalItem implements IMailItem
 
     public PostcardItem(String name, boolean isEnderType)
     {
-        super(name, NormalItem.getNormalItemProperties(Contact.ITEM_GROUP).maxStackSize(1));
+        super(name, NormalItem.getNormalItemProperties(Contact.ITEM_GROUP).stacksTo(1));
         this.isEnderType = isEnderType;
     }
 
@@ -41,10 +41,10 @@ public class PostcardItem extends NormalItem implements IMailItem
 //    }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        if (worldIn.isRemote)
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
+        if (worldIn.isClientSide)
         {
             if (itemstack.getOrCreateTag().contains("Sender"))
             {
@@ -55,14 +55,14 @@ public class PostcardItem extends NormalItem implements IMailItem
                 ClientProxy.openPostcardToEdit(itemstack, playerIn, handIn);
             }
         }
-        playerIn.addStat(Stats.ITEM_USED.get(this));
-        return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+        playerIn.awardStat(Stats.ITEM_USED.get(this));
+        return ActionResult.sidedSuccess(itemstack, worldIn.isClientSide());
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
     {
-        if (this.isInGroup(group))
+        if (this.allowdedIn(group))
         {
             for (ResourceLocation id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
             {
@@ -72,18 +72,18 @@ public class PostcardItem extends NormalItem implements IMailItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         if (stack.getOrCreateTag().contains("Info"))
         {
-            IFormattableTextComponent background = new TranslationTextComponent("tooltip.contact.postcard." + stack.getOrCreateTag().getCompound("Info").getString("ID")).mergeStyle(TextFormatting.GRAY);
-            tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).mergeStyle(TextFormatting.GRAY));
+            IFormattableTextComponent background = new TranslationTextComponent("tooltip.contact.postcard." + stack.getOrCreateTag().getCompound("Info").getString("ID")).withStyle(TextFormatting.GRAY);
+            tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).withStyle(TextFormatting.GRAY));
         }
         if (stack.getOrCreateTag().contains("CardID"))
         {
             ResourceLocation id = new ResourceLocation(stack.getOrCreateTag().getString("CardID"));
-            IFormattableTextComponent background = new TranslationTextComponent("tooltip.postcard." + id.getNamespace() + "." + id.getPath()).mergeStyle(TextFormatting.GRAY);
-            tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).mergeStyle(TextFormatting.GRAY));
+            IFormattableTextComponent background = new TranslationTextComponent("tooltip.postcard." + id.getNamespace() + "." + id.getPath()).withStyle(TextFormatting.GRAY);
+            tooltip.add(new TranslationTextComponent("tooltip.contact.postcard.background", background).withStyle(TextFormatting.GRAY));
         }
         this.addSenderInfoTooltip(stack, worldIn, tooltip, flagIn);
     }
@@ -105,7 +105,7 @@ public class PostcardItem extends NormalItem implements IMailItem
 
     public static ItemStack setText(ItemStack postcard, String text)
     {
-        postcard.setTagInfo("Text", StringNBT.valueOf(text));
+        postcard.addTagElement("Text", StringNBT.valueOf(text));
         return postcard;
     }
 }

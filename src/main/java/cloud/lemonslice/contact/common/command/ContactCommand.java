@@ -34,18 +34,18 @@ public class ContactCommand
     private static final SuggestionProvider<CommandSource> SUGGEST_POSTCARDS = (context, builder) ->
     {
         Collection<ResourceLocation> collection = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet();
-        return ISuggestionProvider.func_212476_a(collection.stream(), builder);
+        return ISuggestionProvider.suggestResource(collection.stream(), builder);
     };
 
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
         dispatcher.register(
                 Commands.literal("contact")
-                        .requires(source -> source.hasPermissionLevel(2))
+                        .requires(source -> source.hasPermission(2))
                         .then(
                                 Commands.literal("give")
                                         .then(Commands.argument("targets", EntityArgument.players())
-                                                .then(Commands.argument("postcard", ResourceLocationArgument.resourceLocation())
+                                                .then(Commands.argument("postcard", ResourceLocationArgument.id())
                                                         .suggests(SUGGEST_POSTCARDS)
                                                         .executes(context -> givePostcard(context.getSource(), PostcardStyleArgument.getPostcardStyleID(context, "postcard"), EntityArgument.getPlayers(context, "targets"), "", ""))
                                                         .then(Commands.argument("sender", StringArgumentType.word())
@@ -60,7 +60,7 @@ public class ContactCommand
                         .then(
                                 Commands.literal("deliver")
                                         .then(Commands.argument("targets", EntityArgument.players())
-                                                .then(Commands.argument("postcard", ResourceLocationArgument.resourceLocation())
+                                                .then(Commands.argument("postcard", ResourceLocationArgument.id())
                                                         .suggests(SUGGEST_POSTCARDS)
                                                         .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
                                                                 .then(Commands.argument("sender", StringArgumentType.word())
@@ -85,27 +85,27 @@ public class ContactCommand
             ItemStack postcard = PostcardItem.setText(PostcardItem.getPostcard(id, false), text);
             postcard.getOrCreateTag().putString("Sender", sender);
 
-            player.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            player.getServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
-                if (!data.PLAYERS_DATA.isMailboxFull(player.getUniqueID()))
+                if (!data.PLAYERS_DATA.isMailboxFull(player.getUUID()))
                 {
-                    data.PLAYERS_DATA.mailList.add(new MailToBeSent(player.getUniqueID(), postcard, ticks));
+                    data.PLAYERS_DATA.mailList.add(new MailToBeSent(player.getUUID(), postcard, ticks));
                     n.getAndIncrement();
                 }
                 else
                 {
-                    source.sendFeedback(new TranslationTextComponent("command.contact.deliver.full", player.getDisplayName()), true);
+                    source.sendSuccess(new TranslationTextComponent("command.contact.deliver.full", player.getDisplayName()), true);
                 }
             });
         }
 
         if (targets.size() == 1 && n.get() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("command.contact.deliver.success.single", new ItemStack(ItemRegistry.POSTCARD).getTextComponent(), targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(new TranslationTextComponent("command.contact.deliver.success.single", new ItemStack(ItemRegistry.POSTCARD).getDisplayName(), targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendFeedback(new TranslationTextComponent("command.contact.deliver.success.multiple", new ItemStack(ItemRegistry.POSTCARD).getTextComponent(), n.get()), true);
+            source.sendSuccess(new TranslationTextComponent("command.contact.deliver.success.multiple", new ItemStack(ItemRegistry.POSTCARD).getDisplayName(), n.get()), true);
         }
         return n.get();
     }
@@ -125,37 +125,37 @@ public class ContactCommand
                 postcard = PostcardItem.setText(PostcardItem.getPostcard(id, false), text);
                 postcard.getOrCreateTag().putString("Sender", sender);
             }
-            boolean flag = serverplayerentity.inventory.addItemStackToInventory(postcard);
+            boolean flag = serverplayerentity.inventory.add(postcard);
             if (flag && postcard.isEmpty())
             {
                 postcard.setCount(1);
-                ItemEntity itemEntity = serverplayerentity.dropItem(postcard, false);
+                ItemEntity itemEntity = serverplayerentity.drop(postcard, false);
                 if (itemEntity != null)
                 {
                     itemEntity.makeFakeItem();
                 }
 
-                serverplayerentity.world.playSound(null, serverplayerentity.getPosX(), serverplayerentity.getPosY(), serverplayerentity.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((serverplayerentity.getRNG().nextFloat() - serverplayerentity.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                serverplayerentity.container.detectAndSendChanges();
+                serverplayerentity.level.playSound(null, serverplayerentity.getX(), serverplayerentity.getY(), serverplayerentity.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((serverplayerentity.getRandom().nextFloat() - serverplayerentity.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                serverplayerentity.inventoryMenu.broadcastChanges();
             }
             else
             {
-                ItemEntity itementity = serverplayerentity.dropItem(postcard, false);
+                ItemEntity itementity = serverplayerentity.drop(postcard, false);
                 if (itementity != null)
                 {
-                    itementity.setNoPickupDelay();
-                    itementity.setOwnerId(serverplayerentity.getUniqueID());
+                    itementity.setNoPickUpDelay();
+                    itementity.setOwner(serverplayerentity.getUUID());
                 }
             }
         }
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getTextComponent(), targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(new TranslationTextComponent("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getDisplayName(), targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendFeedback(new TranslationTextComponent("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getTextComponent(), targets.size()), true);
+            source.sendSuccess(new TranslationTextComponent("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getDisplayName(), targets.size()), true);
         }
 
         return targets.size();

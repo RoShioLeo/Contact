@@ -31,7 +31,7 @@ public final class PostcardHandler
     {
         if (event.getPlayer() instanceof ServerPlayerEntity && !(event.getPlayer() instanceof FakePlayer))
         {
-            SimpleNetworkHandler.CHANNEL.sendTo(new PostcardReloadMessage(), ((ServerPlayerEntity) event.getPlayer()).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+            SimpleNetworkHandler.CHANNEL.sendTo(new PostcardReloadMessage(), ((ServerPlayerEntity) event.getPlayer()).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         }
     }
 
@@ -40,10 +40,10 @@ public final class PostcardHandler
         if (!json.has("postcard"))
             throw new JsonSyntaxException("Missing postcard data, expected to find object");
 
-        JsonObject postcardData = JSONUtils.getJsonObject(json, "postcard");
-        String cardTexture = JSONUtils.getString(postcardData, "texture");
-        int cardWidth = JSONUtils.getInt(postcardData, "width");
-        int cardHeight = JSONUtils.getInt(postcardData, "height");
+        JsonObject postcardData = JSONUtils.getAsJsonObject(json, "postcard");
+        String cardTexture = JSONUtils.getAsString(postcardData, "texture");
+        int cardWidth = JSONUtils.getAsInt(postcardData, "width");
+        int cardHeight = JSONUtils.getAsInt(postcardData, "height");
 
         int textPosX = 10;
         int textPosY = 12;
@@ -52,18 +52,18 @@ public final class PostcardHandler
         int textColor = 0xff000000;
         if (json.has("text"))
         {
-            JsonObject textData = JSONUtils.getJsonObject(json, "text");
-            textPosX = JSONUtils.getInt(textData, "x");
-            textPosY = JSONUtils.getInt(textData, "y");
-            textWidth = JSONUtils.getInt(textData, "width");
-            textHeight = JSONUtils.getInt(textData, "height");
+            JsonObject textData = JSONUtils.getAsJsonObject(json, "text");
+            textPosX = JSONUtils.getAsInt(textData, "x");
+            textPosY = JSONUtils.getAsInt(textData, "y");
+            textWidth = JSONUtils.getAsInt(textData, "width");
+            textHeight = JSONUtils.getAsInt(textData, "height");
             if (textData.has("color"))
             {
-                JsonObject color = JSONUtils.getJsonObject(textData, "color");
-                int alpha = (JSONUtils.getInt(color, "alpha") & 255) << 24;
-                int red = (JSONUtils.getInt(color, "red") & 255) << 16;
-                int green = (JSONUtils.getInt(color, "green") & 255) << 8;
-                int blue = JSONUtils.getInt(color, "blue") & 255;
+                JsonObject color = JSONUtils.getAsJsonObject(textData, "color");
+                int alpha = (JSONUtils.getAsInt(color, "alpha") & 255) << 24;
+                int red = (JSONUtils.getAsInt(color, "red") & 255) << 16;
+                int green = (JSONUtils.getAsInt(color, "green") & 255) << 8;
+                int blue = JSONUtils.getAsInt(color, "blue") & 255;
                 textColor = alpha + red + blue + green;
             }
         }
@@ -76,19 +76,19 @@ public final class PostcardHandler
         int postmarkColor = textColor;
         if (json.has("postmark"))
         {
-            JsonObject postmarkData = JSONUtils.getJsonObject(json, "postmark");
-            postmarkTexture = JSONUtils.getString(postmarkData, "texture");
-            postmarkPosX = JSONUtils.getInt(postmarkData, "x");
-            postmarkPosY = JSONUtils.getInt(postmarkData, "y");
-            postmarkWidth = JSONUtils.getInt(postmarkData, "width");
-            postmarkHeight = JSONUtils.getInt(postmarkData, "height");
+            JsonObject postmarkData = JSONUtils.getAsJsonObject(json, "postmark");
+            postmarkTexture = JSONUtils.getAsString(postmarkData, "texture");
+            postmarkPosX = JSONUtils.getAsInt(postmarkData, "x");
+            postmarkPosY = JSONUtils.getAsInt(postmarkData, "y");
+            postmarkWidth = JSONUtils.getAsInt(postmarkData, "width");
+            postmarkHeight = JSONUtils.getAsInt(postmarkData, "height");
             if (postmarkData.has("color"))
             {
-                JsonObject color = JSONUtils.getJsonObject(postmarkData, "color");
-                int alpha = (JSONUtils.getInt(color, "alpha") & 255) << 24;
-                int red = (JSONUtils.getInt(color, "red") & 255) << 16;
-                int green = (JSONUtils.getInt(color, "green") & 255) << 8;
-                int blue = JSONUtils.getInt(color, "blue") & 255;
+                JsonObject color = JSONUtils.getAsJsonObject(postmarkData, "color");
+                int alpha = (JSONUtils.getAsInt(color, "alpha") & 255) << 24;
+                int red = (JSONUtils.getAsInt(color, "red") & 255) << 16;
+                int green = (JSONUtils.getAsInt(color, "green") & 255) << 8;
+                int blue = JSONUtils.getAsInt(color, "blue") & 255;
                 postmarkColor = alpha + red + blue + green;
             }
         }
@@ -98,7 +98,7 @@ public final class PostcardHandler
 
     public static PostcardStyle read(PacketBuffer buffer)
     {
-        String cardID = buffer.readString(32767);
+        String cardID = buffer.readUtf(32767);
         int cardWidth = buffer.readInt();
         int cardHeight = buffer.readInt();
 
@@ -108,7 +108,7 @@ public final class PostcardHandler
         int textHeight = buffer.readInt();
         int textColor = buffer.readInt();
 
-        String postmarkID = buffer.readString(32767);
+        String postmarkID = buffer.readUtf(32767);
         int postmarkPosX = buffer.readInt();
         int postmarkPosY = buffer.readInt();
         int postmarkWidth = buffer.readInt();
@@ -120,7 +120,7 @@ public final class PostcardHandler
 
     public static void write(PacketBuffer buffer, PostcardStyle style)
     {
-        buffer.writeString(style.cardTexture, 32767);
+        buffer.writeUtf(style.cardTexture, 32767);
         buffer.writeInt(style.cardWidth);
         buffer.writeInt(style.cardHeight);
         buffer.writeInt(style.textPosX);
@@ -128,7 +128,7 @@ public final class PostcardHandler
         buffer.writeInt(style.textWidth);
         buffer.writeInt(style.textHeight);
         buffer.writeInt(style.textColor);
-        buffer.writeString(style.postmarkTexture, 32767);
+        buffer.writeUtf(style.postmarkTexture, 32767);
         buffer.writeInt(style.postmarkPosX);
         buffer.writeInt(style.postmarkPosY);
         buffer.writeInt(style.postmarkWidth);

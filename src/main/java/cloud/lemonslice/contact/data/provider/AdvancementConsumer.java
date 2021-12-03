@@ -15,45 +15,45 @@ public final class AdvancementConsumer implements Consumer<Consumer<Advancement>
     @Override
     public void accept(Consumer<Advancement> consumer)
     {
-        Advancement root = Advancement.Builder.builder()
-                .withDisplay(ItemRegistry.MAIL,
+        Advancement root = Advancement.Builder.advancement()
+                .display(ItemRegistry.MAIL,
                         new TranslationTextComponent("advancements.contact.root.title"),
                         new TranslationTextComponent("advancements.contact.root.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"),
                         FrameType.TASK, true, true, false)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "contact:root");
-        Advancement receivePostcard = Advancement.Builder.builder()
-                .withParent(root)
-                .withDisplay(ItemRegistry.OPENED_MAIL,
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "contact:root");
+        Advancement receivePostcard = Advancement.Builder.advancement()
+                .parent(root)
+                .display(ItemRegistry.OPENED_MAIL,
                         new TranslationTextComponent("advancements.contact.receive_postcard.title"),
                         new TranslationTextComponent("advancements.contact.receive_postcard.description"),
                         null, FrameType.TASK, true, true, false)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "contact:receive_postcard");
-        Advancement sendPostcard = Advancement.Builder.builder()
-                .withParent(root)
-                .withDisplay(ItemRegistry.POSTCARD,
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "contact:receive_postcard");
+        Advancement sendPostcard = Advancement.Builder.advancement()
+                .parent(root)
+                .display(ItemRegistry.POSTCARD,
                         new TranslationTextComponent("advancements.contact.send_postcard.title"),
                         new TranslationTextComponent("advancements.contact.send_postcard.description"),
                         null, FrameType.TASK, true, true, false)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "contact:send_postcard");
-        Advancement sendInPerson = Advancement.Builder.builder()
-                .withParent(sendPostcard)
-                .withDisplay(BlockRegistry.WHITE_MAILBOX_ITEM,
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "contact:send_postcard");
+        Advancement sendInPerson = Advancement.Builder.advancement()
+                .parent(sendPostcard)
+                .display(BlockRegistry.WHITE_MAILBOX_ITEM,
                         new TranslationTextComponent("advancements.contact.send_in_person.title"),
                         new TranslationTextComponent("advancements.contact.send_in_person.description"),
                         null, FrameType.GOAL, true, true, false)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "contact:send_in_person");
-        Advancement fromAnotherWorld = Advancement.Builder.builder()
-                .withParent(receivePostcard)
-                .withDisplay(ItemRegistry.PARCEL,
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "contact:send_in_person");
+        Advancement fromAnotherWorld = Advancement.Builder.advancement()
+                .parent(receivePostcard)
+                .display(ItemRegistry.PARCEL,
                         new TranslationTextComponent("advancements.contact.from_another_world.title"),
                         new TranslationTextComponent("advancements.contact.from_another_world.description"),
                         null, FrameType.TASK, true, true, false)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "contact:from_another_world");
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "contact:from_another_world");
     }
 }

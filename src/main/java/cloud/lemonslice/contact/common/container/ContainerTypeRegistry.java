@@ -15,8 +15,8 @@ public final class ContainerTypeRegistry extends RegistryModule
 
     public static void clientInit()
     {
-        ScreenManager.registerFactory((ContainerType<WrappingPaperContainer>) WRAPPING_PAPER_CONTAINER, WrappingPaperGui::new);
-        ScreenManager.registerFactory((ContainerType<PostboxContainer>) RED_POSTBOX_CONTAINER, PostboxGui::new);
-        ScreenManager.registerFactory((ContainerType<PostboxContainer>) GREEN_POSTBOX_CONTAINER, PostboxGui::new);
+        ScreenManager.register((ContainerType<WrappingPaperContainer>) WRAPPING_PAPER_CONTAINER, WrappingPaperGui::new);
+        ScreenManager.register((ContainerType<PostboxContainer>) RED_POSTBOX_CONTAINER, PostboxGui::new);
+        ScreenManager.register((ContainerType<PostboxContainer>) GREEN_POSTBOX_CONTAINER, PostboxGui::new);
     }
 }

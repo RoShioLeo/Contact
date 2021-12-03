@@ -21,14 +21,14 @@ public class AddresseeDataMessage implements INormalMessage
 
     public AddresseeDataMessage(PacketBuffer buf)
     {
-        this.name = buf.readString(32767);
+        this.name = buf.readUtf(32767);
         this.ticks = buf.readInt();
     }
 
     @Override
     public void toBytes(PacketBuffer packetBuffer)
     {
-        packetBuffer.writeString(name, 32767);
+        packetBuffer.writeUtf(name, 32767);
         packetBuffer.writeInt(ticks);
     }
 
@@ -38,9 +38,9 @@ public class AddresseeDataMessage implements INormalMessage
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() ->
         {
-            if (Contact.PROXY.getClientPlayer().openContainer instanceof PostboxContainer)
+            if (Contact.PROXY.getClientPlayer().containerMenu instanceof PostboxContainer)
             {
-                PostboxContainer container = ((PostboxContainer) Contact.PROXY.getClientPlayer().openContainer);
+                PostboxContainer container = ((PostboxContainer) Contact.PROXY.getClientPlayer().containerMenu);
                 container.playerName = name;
                 container.time = ticks;
                 if (ticks == -1)

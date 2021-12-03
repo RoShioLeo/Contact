@@ -18,7 +18,7 @@ public interface IMailItem
     {
         if (stack.getOrCreateTag().contains("Sender"))
         {
-            tooltip.add(new TranslationTextComponent("tooltip.contact.mail.sender", stack.getOrCreateTag().getString("Sender")).mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("tooltip.contact.mail.sender", stack.getOrCreateTag().getString("Sender")).withStyle(TextFormatting.GRAY));
         }
     }
 

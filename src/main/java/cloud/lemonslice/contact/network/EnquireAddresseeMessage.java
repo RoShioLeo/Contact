@@ -35,14 +35,14 @@ public class EnquireAddresseeMessage implements INormalMessage
 
     public EnquireAddresseeMessage(PacketBuffer buf)
     {
-        this.nameIn = buf.readString(32767);
+        this.nameIn = buf.readUtf(32767);
         this.shouldSend = buf.readBoolean();
     }
 
     @Override
     public void toBytes(PacketBuffer buf)
     {
-        buf.writeString(nameIn, 32767);
+        buf.writeUtf(nameIn, 32767);
         buf.writeBoolean(shouldSend);
     }
 
@@ -60,33 +60,33 @@ public class EnquireAddresseeMessage implements INormalMessage
         {
             if (nameIn.isEmpty())
             {
-                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                 return;
             }
-            player.server.getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            player.server.getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
                 String lowerIn = nameIn.toLowerCase(Locale.ROOT);
-                if (lowerIn.equals("@e") && player.server.getPermissionLevel(player.getGameProfile()) >= 2)
+                if (lowerIn.equals("@e") && player.server.getProfilePermissions(player.getGameProfile()) >= 2)
                 {
                     if (shouldSend)
                     {
-                        if (player.openContainer instanceof PostboxContainer)
+                        if (player.containerMenu instanceof PostboxContainer)
                         {
-                            PostboxContainer container = ((PostboxContainer) player.openContainer);
+                            PostboxContainer container = ((PostboxContainer) player.containerMenu);
                             ItemStack parcel = container.parcel.getStackInSlot(0).copy();
                             parcel.getOrCreateTag().putString("Sender", player.getName().getString());
                             for (UUID uuid : data.PLAYERS_DATA.nameToUUID.values())
                             {
                                 data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel.copy(), 0));
                             }
-                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, -3), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                             container.parcel.setStackInSlot(0, ItemStack.EMPTY);
                         }
                         return;
                     }
                     else
                     {
-                        SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, 0), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                        SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(lowerIn, 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                         return;
                     }
                 }
@@ -97,28 +97,28 @@ public class EnquireAddresseeMessage implements INormalMessage
                         UUID uuid = data.PLAYERS_DATA.nameToUUID.get(name);
                         if (data.PLAYERS_DATA.isMailboxFull(uuid))
                         {
-                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -2), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                            SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -2), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                             return;
                         }
                         GlobalPos mailboxPos = data.PLAYERS_DATA.getMailboxPos(uuid);
-                        if (player.openContainer instanceof PostboxContainer)
+                        if (player.containerMenu instanceof PostboxContainer)
                         {
                             int ticks = 0;
-                            if (!((PostboxContainer) player.openContainer).isEnderMail())
+                            if (!((PostboxContainer) player.containerMenu).isEnderMail())
                             {
                                 if (mailboxPos != null)
                                 {
-                                    ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), mailboxPos.getDimension(), mailboxPos.getPos());
+                                    ticks = MailboxManager.getDeliveryTicks(player.level.dimension(), player.blockPosition(), mailboxPos.dimension(), mailboxPos.pos());
                                 }
                                 else
                                 {
-                                    ticks = MailboxManager.getDeliveryTicks(player.world.getDimensionKey(), player.getPosition(), World.OVERWORLD, BlockPos.ZERO);
+                                    ticks = MailboxManager.getDeliveryTicks(player.level.dimension(), player.blockPosition(), World.OVERWORLD, BlockPos.ZERO);
                                 }
                             }
 
                             if (shouldSend)
                             {
-                                PostboxContainer container = ((PostboxContainer) player.openContainer);
+                                PostboxContainer container = ((PostboxContainer) player.containerMenu);
                                 ItemStack parcel = container.parcel.getStackInSlot(0);
                                 parcel.getOrCreateTag().putString("Sender", player.getName().getString());
 
@@ -129,32 +129,32 @@ public class EnquireAddresseeMessage implements INormalMessage
 
                                 if (mailboxPos != null)
                                 {
-                                    if (mailboxPos.getDimension() != player.world.getDimensionKey())
+                                    if (mailboxPos.dimension() != player.level.dimension())
                                     {
                                         parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
                                     }
                                 }
                                 else
                                 {
-                                    if (World.OVERWORLD != player.world.getDimensionKey())
+                                    if (World.OVERWORLD != player.level.dimension())
                                     {
                                         parcel.getOrCreateTag().putBoolean("AnotherWorld", true);
                                     }
                                 }
 
                                 data.PLAYERS_DATA.mailList.add(new MailToBeSent(uuid, parcel, ticks));
-                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, -3), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                                 container.parcel.setStackInSlot(0, ItemStack.EMPTY);
                             }
                             else
                             {
-                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(name, ticks), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                             }
                             return;
                         }
                     }
                 }
-                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                SimpleNetworkHandler.CHANNEL.sendTo(new AddresseeDataMessage(nameIn, -1), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
             });
         });
     }

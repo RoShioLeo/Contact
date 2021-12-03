@@ -23,14 +23,14 @@ public class PostcardEditMessage implements INormalMessage
 
     public PostcardEditMessage(PacketBuffer buf)
     {
-        this.postcard = buf.readItemStack();
+        this.postcard = buf.readItem();
         this.held = buf.readInt();
     }
 
     @Override
     public void toBytes(PacketBuffer packetBuffer)
     {
-        packetBuffer.writeItemStack(postcard);
+        packetBuffer.writeItem(postcard);
         packetBuffer.writeInt(held);
     }
 
@@ -45,9 +45,9 @@ public class PostcardEditMessage implements INormalMessage
             {
                 if (postcard.getItem() instanceof PostcardItem && postcard.hasTag())
                 {
-                    if (PlayerInventory.isHotbar(held) || held == 40)
+                    if (PlayerInventory.isHotbarSlot(held) || held == 40)
                     {
-                        ItemStack card = player.inventory.getStackInSlot(held);
+                        ItemStack card = player.inventory.getItem(held);
                         if (card.getItem() instanceof PostcardItem)
                         {
                             card.setTag(postcard.getTag());

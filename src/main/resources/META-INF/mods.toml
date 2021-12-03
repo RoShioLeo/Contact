@@ -27,6 +27,6 @@ side = "BOTH"
 [[dependencies.contact]]
 modId = "silveroakoutpost"
 mandatory = true
-versionRange = "[0.3.5-Beta,)"
+versionRange = "[0.4.5-Alpha,)"
 ordering = "NONE"
 side = "BOTH"

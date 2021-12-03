@@ -45,7 +45,7 @@ public final class MailboxManager
     {
         if (event.phase == TickEvent.Phase.END)
         {
-            ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
                 for (MailToBeSent mail : data.PLAYERS_DATA.mailList)
                 {
@@ -54,10 +54,10 @@ public final class MailboxManager
                     {
                         UUID uuid = mail.getUUID();
                         data.PLAYERS_DATA.addMailboxContents(uuid, mail.getContents());
-                        PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(uuid);
+                        PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
                         if (player != null)
                         {
-                            player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.new_mail"), false);
+                            player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.new_mail"), false);
                         }
                         updateState(uuid, data.PLAYERS_DATA);
                         READY_TO_REMOVE.add(mail);
@@ -72,20 +72,20 @@ public final class MailboxManager
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        event.getPlayer().getEntityWorld().getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+        event.getPlayer().getCommandSenderWorld().getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
         {
-            data.PLAYERS_DATA.nameToUUID.put(event.getPlayer().getName().getString(), event.getPlayer().getUniqueID());
-            if (data.PLAYERS_DATA.uuidToContents.get(event.getPlayer().getUniqueID()) == null)
+            data.PLAYERS_DATA.nameToUUID.put(event.getPlayer().getName().getString(), event.getPlayer().getUUID());
+            if (data.PLAYERS_DATA.uuidToContents.get(event.getPlayer().getUUID()) == null)
             {
-                data.PLAYERS_DATA.resetMailboxContents(event.getPlayer().getUniqueID());
+                data.PLAYERS_DATA.resetMailboxContents(event.getPlayer().getUUID());
             }
             else
             {
-                if (!data.PLAYERS_DATA.isMailboxEmpty(event.getPlayer().getUniqueID()))
+                if (!data.PLAYERS_DATA.isMailboxEmpty(event.getPlayer().getUUID()))
                 {
-                    SimpleNetworkHandler.CHANNEL.sendTo(new ActionMessage(0), ((ServerPlayerEntity) event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                    SimpleNetworkHandler.CHANNEL.sendTo(new ActionMessage(0), ((ServerPlayerEntity) event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                 }
-                updateState(event.getPlayer().getUniqueID(), data.PLAYERS_DATA);
+                updateState(event.getPlayer().getUUID(), data.PLAYERS_DATA);
             }
 
         });
@@ -94,14 +94,14 @@ public final class MailboxManager
     @SubscribeEvent
     public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event)
     {
-        if (!event.getWorld().isRemote)
+        if (!event.getWorld().isClientSide)
         {
             if (event.getTarget() instanceof WanderingTraderEntity)
             {
                 if (!event.getTarget().getTags().contains("SellPostcard"))
                 {
                     WanderingTraderEntity trader = (WanderingTraderEntity) event.getTarget();
-                    int i = event.getWorld().rand.nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
+                    int i = event.getWorld().random.nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
                     trader.getTags().add("SellPostcard");
                     ResourceLocation[] list = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new ResourceLocation[0]);
                     trader.getOffers().add(0, new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(list[i], true), 4, 10, 0.05F));
@@ -116,7 +116,7 @@ public final class MailboxManager
         GlobalPos posData = data.getMailboxPos(uuid);
         if (posData != null)
         {
-            updateState(ServerLifecycleHooks.getCurrentServer().getWorld(posData.getDimension()), posData.getPos());
+            updateState(ServerLifecycleHooks.getCurrentServer().getLevel(posData.dimension()), posData.pos());
         }
     }
 
@@ -126,7 +126,7 @@ public final class MailboxManager
         {
             if (world.isAreaLoaded(pos, 1))
             {
-                TileEntity te = world.getTileEntity(pos);
+                TileEntity te = world.getBlockEntity(pos);
                 if (te instanceof MailboxTileEntity)
                 {
                     ((MailboxTileEntity) te).refreshStatus();
@@ -150,6 +150,6 @@ public final class MailboxManager
 
     public static int getDeliveryTicks(GlobalPos fromPos, GlobalPos toPos)
     {
-        return getDeliveryTicks(fromPos.getDimension(), fromPos.getPos(), toPos.getDimension(), toPos.getPos());
+        return getDeliveryTicks(fromPos.dimension(), fromPos.pos(), toPos.dimension(), toPos.pos());
     }
 }

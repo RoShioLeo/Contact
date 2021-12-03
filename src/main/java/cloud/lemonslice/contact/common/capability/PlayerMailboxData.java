@@ -93,10 +93,10 @@ public class PlayerMailboxData
                 {
                     mailbox.setStackInSlot(i, parcelIn);
                     setMailboxContents(uuid, mailbox);
-                    ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(uuid);
+                    ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
                     if (player != null)
                     {
-                        SimpleNetworkHandler.CHANNEL.sendTo(new ActionMessage(0), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                        SimpleNetworkHandler.CHANNEL.sendTo(new ActionMessage(0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                     }
                     return;
                 }
@@ -118,7 +118,7 @@ public class PlayerMailboxData
     @Nullable
     public UUID getMailboxOwner(RegistryKey<World> world, BlockPos pos)
     {
-        return locationToPlayer.get(GlobalPos.getPosition(world, pos));
+        return locationToPlayer.get(GlobalPos.of(world, pos));
     }
 
     @Nullable
@@ -129,16 +129,16 @@ public class PlayerMailboxData
 
     public void setMailboxData(UUID uuid, RegistryKey<World> world, BlockPos pos)
     {
-        GlobalPos newPos = GlobalPos.getPosition(world, pos);
+        GlobalPos newPos = GlobalPos.of(world, pos);
         GlobalPos oldPos = uuidToLocation.get(uuid);
 
         if (oldPos != null)
         {
             locationToPlayer.remove(oldPos);
-            World oldWorld = ServerLifecycleHooks.getCurrentServer().getWorld(oldPos.getDimension());
-            if (oldWorld != null && oldWorld.isAreaLoaded(oldPos.getPos(), 1))
+            World oldWorld = ServerLifecycleHooks.getCurrentServer().getLevel(oldPos.dimension());
+            if (oldWorld != null && oldWorld.isAreaLoaded(oldPos.pos(), 1))
             {
-                TileEntity oldTE = oldWorld.getTileEntity(oldPos.getPos());
+                TileEntity oldTE = oldWorld.getBlockEntity(oldPos.pos());
                 if (oldTE instanceof MailboxTileEntity)
                 {
                     ((MailboxTileEntity) oldTE).refreshStatus();
@@ -148,10 +148,10 @@ public class PlayerMailboxData
         uuidToLocation.put(uuid, newPos);
         locationToPlayer.put(newPos, uuid);
 
-        World newWorld = ServerLifecycleHooks.getCurrentServer().getWorld(world);
-        if (newWorld != null && newWorld.isAreaLoaded(newPos.getPos(), 1))
+        World newWorld = ServerLifecycleHooks.getCurrentServer().getLevel(world);
+        if (newWorld != null && newWorld.isAreaLoaded(newPos.pos(), 1))
         {
-            TileEntity newTE = newWorld.getTileEntity(newPos.getPos());
+            TileEntity newTE = newWorld.getBlockEntity(newPos.pos());
             if (newTE instanceof MailboxTileEntity)
             {
                 ((MailboxTileEntity) newTE).refreshStatus();
@@ -187,10 +187,10 @@ public class PlayerMailboxData
             GlobalPos globalPos = uuidToLocation.get(uuid);
             if (globalPos != null)
             {
-                ResourceLocation.CODEC.encodeStart(NBTDynamicOps.INSTANCE, globalPos.getDimension().getLocation()).resultOrPartial(LogManager.getLogger()::error).ifPresent(world -> tag.put("MailboxDimension", world));
-                tag.putInt("MailboxX", globalPos.getPos().getX());
-                tag.putInt("MailboxY", globalPos.getPos().getY());
-                tag.putInt("MailboxZ", globalPos.getPos().getZ());
+                ResourceLocation.CODEC.encodeStart(NBTDynamicOps.INSTANCE, globalPos.dimension().location()).resultOrPartial(LogManager.getLogger()::error).ifPresent(world -> tag.put("MailboxDimension", world));
+                tag.putInt("MailboxX", globalPos.pos().getX());
+                tag.putInt("MailboxY", globalPos.pos().getY());
+                tag.putInt("MailboxZ", globalPos.pos().getZ());
             }
             nbt.put("MapData" + i, tag);
             i++;
@@ -234,8 +234,8 @@ public class PlayerMailboxData
             if (tag.contains("MailboxDimension"))
             {
                 BlockPos mailboxPos = new BlockPos(tag.getInt("MailboxX"), tag.getInt("MailboxY"), tag.getInt("MailboxZ"));
-                RegistryKey<World> mailboxWorld = World.CODEC.parse(NBTDynamicOps.INSTANCE, tag.get("MailboxDimension")).resultOrPartial(LogManager.getLogger()::error).orElse(World.OVERWORLD);
-                GlobalPos globalPos = GlobalPos.getPosition(mailboxWorld, mailboxPos);
+                RegistryKey<World> mailboxWorld = World.RESOURCE_KEY_CODEC.parse(NBTDynamicOps.INSTANCE, tag.get("MailboxDimension")).resultOrPartial(LogManager.getLogger()::error).orElse(World.OVERWORLD);
+                GlobalPos globalPos = GlobalPos.of(mailboxWorld, mailboxPos);
                 uuidToLocation.put(uuid, globalPos);
                 locationToPlayer.put(globalPos, uuid);
             }

@@ -36,7 +36,7 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     public PostboxGui(PostboxContainer screenContainer, PlayerInventory inv, ITextComponent titleIn)
     {
         super(screenContainer, inv, titleIn);
-        this.ySize = 133;
+        this.imageHeight = 133;
         this.isRed = screenContainer.getType() == RED_POSTBOX_CONTAINER;
     }
 
@@ -44,29 +44,29 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     protected void init()
     {
         super.init();
-        this.offsetX = (this.width - this.xSize) / 2;
-        this.offsetY = (this.height - this.ySize) / 2;
+        this.offsetX = (this.width - this.imageWidth) / 2;
+        this.offsetY = (this.height - this.imageHeight) / 2;
 
         this.buttonSend = new IconButton(offsetX + 97, offsetY + 26, 10, 9, new TranslationTextComponent("tooltip.contact.postbox.send"), button -> send(), this::buttonTooltip);
         this.children.add(this.buttonSend);
 
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.nameField = new TextFieldWidget(this.font, offsetX + 42, offsetY + 26, 43, 9, new TranslationTextComponent("info.contact.postbox.addressee"));
         this.nameField.setTextColor(-1);
-        this.nameField.setDisabledTextColour(-1);
-        this.nameField.setText(container.playerName);
+        this.nameField.setTextColorUneditable(-1);
+        this.nameField.setValue(menu.playerName);
         this.nameField.setResponder(this::whileTyping);
-        this.nameField.setEnableBackgroundDrawing(false);
-        this.nameField.setMaxStringLength(64);
+        this.nameField.setBordered(false);
+        this.nameField.setMaxLength(64);
         this.children.add(this.nameField);
-        this.setFocusedDefault(this.nameField);
+        this.setInitialFocus(this.nameField);
     }
 
     private void buttonTooltip(Button button, MatrixStack matrixStack, int mouseX, int mouseY)
     {
         if (button.isHovered())
         {
-            if (container.status == 2)
+            if (menu.status == 2)
             {
                 GuiHelper.drawTooltip(this, matrixStack, mouseX, mouseY, button.x, button.y, button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
             }
@@ -79,31 +79,31 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
 
     private void whileTyping(String name)
     {
-        if (!container.playerName.equals(name))
+        if (!menu.playerName.equals(name))
         {
-            container.playerName = name;
-            if (container.status > 1)
+            menu.playerName = name;
+            if (menu.status > 1)
             {
-                container.status = 1;
+                menu.status = 1;
             }
         }
     }
 
     private void send()
     {
-        if (container.status == 2)
+        if (menu.status == 2)
         {
-            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, true));
+            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(menu.playerName, true));
         }
-        else if (container.status == 5)
+        else if (menu.status == 5)
         {
-            container.status = 0;
+            menu.status = 0;
         }
-        else if (container.status != 0)
+        else if (menu.status != 0)
         {
-            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(container.playerName, false));
+            SimpleNetworkHandler.CHANNEL.sendToServer(new EnquireAddresseeMessage(menu.playerName, false));
         }
-        this.nameField.setFocused2(false);
+        this.nameField.setFocus(false);
     }
 
     @Override
@@ -111,9 +111,9 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     {
         super.tick();
         this.nameField.tick();
-        if (container.status == 2 && !nameField.getText().equals(container.playerName))
+        if (menu.status == 2 && !nameField.getValue().equals(menu.playerName))
         {
-            nameField.setText(container.playerName);
+            nameField.setValue(menu.playerName);
         }
     }
 
@@ -122,75 +122,75 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
         this.nameField.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y)
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         ResourceLocation texture = isRed ? RED_TEXTURE : GREEN_TEXTURE;
 
-        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, texture, new TexturePos(0, 0, xSize, ySize));
+        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, texture, new TexturePos(0, 0, imageWidth, imageHeight));
 
         GuiHelper.renderButton(matrixStack, partialTicks, x, y, texture, buttonSend,
-                new TexturePos(xSize, 0, 10, 9),
-                new TexturePos(xSize, 9, 10, 9));
+                new TexturePos(imageWidth, 0, 10, 9),
+                new TexturePos(imageWidth, 9, 10, 9));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.drawText(matrixStack, new TranslationTextComponent("info.contact.postbox.addressee"), 40, 14, 0xE6E6E6);
-        switch (container.status)
+        this.font.draw(matrixStack, new TranslationTextComponent("info.contact.postbox.addressee"), 40, 14, 0xE6E6E6);
+        switch (menu.status)
         {
             case 0:
             {
                 TranslationTextComponent text = new TranslationTextComponent("info.contact.postbox.need_mail");
-                int width = this.font.getStringWidth(text.getString());
+                int width = this.font.width(text.getString());
                 if (width > 38)
                 {
-                    List<IReorderingProcessor> list = this.font.trimStringToWidth(text, 50);
+                    List<IReorderingProcessor> list = this.font.split(text, 50);
                     for (int i = 0; i < list.size(); i++)
                     {
-                        this.font.func_238422_b_(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
+                        this.font.draw(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
                     }
                 }
                 else
                 {
-                    this.font.drawText(matrixStack, text, 122, 16, 0x1A1A1A);
+                    this.font.draw(matrixStack, text, 122, 16, 0x1A1A1A);
                 }
                 return;
             }
             case 2:
             {
                 TranslationTextComponent text = new TranslationTextComponent("info.contact.postbox.estimated");
-                int width = this.font.getStringWidth(text.getString());
-                int min = container.time / 1200;
-                int sec = container.time % 1200 / 20;
+                int width = this.font.width(text.getString());
+                int min = menu.time / 1200;
+                int sec = menu.time % 1200 / 20;
                 if (width > 38)
                 {
-                    this.font.drawText(matrixStack, text, 141 - width / 2, 10, 0x1A1A1A);
-                    if (container.time == 0)
+                    this.font.draw(matrixStack, text, 141 - width / 2, 10, 0x1A1A1A);
+                    if (menu.time == 0)
                     {
-                        this.font.drawText(matrixStack, new TranslationTextComponent("info.contact.postbox.instant"), 141 - width / 2, 22, 0x1A1A1A);
+                        this.font.draw(matrixStack, new TranslationTextComponent("info.contact.postbox.instant"), 141 - width / 2, 22, 0x1A1A1A);
                     }
                     else
                     {
-                        this.font.drawText(matrixStack, new TranslationTextComponent("info.contact.postbox.time", min, sec), 141 - width / 2, 22, 0x1A1A1A);
+                        this.font.draw(matrixStack, new TranslationTextComponent("info.contact.postbox.time", min, sec), 141 - width / 2, 22, 0x1A1A1A);
                     }
                 }
                 else
                 {
-                    this.font.drawText(matrixStack, text, 122, 10, 0x1A1A1A);
-                    if (container.time == 0)
+                    this.font.draw(matrixStack, text, 122, 10, 0x1A1A1A);
+                    if (menu.time == 0)
                     {
-                        this.font.drawText(matrixStack, new TranslationTextComponent("info.contact.postbox.instant"), 122, 22, 0x1A1A1A);
+                        this.font.draw(matrixStack, new TranslationTextComponent("info.contact.postbox.instant"), 122, 22, 0x1A1A1A);
                     }
                     else
                     {
-                        this.font.drawText(matrixStack, new TranslationTextComponent("info.contact.postbox.time", min, sec), 122, 22, 0x1A1A1A);
+                        this.font.draw(matrixStack, new TranslationTextComponent("info.contact.postbox.time", min, sec), 122, 22, 0x1A1A1A);
                     }
                 }
                 return;
@@ -198,50 +198,50 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
             case 3:
             {
                 TranslationTextComponent text = new TranslationTextComponent("info.contact.postbox.not_found");
-                int width = this.font.getStringWidth(text.getString());
+                int width = this.font.width(text.getString());
                 if (width > 38)
                 {
-                    this.font.drawText(matrixStack, text, 141 - width / 2, 16, 0x1A1A1A);
+                    this.font.draw(matrixStack, text, 141 - width / 2, 16, 0x1A1A1A);
                 }
                 else
                 {
-                    this.font.drawText(matrixStack, text, 122, 16, 0x1A1A1A);
+                    this.font.draw(matrixStack, text, 122, 16, 0x1A1A1A);
                 }
                 return;
             }
             case 4:
             {
                 TranslationTextComponent text = new TranslationTextComponent("info.contact.postbox.full_mail");
-                int width = this.font.getStringWidth(text.getString());
+                int width = this.font.width(text.getString());
                 if (width > 38)
                 {
-                    List<IReorderingProcessor> list = this.font.trimStringToWidth(text, 50);
+                    List<IReorderingProcessor> list = this.font.split(text, 50);
                     for (int i = 0; i < list.size(); i++)
                     {
-                        this.font.func_238422_b_(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
+                        this.font.draw(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
                     }
                 }
                 else
                 {
-                    this.font.drawText(matrixStack, text, 122, 16, 0x1A1A1A);
+                    this.font.draw(matrixStack, text, 122, 16, 0x1A1A1A);
                 }
                 return;
             }
             case 5:
             {
                 TranslationTextComponent text = new TranslationTextComponent("info.contact.postbox.success");
-                int width = this.font.getStringWidth(text.getString());
+                int width = this.font.width(text.getString());
                 if (width > 38)
                 {
-                    List<IReorderingProcessor> list = this.font.trimStringToWidth(text, 50);
+                    List<IReorderingProcessor> list = this.font.split(text, 50);
                     for (int i = 0; i < list.size(); i++)
                     {
-                        this.font.func_238422_b_(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
+                        this.font.draw(matrixStack, list.get(i), 118, 22 - list.size() * 6 + i * 12, 0x1A1A1A);
                     }
                 }
                 else
                 {
-                    this.font.drawText(matrixStack, text, 122, 16, 0x1A1A1A);
+                    this.font.draw(matrixStack, text, 122, 16, 0x1A1A1A);
                 }
             }
         }
@@ -252,9 +252,9 @@ public class PostboxGui extends ContainerScreen<PostboxContainer>
     {
         if (keyCode == 256)
         {
-            this.minecraft.player.closeScreen();
+            this.minecraft.player.closeContainer();
         }
 
-        return this.nameField.keyPressed(keyCode, scanCode, modifiers) || this.nameField.canWrite() || super.keyPressed(keyCode, scanCode, modifiers);
+        return this.nameField.keyPressed(keyCode, scanCode, modifiers) || this.nameField.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

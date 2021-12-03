@@ -42,7 +42,7 @@ public final class PostcardManager extends JsonReloadListener
 
             try
             {
-                PostcardStyle style = PostcardHandler.read(JSONUtils.getJsonObject(entry.getValue(), "top element"));
+                PostcardStyle style = PostcardHandler.read(JSONUtils.convertToJsonObject(entry.getValue(), "top element"));
                 map.put(location, style);
             }
             catch (IllegalArgumentException | JsonParseException exception)
@@ -59,7 +59,7 @@ public final class PostcardManager extends JsonReloadListener
         {
             for (ServerPlayerEntity player : server.getPlayerList().getPlayers())
             {
-                SimpleNetworkHandler.CHANNEL.sendTo(new PostcardReloadMessage(), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+                SimpleNetworkHandler.CHANNEL.sendTo(new PostcardReloadMessage(), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         }
     }

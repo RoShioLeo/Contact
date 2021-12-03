@@ -33,15 +33,15 @@ public class MailboxTileEntityRenderer extends TileEntityRenderer<MailboxTileEnt
             ItemStack mail = new ItemStack(ItemRegistry.MAIL);
             ItemRenderer renderItem = mc.getItemRenderer();
 
-            matrixStackIn.push();
+            matrixStackIn.pushPose();
             matrixStackIn.translate(0.5, 1 + 0.1 * MathHelper.sin((float) (tileEntityIn.getAngel() / 20.0D * PI)), 0.5);
             matrixStackIn.scale(0.6F, 0.6F, 0.6F);
-            matrixStackIn.rotate(new Quaternion(Vector3f.YP, -mc.player.rotationYawHead, true));
-            RenderHelper.enableStandardItemLighting();
-            renderItem.renderItem(mail, ItemCameraTransforms.TransformType.FIXED, 15728880, combinedOverlayIn, matrixStackIn, bufferIn);
-            RenderHelper.disableStandardItemLighting();
+            matrixStackIn.mulPose(new Quaternion(Vector3f.YP, -mc.player.yHeadRot, true));
+            RenderHelper.turnBackOn();
+            renderItem.renderStatic(mail, ItemCameraTransforms.TransformType.FIXED, 15728880, combinedOverlayIn, matrixStackIn, bufferIn);
+            RenderHelper.turnOff();
 
-            matrixStackIn.pop();
+            matrixStackIn.popPose();
         }
     }
 }

@@ -20,25 +20,25 @@ public class ParcelItem extends NormalItem implements IMailItem
 
     public ParcelItem(String name, boolean isEnderType)
     {
-        super(name, NormalItem.getNormalItemProperties(Contact.ITEM_GROUP).maxStackSize(1));
+        super(name, NormalItem.getNormalItemProperties(Contact.ITEM_GROUP).stacksTo(1));
         this.isEnderType = isEnderType;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
         ItemStackHandler contents = new ItemStackHandler(4);
-        ItemStack parcel = playerIn.getHeldItem(handIn);
+        ItemStack parcel = playerIn.getItemInHand(handIn);
         contents.deserializeNBT(parcel.getOrCreateTag());
         for (int i = 0; i < 4; ++i)
         {
-            playerIn.inventory.placeItemBackInInventory(playerIn.getEntityWorld(), contents.getStackInSlot(i));
+            playerIn.inventory.placeItemBackInInventory(playerIn.getCommandSenderWorld(), contents.getStackInSlot(i));
         }
-        return ActionResult.resultSuccess(ItemStack.EMPTY);
+        return ActionResult.success(ItemStack.EMPTY);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         this.addSenderInfoTooltip(stack, worldIn, tooltip, flagIn);
     }

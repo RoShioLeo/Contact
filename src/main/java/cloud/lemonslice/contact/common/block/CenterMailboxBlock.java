@@ -24,20 +24,20 @@ public class CenterMailboxBlock extends NormalHorizontalBlock
 {
     public CenterMailboxBlock()
     {
-        super(AbstractBlock.Properties.create(Material.IRON), "center_mailbox");
+        super(AbstractBlock.Properties.of(Material.METAL), "center_mailbox");
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if (!worldIn.isRemote)
+        if (!worldIn.isClientSide)
         {
-            return worldIn.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).map(data ->
+            return worldIn.getServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).map(data ->
             {
-                if (data.PLAYERS_DATA.getMailboxPos(player.getUniqueID()) == null)
+                if (data.PLAYERS_DATA.getMailboxPos(player.getUUID()) == null)
                 {
-                    ItemStackHandler contents = data.PLAYERS_DATA.getMailboxContents(player.getUniqueID());
+                    ItemStackHandler contents = data.PLAYERS_DATA.getMailboxContents(player.getUUID());
                     boolean isEmpty = true;
                     for (int i = 0; i < contents.getSlots(); ++i)
                     {
@@ -48,18 +48,18 @@ public class CenterMailboxBlock extends NormalHorizontalBlock
                         }
                     }
 
-                    data.PLAYERS_DATA.resetMailboxContents(player.getUniqueID());
+                    data.PLAYERS_DATA.resetMailboxContents(player.getUUID());
                     if (!isEmpty)
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.pick_up"), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.pick_up"), false);
                     }
                     else
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.empty"), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.empty"), false);
                     }
                     return ActionResultType.SUCCESS;
                 }
-                else player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.deny"), false);
+                else player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.deny"), false);
                 return ActionResultType.FAIL;
             }).orElse(ActionResultType.FAIL);
         }

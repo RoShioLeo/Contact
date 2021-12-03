@@ -64,10 +64,10 @@ public class MailboxBlock extends NormalHorizontalBlock
 
     public MailboxBlock(DyeColor boxColor, DyeColor flagColor)
     {
-        super(Block.Properties.create(Material.ROCK, boxColor).notSolid().sound(SoundType.STONE).hardnessAndResistance(1.5F, 6.0F), boxColor.getString() + "_mailbox");
+        super(Block.Properties.of(Material.STONE, boxColor).noOcclusion().sound(SoundType.STONE).strength(1.5F, 6.0F), boxColor.getSerializedName() + "_mailbox");
         this.boxColor = boxColor;
         this.flagColor = flagColor;
-        this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER).with(OPEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(OPEN, false));
     }
 
     public MailboxBlock(DyeColor boxColor)
@@ -85,13 +85,13 @@ public class MailboxBlock extends NormalHorizontalBlock
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        if (state.get(HALF).equals(DoubleBlockHalf.LOWER))
+        if (state.getValue(HALF).equals(DoubleBlockHalf.LOWER))
         {
             return LOWER_SHAPE;
         }
         else
         {
-            switch (state.get(HORIZONTAL_FACING))
+            switch (state.getValue(FACING))
             {
                 case EAST:
                 case WEST:
@@ -103,72 +103,72 @@ public class MailboxBlock extends NormalHorizontalBlock
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
-        super.fillStateContainer(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(HALF, OPEN);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
     {
-        DoubleBlockHalf doubleblockhalf = stateIn.get(HALF);
+        DoubleBlockHalf doubleblockhalf = stateIn.getValue(HALF);
         if (facing.getAxis() == Direction.Axis.Y && doubleblockhalf == DoubleBlockHalf.LOWER == (facing == Direction.UP))
         {
-            return facingState.matchesBlock(this) && facingState.get(HALF) != doubleblockhalf ? stateIn.with(HORIZONTAL_FACING, facingState.get(HORIZONTAL_FACING)) : Blocks.AIR.getDefaultState();
+            return facingState.is(this) && facingState.getValue(HALF) != doubleblockhalf ? stateIn.setValue(FACING, facingState.getValue(FACING)) : Blocks.AIR.defaultBlockState();
         }
         else
         {
-            return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+            return doubleblockhalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
         }
     }
 
     protected static void removeBottomHalf(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        DoubleBlockHalf doubleblockhalf = state.get(HALF);
+        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
         if (doubleblockhalf == DoubleBlockHalf.UPPER)
         {
-            BlockPos blockpos = pos.down();
+            BlockPos blockpos = pos.below();
             BlockState blockstate = world.getBlockState(blockpos);
-            if (blockstate.getBlock() == state.getBlock() && blockstate.get(HALF) == DoubleBlockHalf.LOWER)
+            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER)
             {
-                world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
-                world.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
+                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
             }
         }
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if (!worldIn.isRemote)
+        if (!worldIn.isClientSide)
         {
-            return worldIn.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).map(data ->
+            return worldIn.getServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).map(data ->
             {
-                BlockPos topPos = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
-                UUID mailboxOwner = data.PLAYERS_DATA.getMailboxOwner(worldIn.getDimensionKey(), topPos);
-                if (player.isSneaking())
+                BlockPos topPos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos : pos.above();
+                UUID mailboxOwner = data.PLAYERS_DATA.getMailboxOwner(worldIn.dimension(), topPos);
+                if (player.isShiftKeyDown())
                 {
                     // 检查邮箱主人，没有的话，录入
                     if (mailboxOwner == null)
                     {
-                        if (data.PLAYERS_DATA.getMailboxPos(player.getUniqueID()) == null)
+                        if (data.PLAYERS_DATA.getMailboxPos(player.getUUID()) == null)
                         {
-                            player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.binding"), false);
+                            player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.binding"), false);
                         }
                         else
                         {
-                            player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.switch"), false);
+                            player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.switch"), false);
                         }
-                        data.PLAYERS_DATA.setMailboxData(player.getUniqueID(), worldIn.getDimensionKey(), topPos);
+                        data.PLAYERS_DATA.setMailboxData(player.getUUID(), worldIn.dimension(), topPos);
                         MailboxManager.updateState(worldIn, topPos);
                         AdvancementManager.givePlayerAdvancement(worldIn.getServer(), (ServerPlayerEntity) player, new ResourceLocation("contact:root"));
                         return ActionResultType.SUCCESS;
                     }
                 }
-                if (Objects.equals(mailboxOwner, player.getUniqueID()))
+                if (Objects.equals(mailboxOwner, player.getUUID()))
                 {
                     // 获取邮件
                     ItemStackHandler contents = data.PLAYERS_DATA.getMailboxContents(mailboxOwner);
@@ -195,53 +195,53 @@ public class MailboxBlock extends NormalHorizontalBlock
                     data.PLAYERS_DATA.resetMailboxContents(mailboxOwner);
                     if (!isEmpty)
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.pick_up"), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.pick_up"), false);
                     }
                     else
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.empty"), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.empty"), false);
                     }
                     MailboxManager.updateState(worldIn, topPos);
                     return ActionResultType.SUCCESS;
                 }
-                else if (player.getHeldItem(handIn).getItem() instanceof IMailItem)
+                else if (player.getItemInHand(handIn).getItem() instanceof IMailItem)
                 {
                     if (mailboxOwner != null)
                     {
                         // 不是主人的话，如果有包裹和明信片，那么塞进去
                         if (data.PLAYERS_DATA.isMailboxEmpty(mailboxOwner))
                         {
-                            ItemStack held = player.getHeldItem(handIn).copy();
+                            ItemStack held = player.getItemInHand(handIn).copy();
                             held.getOrCreateTag().putString("Sender", player.getName().getString());
                             data.PLAYERS_DATA.addMailboxContents(mailboxOwner, held);
-                            player.setHeldItem(handIn, ItemStack.EMPTY);
-                            player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.deliver"), false);
+                            player.setItemInHand(handIn, ItemStack.EMPTY);
+                            player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.deliver"), false);
                             AdvancementManager.givePlayerAdvancement(player.getServer(), (ServerPlayerEntity) player, new ResourceLocation("contact:send_in_person"));
                             MailboxManager.updateState(worldIn, topPos);
                             return ActionResultType.SUCCESS;
                         }
                         else
                         {
-                            player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.full"), false);
+                            player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.full"), false);
                             return ActionResultType.SUCCESS;
                         }
                     }
                     else
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.no_owner"), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.no_owner"), false);
                     }
                     return ActionResultType.SUCCESS;
                 }
                 else if (mailboxOwner != null)
                 {
-                    GameProfile gameProfile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(mailboxOwner);
+                    GameProfile gameProfile = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(mailboxOwner);
                     if (gameProfile != null)
                     {
-                        player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.others", gameProfile.getName()), false);
+                        player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.others", gameProfile.getName()), false);
                     }
                     return ActionResultType.SUCCESS;
                 }
-                player.sendStatusMessage(new TranslationTextComponent("message.contact.mailbox.no_owner_tips"), false);
+                player.displayClientMessage(new TranslationTextComponent("message.contact.mailbox.no_owner_tips"), false);
                 return ActionResultType.FAIL;
             }).orElse(ActionResultType.FAIL);
         }
@@ -249,31 +249,31 @@ public class MailboxBlock extends NormalHorizontalBlock
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
+    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        if (!worldIn.isRemote)
+        if (!worldIn.isClientSide)
         {
             if (player.isCreative())
             {
                 removeBottomHalf(worldIn, pos, state, player);
             }
-            worldIn.getServer().getWorld(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
+            worldIn.getServer().getLevel(World.OVERWORLD).getCapability(WORLD_PLAYERS_DATA).ifPresent(data ->
             {
-                BlockPos topPos = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
-                data.PLAYERS_DATA.removeMailboxData(GlobalPos.getPosition(worldIn.getDimensionKey(), topPos));
+                BlockPos topPos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos : pos.above();
+                data.PLAYERS_DATA.removeMailboxData(GlobalPos.of(worldIn.dimension(), topPos));
             });
         }
-        super.onBlockHarvested(worldIn, pos, state, player);
+        super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockPos blockpos = context.getPos();
-        if (blockpos.getY() < 255 && context.getWorld().getBlockState(blockpos.up()).isReplaceable(context))
+        BlockPos blockpos = context.getClickedPos();
+        if (blockpos.getY() < 255 && context.getLevel().getBlockState(blockpos.above()).canBeReplaced(context))
         {
-            return super.getStateForPlacement(context).with(HALF, DoubleBlockHalf.LOWER);
+            return super.getStateForPlacement(context).setValue(HALF, DoubleBlockHalf.LOWER);
         }
         else
         {
@@ -282,31 +282,31 @@ public class MailboxBlock extends NormalHorizontalBlock
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-        worldIn.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+        worldIn.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), 3);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos)
+    public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos)
     {
-        BlockPos blockpos = pos.down();
+        BlockPos blockpos = pos.below();
         BlockState blockstate = worldIn.getBlockState(blockpos);
-        return state.get(HALF) == DoubleBlockHalf.LOWER ? blockstate.isSolidSide(worldIn, blockpos, Direction.UP) : blockstate.matchesBlock(this);
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? blockstate.isFaceSturdy(worldIn, blockpos, Direction.UP) : blockstate.is(this);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        return state.get(HALF) == DoubleBlockHalf.LOWER ? Lists.newArrayList(new ItemStack(this)) : Collections.emptyList();
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? Lists.newArrayList(new ItemStack(this)) : Collections.emptyList();
     }
 
     @Override
     public boolean hasTileEntity(BlockState state)
     {
-        return state.get(HALF) == DoubleBlockHalf.UPPER;
+        return state.getValue(HALF) == DoubleBlockHalf.UPPER;
     }
 
     @Override

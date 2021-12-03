@@ -91,7 +91,7 @@ public final class Contact
     public static final ItemGroup ITEM_GROUP = new ItemGroup("contact")
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
             return new ItemStack(MAIL);
         }

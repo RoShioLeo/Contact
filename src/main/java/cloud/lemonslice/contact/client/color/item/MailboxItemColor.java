@@ -12,7 +12,7 @@ public class MailboxItemColor implements IItemColor
     @Override
     public int getColor(ItemStack itemStack, int tintIndex)
     {
-        Block block = Block.getBlockFromItem(itemStack.getItem());
+        Block block = Block.byItem(itemStack.getItem());
         if (block instanceof MailboxBlock)
         {
             if (tintIndex <= 1)
