@@ -1,7 +1,7 @@
 package cloud.lemonslice.contact.common.container;
 
+import cloud.lemonslice.contact.common.config.ServerConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
-import cloud.lemonslice.contact.common.item.ParcelItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +33,7 @@ public class WrappingPaperContainer extends AbstractContainerMenu
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack)
                 {
-                    return !(stack.getItem() instanceof ParcelItem);
+                    return !ServerConfig.Mail.blacklist.get().contains(stack.getItem().getRegistryName().toString());
                 }
             });
         }
