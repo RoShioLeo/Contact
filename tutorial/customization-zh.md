@@ -103,9 +103,13 @@
 注：若对资源包（旧译材质包）尚不熟悉，请先阅读 [Wiki](https://minecraft.fandom.com/zh/wiki/%E8%B5%84%E6%BA%90%E5%8C%85) 内相关内容。
 
 1. 在完成数据包的添加之后，我们来对明信片的材质部分进行添加。
+
 2. 以上面创建好的 `mycard.json` 文件为例，明信片材质位置上写了 `yourself:mycard`
    。这表明，该明信片的材质位置路径为 `assets/yourself/textures/postcard/mycard.png`。在相应路径上放上文件即可。
+
 3. 在 `mycard.json` 文件中，邮戳材质位置写了 `contact:postmark`，这是本模组自带的邮戳材质，所以不需要额外操作。若使用自己的邮戳材质，如 `ourselves:mark`
    ，则同理，该材质需要放在 `assets/ourselves/textures/postcard/mark.png`。
+
 4. 在添加完明信片之后，不要忘记本地化文件的配置。对于 `mycard.json` 添加的款式而言，其翻译键名为 `tooltip.postcard.myself.mycard`。在相应的本地化文件下操作即可，本教程不再赘述。
+
 5. 完成后，将 `assets` 文件夹和相应的 `pack.mcmeta` 打包，放入 `resourcepacks` 文件夹，进入游戏加载资源包即可。
