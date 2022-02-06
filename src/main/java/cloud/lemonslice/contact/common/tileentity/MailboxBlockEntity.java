@@ -33,7 +33,7 @@ public class MailboxBlockEntity extends BlockEntity
     @Override
     public CompoundTag getUpdateTag()
     {
-        return this.save(new CompoundTag());
+        return this.saveWithFullMetadata();
     }
 
     @Override
@@ -50,10 +50,10 @@ public class MailboxBlockEntity extends BlockEntity
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag)
+    public void saveAdditional(CompoundTag pTag)
     {
-        tag.putBoolean("IsOpened", isOpened);
-        return super.save(tag);
+        super.saveAdditional(pTag);
+        pTag.putBoolean("IsOpened", isOpened);
     }
 
     public void refreshStatus()
@@ -113,8 +113,8 @@ public class MailboxBlockEntity extends BlockEntity
     {
         if (this.hasLevel() && !this.level.isClientSide)
         {
-            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.m_195640_(this);
-            List<ServerPlayer> players = ((ServerLevel) this.level).getChunkSource().chunkMap.m_183262_(new ChunkPos(this.worldPosition.getX() >> 4, this.worldPosition.getZ() >> 4), false);
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(this);
+            List<ServerPlayer> players = ((ServerLevel) this.level).getChunkSource().chunkMap.getPlayers(new ChunkPos(this.worldPosition.getX() >> 4, this.worldPosition.getZ() >> 4), false);
             for (ServerPlayer player : players)
             {
                 player.connection.send(packet);

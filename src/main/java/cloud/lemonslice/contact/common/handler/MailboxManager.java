@@ -73,7 +73,7 @@ public final class MailboxManager
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        event.getPlayer().getCommandSenderWorld().getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
+        event.getPlayer().getLevel().getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
         {
             data.getData().nameToUUID.put(event.getPlayer().getName().getString(), event.getPlayer().getUUID());
             if (data.getData().uuidToContents.get(event.getPlayer().getUUID()) == null)

@@ -63,7 +63,7 @@ public class PostboxGui extends AbstractContainerScreen<PostboxContainer>
 
     private void buttonTooltip(Button button, PoseStack poseStack, int mouseX, int mouseY)
     {
-        if (button.m_198029_())
+        if (button.isHoveredOrFocused())
         {
             if (menu.status == 2)
             {

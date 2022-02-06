@@ -13,6 +13,7 @@ public final class NormalConfigs
 {
     public static final ForgeConfigSpec SERVER_CONFIG = new ForgeConfigSpec.Builder().configure(ServerConfig::new).getRight();
     public static final ForgeConfigSpec CLIENT_CONFIG = new ForgeConfigSpec.Builder().configure(ClientConfig::new).getRight();
+    public static final ForgeConfigSpec COMMON_CONFIG = new ForgeConfigSpec.Builder().configure(CommonConfig::new).getRight();
 
     @SubscribeEvent
     public static void onReload(ModConfigEvent.Reloading event)

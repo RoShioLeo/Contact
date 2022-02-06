@@ -116,14 +116,16 @@ public class PostboxContainer extends AbstractContainerMenu
     @Override
     public void removed(Player playerIn)
     {
-        if (!playerIn.isAlive() || playerIn instanceof ServerPlayer && ((ServerPlayer) playerIn).hasDisconnected())
+        if (playerIn instanceof ServerPlayer)
         {
-            playerIn.drop(parcel.getStackInSlot(0), false);
-            parcel.setStackInSlot(0, ItemStack.EMPTY);
-        }
-        else
-        {
-            playerIn.getInventory().placeItemBackInInventory(parcel.getStackInSlot(0));
+            if (!playerIn.isAlive() || ((ServerPlayer) playerIn).hasDisconnected())
+            {
+                playerIn.drop(parcel.getStackInSlot(0), false);
+            }
+            else
+            {
+                playerIn.getInventory().placeItemBackInInventory(parcel.getStackInSlot(0));
+            }
             parcel.setStackInSlot(0, ItemStack.EMPTY);
         }
     }

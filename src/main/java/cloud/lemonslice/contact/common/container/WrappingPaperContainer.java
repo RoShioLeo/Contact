@@ -1,7 +1,8 @@
 package cloud.lemonslice.contact.common.container;
 
-import cloud.lemonslice.contact.common.config.ServerConfig;
+import cloud.lemonslice.contact.common.config.CommonConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +34,8 @@ public class WrappingPaperContainer extends AbstractContainerMenu
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack)
                 {
-                    return !ServerConfig.Mail.blacklist.get().contains(stack.getItem().getRegistryName().toString());
+                    ResourceLocation id = stack.getItem().getRegistryName();
+                    return !CommonConfig.Mail.blacklistID.get().contains(id.toString()) || !CommonConfig.Mail.blacklistID.get().contains(id.getPath());
                 }
             });
         }
@@ -57,7 +59,7 @@ public class WrappingPaperContainer extends AbstractContainerMenu
     {
         Slot slot = this.slots.get(index);
 
-        if (slot == null || !slot.hasItem())
+        if (!slot.hasItem())
         {
             return ItemStack.EMPTY;
         }
@@ -103,50 +105,59 @@ public class WrappingPaperContainer extends AbstractContainerMenu
     }
 
     @Override
+    public void sendAllDataToRemote()
+    {
+        super.sendAllDataToRemote();
+    }
+
+    @Override
     public void removed(Player playerIn)
     {
-        if (!isPacked)
+        if (playerIn instanceof ServerPlayer)
         {
-            if (!playerIn.isAlive() || playerIn instanceof ServerPlayer && ((ServerPlayer) playerIn).hasDisconnected())
+            if (!isPacked)
             {
-                for (int j = 0; j < 4; ++j)
+                if (!playerIn.isAlive() || ((ServerPlayer) playerIn).hasDisconnected())
                 {
-                    playerIn.drop(inputs.getStackInSlot(j), false);
-                    inputs.setStackInSlot(j, ItemStack.EMPTY);
-                }
+                    for (int j = 0; j < 4; ++j)
+                    {
+                        playerIn.drop(inputs.getStackInSlot(j), false);
+                        inputs.setStackInSlot(j, ItemStack.EMPTY);
+                    }
 
-                if (!playerIn.getAbilities().instabuild && !droppedPaper)
+                    if (!playerIn.getAbilities().instabuild && !droppedPaper)
+                    {
+                        playerIn.drop(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER.get()) : new ItemStack(ItemRegistry.WRAPPING_PAPER.get()), false);
+                        droppedPaper = true;
+                    }
+                }
+                else
                 {
-                    playerIn.drop(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER.get()) : new ItemStack(ItemRegistry.WRAPPING_PAPER.get()), false);
-                    droppedPaper = true;
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        playerIn.getInventory().placeItemBackInInventory(inputs.getStackInSlot(i));
+                        inputs.setStackInSlot(i, ItemStack.EMPTY);
+                    }
+
+                    if (!playerIn.getAbilities().instabuild && !droppedPaper)
+                    {
+                        playerIn.getInventory().placeItemBackInInventory(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER.get()) : new ItemStack(ItemRegistry.WRAPPING_PAPER.get()));
+                        droppedPaper = true;
+                    }
                 }
             }
             else
             {
-                for (int i = 0; i < 4; ++i)
+                ItemStack parcel = isEnder ? new ItemStack(ItemRegistry.ENDER_PARCEL.get()) : new ItemStack(ItemRegistry.PARCEL.get());
+                parcel.setTag(inputs.serializeNBT());
+                if (!playerIn.isAlive() || ((ServerPlayer) playerIn).hasDisconnected())
                 {
-                    playerIn.getInventory().placeItemBackInInventory(inputs.getStackInSlot(i));
-                    inputs.setStackInSlot(i, ItemStack.EMPTY);
+                    playerIn.drop(parcel, false);
                 }
-
-                if (!playerIn.getAbilities().instabuild && !droppedPaper)
+                else
                 {
-                    playerIn.getInventory().placeItemBackInInventory(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER.get()) : new ItemStack(ItemRegistry.WRAPPING_PAPER.get()));
-                    droppedPaper = true;
+                    playerIn.getInventory().placeItemBackInInventory(parcel);
                 }
-            }
-        }
-        else
-        {
-            ItemStack parcel = isEnder ? new ItemStack(ItemRegistry.ENDER_PARCEL.get()) : new ItemStack(ItemRegistry.PARCEL.get());
-            parcel.setTag(inputs.serializeNBT());
-            if (!playerIn.isAlive() || playerIn instanceof ServerPlayer && ((ServerPlayer) playerIn).hasDisconnected())
-            {
-                playerIn.drop(parcel, false);
-            }
-            else
-            {
-                playerIn.getInventory().placeItemBackInInventory(parcel);
             }
         }
     }

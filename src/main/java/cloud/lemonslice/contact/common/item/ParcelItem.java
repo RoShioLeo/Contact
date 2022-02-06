@@ -49,4 +49,15 @@ public class ParcelItem extends NormalItem implements IMailItem
     {
         return isEnderType;
     }
+
+    public static ItemStack getParcel(ItemStackHandler contents, boolean isEnderType, String sender)
+    {
+        ItemStack parcel = new ItemStack(isEnderType ? ItemRegistry.ENDER_PARCEL.get() : ItemRegistry.PARCEL.get());
+        parcel.setTag(contents.serializeNBT());
+        if (!sender.isEmpty())
+        {
+            parcel.getOrCreateTag().putString("Sender", sender);
+        }
+        return parcel;
+    }
 }
