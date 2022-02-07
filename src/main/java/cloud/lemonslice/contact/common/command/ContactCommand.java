@@ -103,9 +103,9 @@ public class ContactCommand
                                                 .suggests(SUGGEST_PLAYERS)
                                                 .then(Commands.argument("postcard", ResourceLocationArgument.id())
                                                         .suggests(SUGGEST_POSTCARDS)
-                                                        .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
+                                                        .then(Commands.argument("isEnderType", BoolArgumentType.bool())
                                                                 .then(Commands.argument("sender", StringArgumentType.string())
-                                                                        .then(Commands.argument("isEnderType", BoolArgumentType.bool())
+                                                                        .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
                                                                                 .executes(context -> deliverPostcard(context.getSource(),
                                                                                         PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
                                                                                         StringArgumentType.getString(context, "targets"),
@@ -134,8 +134,8 @@ public class ContactCommand
                         .then(Commands.literal("parcel")
                                 .then(Commands.literal("give")
                                         .then(Commands.argument("targets", EntityArgument.players())
-                                                .then(Commands.argument("sender", StringArgumentType.string())
-                                                        .then(Commands.argument("isEnderType", BoolArgumentType.bool())
+                                                .then(Commands.argument("isEnderType", BoolArgumentType.bool())
+                                                        .then(Commands.argument("sender", StringArgumentType.string())
                                                                 .then(Commands.argument("item1", ItemArgument.item())
                                                                         .then(Commands.argument("count1", IntegerArgumentType.integer(1, 64))
                                                                                 .executes(context -> giveParcel(context.getSource(),
@@ -188,9 +188,9 @@ public class ContactCommand
                                 .then(Commands.literal("deliver")
                                         .then(Commands.argument("targets", StringArgumentType.string())
                                                 .suggests(SUGGEST_PLAYERS)
-                                                .then(Commands.argument("sender", StringArgumentType.string())
-                                                        .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
-                                                                .then(Commands.argument("isEnderType", BoolArgumentType.bool())
+                                                .then(Commands.argument("isEnderType", BoolArgumentType.bool())
+                                                        .then(Commands.argument("sender", StringArgumentType.string())
+                                                                .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
                                                                         .then(Commands.argument("item1", ItemArgument.item())
                                                                                 .then(Commands.argument("count1", IntegerArgumentType.integer(1, 64))
                                                                                         .executes(context -> deliverParcel(context.getSource(),
