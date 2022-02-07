@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[38,)"
+loaderVersion = "[39,)"
 license = "BSD-3-Clause License for Code"
 # issueTrackerURL="http://my.issue.tracker/" #optional
 [[mods]]
@@ -15,7 +15,7 @@ description = '''This is a mod that provides postal service.'''
 [[dependencies.contact]]
 modId = "forge"
 mandatory = true
-versionRange = "[39.0.45,)"
+versionRange = "[39,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.contact]]

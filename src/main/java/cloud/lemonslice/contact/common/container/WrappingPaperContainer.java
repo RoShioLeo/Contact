@@ -105,12 +105,6 @@ public class WrappingPaperContainer extends AbstractContainerMenu
     }
 
     @Override
-    public void sendAllDataToRemote()
-    {
-        super.sendAllDataToRemote();
-    }
-
-    @Override
     public void removed(Player playerIn)
     {
         if (playerIn instanceof ServerPlayer)

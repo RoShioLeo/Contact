@@ -26,7 +26,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
@@ -69,28 +68,30 @@ public class ContactCommand
                                         .then(Commands.argument("targets", EntityArgument.players())
                                                 .then(Commands.argument("postcard", ResourceLocationArgument.id())
                                                         .suggests(SUGGEST_POSTCARDS)
-                                                        .executes(context -> givePostcard(context.getSource(),
-                                                                PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
-                                                                EntityArgument.getPlayers(context, "targets"),
-                                                                "",
-                                                                BoolArgumentType.getBool(context, "isEnderType"),
-                                                                "")
-                                                        )
-                                                        .then(Commands.argument("sender", StringArgumentType.string())
+                                                        .then(Commands.argument("isEnderType", BoolArgumentType.bool())
                                                                 .executes(context -> givePostcard(context.getSource(),
                                                                         PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
                                                                         EntityArgument.getPlayers(context, "targets"),
-                                                                        StringArgumentType.getString(context, "sender"),
+                                                                        "",
                                                                         BoolArgumentType.getBool(context, "isEnderType"),
-                                                                        StringArgumentType.getString(context, "text"))
+                                                                        "")
                                                                 )
-                                                                .then(Commands.argument("text", StringArgumentType.greedyString())
+                                                                .then(Commands.argument("sender", StringArgumentType.string())
                                                                         .executes(context -> givePostcard(context.getSource(),
                                                                                 PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
                                                                                 EntityArgument.getPlayers(context, "targets"),
                                                                                 StringArgumentType.getString(context, "sender"),
                                                                                 BoolArgumentType.getBool(context, "isEnderType"),
                                                                                 StringArgumentType.getString(context, "text"))
+                                                                        )
+                                                                        .then(Commands.argument("text", StringArgumentType.greedyString())
+                                                                                .executes(context -> givePostcard(context.getSource(),
+                                                                                        PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
+                                                                                        EntityArgument.getPlayers(context, "targets"),
+                                                                                        StringArgumentType.getString(context, "sender"),
+                                                                                        BoolArgumentType.getBool(context, "isEnderType"),
+                                                                                        StringArgumentType.getString(context, "text"))
+                                                                                )
                                                                         )
                                                                 )
                                                         )
@@ -248,56 +249,7 @@ public class ContactCommand
         );
     }
 
-    private static int deliverParcel(CommandSourceStack source, String target, int ticks, String sender, boolean isEnder, ItemStack... list)
-    {
-        AtomicInteger n = new AtomicInteger(0);
-        ItemStackHandler contents = new ItemStackHandler(4);
-        for (int i = 0; i < list.length; i++)
-        {
-            contents.setStackInSlot(i, list[i]);
-        }
-        ItemStack parcel = ParcelItem.getParcel(contents, isEnder, sender);
-        if (target.equals("@e"))
-        {
-            for (Player player : source.getServer().getPlayerList().getPlayers())
-            {
-
-                deliverParcelToPlayer(source, ticks, n, parcel, player);
-            }
-        }
-        else
-        {
-            deliverParcelToPlayer(source, target, ticks, n, parcel);
-        }
-
-        if (n.get() == 1 && target.equals("@e"))
-        {
-            source.sendSuccess(new TranslatableComponent("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL.get() : ItemRegistry.PARCEL.get()).getDisplayName(), target), true);
-        }
-        else
-        {
-            source.sendSuccess(new TranslatableComponent("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL.get() : ItemRegistry.PARCEL.get()).getDisplayName(), n.get()), true);
-        }
-        return n.get();
-    }
-
-    private static void deliverParcelToPlayer(CommandSourceStack source, int ticks, AtomicInteger n, ItemStack parcel, Player player)
-    {
-        source.getServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
-        {
-            if (!data.getData().isMailboxFull(player.getUUID()))
-            {
-                data.getData().mailList.add(new MailToBeSent(player.getUUID(), parcel, ticks));
-                n.getAndIncrement();
-            }
-            else
-            {
-                source.sendSuccess(new TranslatableComponent("command.contact.deliver.full", player.getDisplayName()), true);
-            }
-        });
-    }
-
-    private static void deliverParcelToPlayer(CommandSourceStack source, String target, int ticks, AtomicInteger n, ItemStack parcel)
+    private static void deliverToPlayerMailbox(CommandSourceStack source, String target, int ticks, AtomicInteger n, ItemStack parcel)
     {
         source.getServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
         {
@@ -315,6 +267,36 @@ public class ContactCommand
                 }
             }
         });
+    }
+
+    private static int deliverParcel(CommandSourceStack source, String target, int ticks, String sender, boolean isEnder, ItemStack... list)
+    {
+        AtomicInteger n = new AtomicInteger(0);
+        ItemStackHandler contents = new ItemStackHandler(4);
+        for (int i = 0; i < list.length; i++)
+        {
+            contents.setStackInSlot(i, list[i]);
+        }
+        ItemStack parcel = ParcelItem.getParcel(contents, isEnder, sender);
+        if (target.equals("@e"))
+        {
+            source.getServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
+                    data.getData().nameToUUID.keySet().forEach(name -> deliverToPlayerMailbox(source, name, ticks, n, parcel)));
+        }
+        else
+        {
+            deliverToPlayerMailbox(source, target, ticks, n, parcel);
+        }
+
+        if (n.get() == 1 && target.equals("@e"))
+        {
+            source.sendSuccess(new TranslatableComponent("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL.get() : ItemRegistry.PARCEL.get()).getDisplayName(), target), true);
+        }
+        else
+        {
+            source.sendSuccess(new TranslatableComponent("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL.get() : ItemRegistry.PARCEL.get()).getDisplayName(), n.get()), true);
+        }
+        return n.get();
     }
 
     private static int giveParcel(CommandSourceStack source, Collection<ServerPlayer> targets, String sender, boolean isEnder, ItemStack... list)
@@ -346,23 +328,17 @@ public class ContactCommand
         AtomicInteger n = new AtomicInteger(0);
         if (target.equals("@e"))
         {
-            for (Player player : source.getServer().getPlayerList().getPlayers())
-            {
-                ItemStack postcard = PostcardItem.setText(PostcardItem.getPostcard(id, isEnder), text);
-                if (!sender.isEmpty())
-                {
-                    postcard.getOrCreateTag().putString("Sender", sender);
-                }
-
-                deliverParcelToPlayer(source, ticks, n, postcard, player);
-            }
+            ItemStack postcard = PostcardItem.setText(PostcardItem.getPostcard(id, isEnder), text);
+            postcard.getOrCreateTag().putString("Sender", sender);
+            source.getServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
+                    data.getData().nameToUUID.keySet().forEach(name -> deliverToPlayerMailbox(source, name, ticks, n, postcard)));
         }
         else
         {
             ItemStack postcard = PostcardItem.setText(PostcardItem.getPostcard(id, false), text);
             postcard.getOrCreateTag().putString("Sender", sender);
 
-            deliverParcelToPlayer(source, target, ticks, n, postcard);
+            deliverToPlayerMailbox(source, target, ticks, n, postcard);
         }
 
         if (n.get() == 1 && !target.equals("@e"))
