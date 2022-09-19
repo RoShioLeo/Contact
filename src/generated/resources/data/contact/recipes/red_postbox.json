@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "postbox",
+  "pattern": [
+    "xxx",
+    "x*x",
+    "+++"
+  ],
+  "key": {
+    "*": {
+      "tag": "forge:dyes/red"
+    },
+    "x": {
+      "tag": "forge:ingots/iron"
+    },
+    "+": {
+      "tag": "forge:stone"
+    }
+  },
+  "result": {
+    "item": "contact:red_postbox"
+  }
+}

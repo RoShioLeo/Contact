@@ -1,0 +1,28 @@
+{
+  "parent": "contact:root",
+  "display": {
+    "icon": {
+      "item": "contact:postcard"
+    },
+    "title": {
+      "translate": "advancements.contact.send_postcard.title"
+    },
+    "description": {
+      "translate": "advancements.contact.send_postcard.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

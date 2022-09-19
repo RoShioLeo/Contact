@@ -1,0 +1,28 @@
+{
+  "parent": "contact:send_postcard",
+  "display": {
+    "icon": {
+      "item": "contact:white_mailbox"
+    },
+    "title": {
+      "translate": "advancements.contact.send_in_person.title"
+    },
+    "description": {
+      "translate": "advancements.contact.send_in_person.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

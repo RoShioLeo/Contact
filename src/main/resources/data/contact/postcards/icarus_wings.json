@@ -1,0 +1,32 @@
+{
+  "postcard": {
+    "texture": "contact:icarus_wings",
+    "width": 200,
+    "height": 133
+  },
+  "text": {
+    "x": 108,
+    "y": 14,
+    "width": 80,
+    "height": 108,
+    "color": {
+      "alpha": 255,
+      "red": 0,
+      "green": 135,
+      "blue": 146
+    }
+  },
+  "postmark": {
+    "texture": "contact:postmark",
+    "x": 142,
+    "y": -5,
+    "width": 64,
+    "height": 52,
+    "color": {
+      "alpha": 120,
+      "red": 175,
+      "green": 223,
+      "blue": 228
+    }
+  }
+}

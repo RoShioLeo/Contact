@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "dyed_mailbox",
+  "ingredients": [
+    {
+      "tag": "forge:dyes/pink"
+    },
+    {
+      "item": "contact:white_mailbox"
+    }
+  ],
+  "result": {
+    "item": "contact:pink_mailbox"
+  }
+}
