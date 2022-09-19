@@ -40,6 +40,7 @@ import static cloud.lemonslice.contact.common.capability.CapabilityRegistry.WORL
 public final class MailboxManager
 {
     private static final List<MailToBeSent> READY_TO_REMOVE = Lists.newArrayList();
+    private static int updateTick = 0;
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event)
@@ -48,24 +49,30 @@ public final class MailboxManager
         {
             ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
             {
-                for (MailToBeSent mail : data.getData().mailList)
+                updateTick = ++updateTick % 20;
+                if (updateTick == 0)
                 {
-                    mail.tick();
-                    if (mail.isReady())
+                    for (MailToBeSent mail : data.getData().mailList)
                     {
-                        UUID uuid = mail.getUUID();
-                        data.getData().addMailboxContents(uuid, mail.getContents());
-                        Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-                        if (player != null)
+                        mail.tick(20);
+                        if (mail.isReady())
                         {
-                            player.displayClientMessage(new TranslatableComponent("message.contact.mailbox.new_mail"), false);
+                            UUID uuid = mail.getUUID();
+                            if (data.getData().addMailboxContents(uuid, mail.getContents()))
+                            {
+                                Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
+                                if (player != null)
+                                {
+                                    player.displayClientMessage(new TranslatableComponent("message.contact.mailbox.new_mail"), false);
+                                }
+                                updateState(uuid, data.getData());
+                                READY_TO_REMOVE.add(mail);
+                            }
                         }
-                        updateState(uuid, data.getData());
-                        READY_TO_REMOVE.add(mail);
                     }
+                    data.getData().mailList.removeAll(READY_TO_REMOVE);
+                    READY_TO_REMOVE.clear();
                 }
-                data.getData().mailList.removeAll(READY_TO_REMOVE);
-                READY_TO_REMOVE.clear();
             });
         }
     }
@@ -137,12 +144,13 @@ public final class MailboxManager
         }
     }
 
-    public static int getDeliveryTicks(ResourceKey<Level> fromWorld, BlockPos fromPos, ResourceKey<Level> toWorld, BlockPos toPos)
+    public static int getDeliveryTicks(ResourceKey<Level> fromWorld, BlockPos
+            fromPos, ResourceKey<Level> toWorld, BlockPos toPos)
     {
         int time = 0;
         if (fromWorld != toWorld)
         {
-            time += 1200;
+            time += ServerConfig.Mail.ticksToAnotherWorld.get();
         }
         int distance = Math.abs(fromPos.getX() - toPos.getX()) + Math.abs(fromPos.getZ() - toPos.getZ());
         if (distance > 9000) distance = 9000;

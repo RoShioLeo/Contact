@@ -43,9 +43,9 @@ public class MailToBeSent
         return ticks <= 0;
     }
 
-    public void tick()
+    public void tick(int tick)
     {
-        if (ticks > 0) ticks--;
+        if (ticks > 0) ticks -= tick;
     }
 
     public CompoundTag writeToNBT()

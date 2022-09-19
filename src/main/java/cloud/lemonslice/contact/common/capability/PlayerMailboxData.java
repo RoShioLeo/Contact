@@ -82,7 +82,7 @@ public class PlayerMailboxData
     }
 
     // Remember to update blockstate
-    public void addMailboxContents(UUID uuid, ItemStack parcelIn)
+    public boolean addMailboxContents(UUID uuid, ItemStack parcelIn)
     {
         ItemStackHandler mailbox = getMailboxContents(uuid);
         if (!isMailboxFull(uuid))
@@ -98,10 +98,11 @@ public class PlayerMailboxData
                     {
                         SimpleNetworkHandler.CHANNEL.sendTo(new ActionMessage(0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                     }
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     // Remember to update blockstate

@@ -12,12 +12,15 @@ public class ServerConfig
     public static class Mail
     {
         public static ForgeConfigSpec.IntValue postalSpeed;
+        public static ForgeConfigSpec.IntValue ticksToAnotherWorld;
 
         private static void load(ForgeConfigSpec.Builder builder)
         {
             builder.push("Mail");
             postalSpeed = builder.comment("The postal speed per block. (ticks)")
-                    .defineInRange("PostalSpeed", 4, 0, 10);
+                    .defineInRange("PostalSpeed", 4, 0, 1200);
+            ticksToAnotherWorld = builder.comment("The extra postal time needed to deliver to another world. (ticks)")
+                    .defineInRange("TicksToAnotherWorld", 1200, 0, 12000);
             builder.pop();
         }
     }

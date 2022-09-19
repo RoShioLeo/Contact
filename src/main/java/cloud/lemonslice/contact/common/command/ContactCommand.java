@@ -2,7 +2,6 @@ package cloud.lemonslice.contact.common.command;
 
 import cloud.lemonslice.contact.common.capability.MailToBeSent;
 import cloud.lemonslice.contact.common.command.arguments.PostcardStyleArgument;
-import cloud.lemonslice.contact.common.config.ServerConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
 import cloud.lemonslice.contact.common.item.ParcelItem;
 import cloud.lemonslice.contact.common.item.PostcardItem;
@@ -105,7 +104,7 @@ public class ContactCommand
                                                         .suggests(SUGGEST_POSTCARDS)
                                                         .then(Commands.argument("isEnderType", BoolArgumentType.bool())
                                                                 .then(Commands.argument("sender", StringArgumentType.string())
-                                                                        .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
+                                                                        .then(Commands.argument("ticks", IntegerArgumentType.integer(0, 1728000))
                                                                                 .executes(context -> deliverPostcard(context.getSource(),
                                                                                         PostcardStyleArgument.getPostcardStyleID(context, "postcard"),
                                                                                         StringArgumentType.getString(context, "targets"),
@@ -190,7 +189,7 @@ public class ContactCommand
                                                 .suggests(SUGGEST_PLAYERS)
                                                 .then(Commands.argument("isEnderType", BoolArgumentType.bool())
                                                         .then(Commands.argument("sender", StringArgumentType.string())
-                                                                .then(Commands.argument("ticks", IntegerArgumentType.integer(0, ServerConfig.Mail.postalSpeed.get() * 9000))
+                                                                .then(Commands.argument("ticks", IntegerArgumentType.integer(0, 1728000))
                                                                         .then(Commands.argument("item1", ItemArgument.item())
                                                                                 .then(Commands.argument("count1", IntegerArgumentType.integer(1, 64))
                                                                                         .executes(context -> deliverParcel(context.getSource(),
