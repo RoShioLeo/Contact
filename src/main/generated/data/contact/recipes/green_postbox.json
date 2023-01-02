@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "postbox",
+  "key": {
+    "*": {
+      "tag": "c:green_dyes"
+    },
+    "+": {
+      "item": "minecraft:stone"
+    },
+    "x": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    "xxx",
+    "x*x",
+    "+++"
+  ],
+  "result": {
+    "item": "contact:green_postbox"
+  }
+}

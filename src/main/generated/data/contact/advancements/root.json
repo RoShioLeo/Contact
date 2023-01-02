@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "description": {
+      "translate": "advancements.contact.root.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "contact:mail"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.contact.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

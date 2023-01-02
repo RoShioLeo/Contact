@@ -1,0 +1,28 @@
+{
+  "parent": "contact:receive_postcard",
+  "display": {
+    "icon": {
+      "item": "contact:parcel"
+    },
+    "title": {
+      "translate": "advancements.contact.from_another_world.title"
+    },
+    "description": {
+      "translate": "advancements.contact.from_another_world.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "dyed_mailbox",
+  "ingredients": [
+    {
+      "tag": "c:black_dyes"
+    },
+    {
+      "item": "contact:white_mailbox"
+    }
+  ],
+  "result": {
+    "item": "contact:black_mailbox"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "wrapping_paper",
+  "key": {
+    "*": {
+      "item": "minecraft:string"
+    },
+    "x": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "*x*",
+    "xxx",
+    "*x*"
+  ],
+  "result": {
+    "item": "contact:wrapping_paper"
+  }
+}

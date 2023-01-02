@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "contact",
+  "version": "${version}",
+  "name": "Contact",
+  "description": "A mod that provides postal service",
+  "authors": [
+    "RoshioLeo",
+    "Gloridifice",
+    "MalayP"
+  ],
+  "contact": {
+    "homepage": "https://github.com/RoShioLeo",
+    "sources": "https://github.com/lemon-slice-studio/Contact"
+  },
+  "license": "BSD-3",
+  "icon": "assets/contact/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "cloud.lemonslice.contact.data.DataGenerationHandler"
+    ],
+    "main": [
+      "cloud.lemonslice.contact.Contact"
+    ],
+    "client": [
+      "cloud.lemonslice.contact.client.ClientProxy"
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=17",
+    "silveroak": ">=1.0.4-Alpha",
+    "midnightlib": ">=1.1.0"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "mailbox",
+  "key": {
+    "/": {
+      "item": "minecraft:stick"
+    },
+    "x": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    "xxx",
+    "x x",
+    " / "
+  ],
+  "result": {
+    "item": "contact:white_mailbox"
+  }
+}
