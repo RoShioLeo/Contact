@@ -49,7 +49,7 @@
   "tooltip.postcard.contact.crock_pot": "Crock Pot",
   "info.contact.postbox.addressee": "Addressee",
   "info.contact.postbox.not_found": "Not found",
-  "info.contact.postbox.need_mail": "Please put mail in",
+  "info.contact.postbox.need_mail": "Please put mail",
   "info.contact.postbox.full_mail": "Mailbox is full",
   "info.contact.postbox.estimated": "Estimate",
   "info.contact.postbox.time": "%smin %ss",

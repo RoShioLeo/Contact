@@ -16,7 +16,7 @@ public final class DataGatherHandler
     public static void onDataGather(GatherDataEvent event)
     {
         DataGenerator gen = event.getGenerator();
-        gen.addProvider(event.includeServer(), new RecipeProvider(gen));
-        gen.addProvider(event.includeServer(), new AdvancementProvider(gen));
+        gen.addProvider(event.includeServer(), new RecipeProvider(gen.getPackOutput()));
+        gen.addProvider(event.includeServer(), new AdvancementProvider(gen.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }

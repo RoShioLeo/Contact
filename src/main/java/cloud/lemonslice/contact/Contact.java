@@ -8,12 +8,15 @@ import cloud.lemonslice.contact.common.block.BlockRegistry;
 import cloud.lemonslice.contact.common.command.ContactCommand;
 import cloud.lemonslice.contact.common.config.NormalConfigs;
 import cloud.lemonslice.contact.common.container.MenuTypeRegistry;
-import cloud.lemonslice.contact.common.item.ItemRegistry;
 import cloud.lemonslice.contact.common.tileentity.BlockEntityTypeRegistry;
 import cloud.lemonslice.contact.network.SimpleNetworkHandler;
+import cloud.lemonslice.contact.resourse.PostcardHandler;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -26,19 +29,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static cloud.lemonslice.contact.common.item.ItemRegistry.ITEM_REGISTER;
 import static cloud.lemonslice.contact.common.item.ItemRegistry.MAIL;
+import static cloud.lemonslice.contact.common.item.PostcardItem.getPostcard;
 
 @Mod("contact")
 public final class Contact
 {
-    public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab("contact")
-    {
-        @Override
-        public ItemStack makeIcon()
-        {
-            return new ItemStack(MAIL.get());
-        }
-    };
+    public static CreativeModeTab ITEM_GROUP;
 
     public static final String MODID = "contact";
     public static final CommonProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
@@ -47,13 +45,15 @@ public final class Contact
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCreativeModeTab);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCreativeModeTabContents);
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, NormalConfigs.SERVER_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NormalConfigs.COMMON_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, NormalConfigs.CLIENT_CONFIG);
         cloud.lemonslice.silveroak.network.SimpleNetworkHandler.init();
         BlockRegistry.BLOCK_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ItemRegistry.ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockEntityTypeRegistry.BLOCK_ENTITY_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         MenuTypeRegistry.MENU_TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
@@ -69,6 +69,28 @@ public final class Contact
         ClientProxy.bindTileEntityRenderer();
         BlockColorsRegistry.init();
         ItemColorsRegistry.init();
+    }
+
+    private void registerCreativeModeTab(final CreativeModeTabEvent.Register event)
+    {
+        ITEM_GROUP = event.registerCreativeModeTab(new ResourceLocation(MODID, "tab"), builder -> builder.icon(() -> new ItemStack(MAIL.get())).title(Component.translatable("itemGroup.contact")));
+    }
+
+    private void registerCreativeModeTabContents(final CreativeModeTabEvent.BuildContents event)
+    {
+
+        if (event.getTab().equals(ITEM_GROUP))
+        {
+            ITEM_REGISTER.getEntries().forEach(event::accept);
+            for (ResourceLocation id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
+            {
+                event.accept(getPostcard(id, false));
+            }
+            for (ResourceLocation id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
+            {
+                event.accept(getPostcard(id, true));
+            }
+        }
     }
 
     public void onCommandRegister(RegisterCommandsEvent event)

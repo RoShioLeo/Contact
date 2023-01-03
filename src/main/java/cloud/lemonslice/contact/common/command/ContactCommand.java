@@ -2,7 +2,6 @@ package cloud.lemonslice.contact.common.command;
 
 import cloud.lemonslice.contact.common.capability.MailToBeSent;
 import cloud.lemonslice.contact.common.command.arguments.PostcardStyleArgument;
-import cloud.lemonslice.contact.common.config.ServerConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
 import cloud.lemonslice.contact.common.item.ParcelItem;
 import cloud.lemonslice.contact.common.item.PostcardItem;

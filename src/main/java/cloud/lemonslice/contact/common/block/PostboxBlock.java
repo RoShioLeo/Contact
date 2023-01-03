@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+// TODO 使用 DoubleHorizontalBlock
 public class PostboxBlock extends NormalHorizontalBlock
 {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;

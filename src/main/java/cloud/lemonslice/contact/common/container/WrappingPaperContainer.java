@@ -2,7 +2,6 @@ package cloud.lemonslice.contact.common.container;
 
 import cloud.lemonslice.contact.common.config.CommonConfig;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -121,6 +120,12 @@ public class WrappingPaperContainer extends AbstractContainerMenu
                         inputs.setStackInSlot(j, ItemStack.EMPTY);
                     }
 
+                    ItemStack cursor = this.getCarried();
+                    if (!cursor.isEmpty())
+                    {
+                        playerIn.drop(cursor, false);
+                    }
+
                     if (!playerIn.getAbilities().instabuild && !droppedPaper)
                     {
                         playerIn.drop(isEnder ? new ItemStack(ItemRegistry.ENDER_WRAPPING_PAPER.get()) : new ItemStack(ItemRegistry.WRAPPING_PAPER.get()), false);
@@ -133,6 +138,12 @@ public class WrappingPaperContainer extends AbstractContainerMenu
                     {
                         playerIn.getInventory().placeItemBackInInventory(inputs.getStackInSlot(i));
                         inputs.setStackInSlot(i, ItemStack.EMPTY);
+                    }
+
+                    ItemStack cursor = this.getCarried();
+                    if (!cursor.isEmpty())
+                    {
+                        playerIn.getInventory().placeItemBackInInventory(cursor);
                     }
 
                     if (!playerIn.getAbilities().instabuild && !droppedPaper)

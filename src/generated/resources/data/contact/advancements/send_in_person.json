@@ -1,23 +1,23 @@
 {
   "parent": "contact:send_postcard",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "contact:white_mailbox"
-    },
-    "title": {
-      "translate": "advancements.contact.send_in_person.title"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancements.contact.send_in_person.description"
     },
     "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "contact:white_mailbox"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancements.contact.send_in_person.title"
     }
   },
   "requirements": [

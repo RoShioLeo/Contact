@@ -1,11 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "wrapping_paper",
-  "pattern": [
-    "*x*",
-    "xxx",
-    "*x*"
-  ],
   "key": {
     "*": {
       "tag": "forge:string"
@@ -14,6 +10,11 @@
       "item": "minecraft:paper"
     }
   },
+  "pattern": [
+    "*x*",
+    "xxx",
+    "*x*"
+  ],
   "result": {
     "item": "contact:wrapping_paper"
   }

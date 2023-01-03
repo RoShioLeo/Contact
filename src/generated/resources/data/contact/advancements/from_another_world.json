@@ -1,23 +1,23 @@
 {
   "parent": "contact:receive_postcard",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "contact:parcel"
-    },
-    "title": {
-      "translate": "advancements.contact.from_another_world.title"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancements.contact.from_another_world.description"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "contact:parcel"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancements.contact.from_another_world.title"
     }
   },
   "requirements": [

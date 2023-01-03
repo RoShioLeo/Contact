@@ -1,22 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "postbox",
+  "key": {
+    "*": {
+      "tag": "forge:dyes/green"
+    },
+    "+": {
+      "tag": "forge:stone"
+    },
+    "x": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "xxx",
     "x*x",
     "+++"
   ],
-  "key": {
-    "*": {
-      "tag": "forge:dyes/green"
-    },
-    "x": {
-      "tag": "forge:ingots/iron"
-    },
-    "+": {
-      "tag": "forge:stone"
-    }
-  },
   "result": {
     "item": "contact:green_postbox"
   }

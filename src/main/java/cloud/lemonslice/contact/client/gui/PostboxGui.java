@@ -50,7 +50,6 @@ public class PostboxGui extends AbstractContainerScreen<PostboxContainer>
 
         this.buttonSend = this.addWidget(new IconButton(offsetX + 97, offsetY + 26, 10, 9, Component.translatable("tooltip.contact.postbox.send"), button -> send(), this::buttonTooltip));
 
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.nameField = this.addRenderableWidget(new EditBox(this.font, offsetX + 42, offsetY + 26, 43, 9, Component.translatable("info.contact.postbox.addressee")));
         this.nameField.setTextColor(-1);
         this.nameField.setTextColorUneditable(-1);
@@ -67,11 +66,11 @@ public class PostboxGui extends AbstractContainerScreen<PostboxContainer>
         {
             if (menu.status == 2)
             {
-                GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.x, button.y, button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
+                GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
             }
             else
             {
-                GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.x, button.y, button.getWidth(), button.getHeight(), Lists.newArrayList(Component.translatable("tooltip.contact.postbox.enquire")));
+                GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(Component.translatable("tooltip.contact.postbox.enquire")));
             }
         }
     }

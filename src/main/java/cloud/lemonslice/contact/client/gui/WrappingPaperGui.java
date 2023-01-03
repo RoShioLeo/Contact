@@ -45,7 +45,7 @@ public class WrappingPaperGui extends AbstractContainerScreen<WrappingPaperConta
     {
         if (button.isHoveredOrFocused())
         {
-            GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.x, button.y, 18, 19, Lists.newArrayList(button.getMessage()));
+            GuiHelper.drawTooltip(this, poseStack, mouseX, mouseY, button.getX(), button.getY(), 18, 19, Lists.newArrayList(button.getMessage()));
         }
     }
 

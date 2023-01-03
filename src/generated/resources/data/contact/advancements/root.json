@@ -1,23 +1,23 @@
 {
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "contact:mail"
-    },
-    "title": {
-      "translate": "advancements.contact.root.title"
-    },
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
     "description": {
       "translate": "advancements.contact.root.description"
     },
     "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
     "hidden": false,
-    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
-  },
-  "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "icon": {
+      "item": "contact:mail"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.contact.root.title"
     }
   },
   "requirements": [

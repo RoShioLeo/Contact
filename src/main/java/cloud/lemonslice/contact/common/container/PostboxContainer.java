@@ -121,10 +121,20 @@ public class PostboxContainer extends AbstractContainerMenu
             if (!playerIn.isAlive() || ((ServerPlayer) playerIn).hasDisconnected())
             {
                 playerIn.drop(parcel.getStackInSlot(0), false);
+                ItemStack cursor = this.getCarried();
+                if (!cursor.isEmpty())
+                {
+                    playerIn.drop(cursor, false);
+                }
             }
             else
             {
                 playerIn.getInventory().placeItemBackInInventory(parcel.getStackInSlot(0));
+                ItemStack cursor = this.getCarried();
+                if (!cursor.isEmpty())
+                {
+                    playerIn.getInventory().placeItemBackInInventory(cursor);
+                }
             }
             parcel.setStackInSlot(0, ItemStack.EMPTY);
         }

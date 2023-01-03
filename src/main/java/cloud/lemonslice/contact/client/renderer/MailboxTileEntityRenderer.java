@@ -3,8 +3,7 @@ package cloud.lemonslice.contact.client.renderer;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
 import cloud.lemonslice.contact.common.tileentity.MailboxBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,7 +33,7 @@ public class MailboxTileEntityRenderer implements BlockEntityRenderer<MailboxBlo
             matrixStackIn.pushPose();
             matrixStackIn.translate(0.5, 1 + 0.1 * Mth.sin((float) (tileEntityIn.getAngel() / 20.0D * PI)), 0.5);
             matrixStackIn.scale(0.6F, 0.6F, 0.6F);
-            matrixStackIn.mulPose(new Quaternion(Vector3f.YP, -mc.player.yHeadRot, true));
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(-mc.player.yHeadRot));
 
             renderItem.renderStatic(mail, ItemTransforms.TransformType.FIXED, 15728880, combinedOverlayIn, matrixStackIn, bufferIn, 0);
 

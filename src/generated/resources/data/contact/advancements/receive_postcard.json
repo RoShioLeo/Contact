@@ -1,23 +1,23 @@
 {
   "parent": "contact:root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "contact:opened_mail"
-    },
-    "title": {
-      "translate": "advancements.contact.receive_postcard.title"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancements.contact.receive_postcard.description"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "contact:opened_mail"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancements.contact.receive_postcard.title"
     }
   },
   "requirements": [

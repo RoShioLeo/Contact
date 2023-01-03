@@ -47,7 +47,7 @@ public final class MailboxManager
     {
         if (event.phase == TickEvent.Phase.END)
         {
-            ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
+            event.getServer().getLevel(Level.OVERWORLD).getCapability(WORLD_MAILBOX_DATA).ifPresent(data ->
             {
                 updateTick = ++updateTick % 20;
                 if (updateTick == 0)
@@ -60,7 +60,7 @@ public final class MailboxManager
                             UUID uuid = mail.getUUID();
                             if (data.getData().addMailboxContents(uuid, mail.getContents()))
                             {
-                                Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
+                                Player player = event.getServer().getPlayerList().getPlayer(uuid);
                                 if (player != null)
                                 {
                                     player.displayClientMessage(Component.translatable("message.contact.mailbox.new_mail"), false);

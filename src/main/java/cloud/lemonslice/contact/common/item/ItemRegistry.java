@@ -8,7 +8,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import static cloud.lemonslice.contact.Contact.ITEM_GROUP;
 import static cloud.lemonslice.contact.Contact.MODID;
 import static cloud.lemonslice.contact.common.block.BlockRegistry.*;
 
@@ -16,8 +15,8 @@ public final class ItemRegistry
 {
     public static final DeferredRegister<Item> ITEM_REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final RegistryObject<Item> MAIL = ITEM_REGISTER.register("mail", () -> new NormalItem(ITEM_GROUP));
-    public static final RegistryObject<Item> OPENED_MAIL = ITEM_REGISTER.register("opened_mail", () -> new NormalItem(ITEM_GROUP));
+    public static final RegistryObject<Item> MAIL = ITEM_REGISTER.register("mail", NormalItem::new);
+    public static final RegistryObject<Item> OPENED_MAIL = ITEM_REGISTER.register("opened_mail", NormalItem::new);
 
     public static final RegistryObject<Item> PARCEL = ITEM_REGISTER.register("parcel", () -> new ParcelItem(false));
     public static final RegistryObject<Item> ENDER_PARCEL = ITEM_REGISTER.register("ender_parcel", () -> new ParcelItem(true));
@@ -51,6 +50,6 @@ public final class ItemRegistry
 
     public static RegistryObject<BlockItem> registerBlockItem(RegistryObject<Block> block)
     {
-        return ITEM_REGISTER.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(ITEM_GROUP)));
+        return ITEM_REGISTER.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
     }
 }

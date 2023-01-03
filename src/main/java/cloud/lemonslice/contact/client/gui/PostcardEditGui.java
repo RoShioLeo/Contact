@@ -49,15 +49,18 @@ public class PostcardEditGui extends Screen
     @Override
     protected void init()
     {
-        this.buttonDone = this.addRenderableWidget(new Button(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20, 98, 20, CommonComponents.GUI_DONE, (button) ->
-        {
-            this.minecraft.setScreen(null);
-            textBox.sendTextToServer();
-        }));
+        this.buttonDone = this.addRenderableWidget(Button
+                .builder(CommonComponents.GUI_DONE, (button) ->
+                {
+                    this.minecraft.setScreen(null);
+                    textBox.sendTextToServer();
+                })
+                .pos(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20)
+                .size(98, 20)
+                .build());
 
-        this.textBox.init();
-        this.textBox.x = (this.width - style.cardWidth) / 2 + style.textPosX;
-        this.textBox.y = (this.height / 2 - style.cardHeight * 2 / 3) + style.textPosY;
+        this.textBox.setX((this.width - style.cardWidth) / 2 + style.textPosX);
+        this.textBox.setY((this.height / 2 - style.cardHeight * 2 / 3) + style.textPosY);
         this.textBox.shouldRefresh();
 
         this.setInitialFocus(textBox);
@@ -68,12 +71,6 @@ public class PostcardEditGui extends Screen
     {
         super.tick();
         textBox.tick();
-    }
-
-    @Override
-    public void removed()
-    {
-        textBox.onClose();
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)

@@ -6,7 +6,6 @@ import cloud.lemonslice.contact.common.handler.AdvancementManager;
 import cloud.lemonslice.contact.common.handler.MailboxManager;
 import cloud.lemonslice.contact.common.item.PostcardItem;
 import cloud.lemonslice.silveroak.network.INormalMessage;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -112,7 +111,7 @@ public class EnquireAddresseeMessage implements INormalMessage
                                 }
                                 else
                                 {
-                                    ticks = MailboxManager.getDeliveryTicks(player.level.dimension(), player.blockPosition(), Level.OVERWORLD, BlockPos.ZERO);
+                                    ticks = MailboxManager.getDeliveryTicks(player.level.dimension(), player.blockPosition(), Level.OVERWORLD, player.getLevel().getSharedSpawnPos());
                                 }
                             }
 

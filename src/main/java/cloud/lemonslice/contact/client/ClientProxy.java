@@ -8,19 +8,12 @@ import cloud.lemonslice.contact.common.CommonProxy;
 import cloud.lemonslice.contact.common.config.ClientConfig;
 import cloud.lemonslice.contact.common.tileentity.BlockEntityTypeRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.Arrays;
-
-import static cloud.lemonslice.contact.common.block.BlockRegistry.*;
 
 public class ClientProxy extends CommonProxy
 {

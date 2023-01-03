@@ -1,6 +1,5 @@
 package cloud.lemonslice.contact.common.item;
 
-import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.silveroak.common.item.NormalItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +20,7 @@ public class ParcelItem extends NormalItem implements IMailItem
 
     public ParcelItem(boolean isEnderType)
     {
-        super(new Item.Properties().tab(Contact.ITEM_GROUP).stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
         this.isEnderType = isEnderType;
     }
 
