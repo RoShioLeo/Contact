@@ -35,7 +35,7 @@ public class MailboxTileEntityRenderer implements BlockEntityRenderer<MailboxBlo
             matrixStackIn.push();
             matrixStackIn.translate(0.5, 1 + 0.1 * MathHelper.sin((float) (tileEntityIn.getAngel() / 20.0D * PI)), 0.5);
             matrixStackIn.scale(0.6F, 0.6F, 0.6F);
-            matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotation(-MinecraftClient.getInstance().player.headYaw * ((float) Math.PI / 180F)));
+            matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-MinecraftClient.getInstance().player.headYaw));
 
             itemRenderer.renderItem(mail, ModelTransformation.Mode.FIXED, 15728880, overlay, matrixStackIn, vertexConsumers, 0);
 

@@ -44,10 +44,8 @@ public class PostcardReadScreen extends Screen
     protected void init()
     {
         this.textBox = new ReadOnlyTextBox(postcard, (this.width - style.cardWidth) / 2 + style.textPosX, style.textPosY + (this.height / 2 - style.cardHeight * 2 / 3), style.textWidth, style.textHeight, 12, style.textColor, Text.literal("Postcard"));
-        this.buttonDone = this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) ->
-                {
-                    this.client.setScreen(null);
-                })
+        this.buttonDone = this.addDrawableChild(ButtonWidget
+                .builder(ScreenTexts.DONE, (button) -> this.client.setScreen(null))
                 .position(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20)
                 .size(98, 20)
                 .build());

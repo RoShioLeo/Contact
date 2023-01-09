@@ -10,6 +10,7 @@ import cloud.lemonslice.contact.common.block.BlockRegistry;
 import cloud.lemonslice.contact.common.config.ContactConfig;
 import cloud.lemonslice.contact.common.screenhandler.ScreenHandlerTypeRegistry;
 import cloud.lemonslice.contact.common.tileentity.BlockEntityTypeRegistry;
+import cloud.lemonslice.contact.network.NetworkHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
@@ -53,6 +54,7 @@ public class ClientProxy implements ClientModInitializer
         BlockColorsRegistry.init();
         ItemColorsRegistry.init();
         BlockRegistry.registerRenderLayer();
+        NetworkHandler.clientInit();
     }
 
     public static void registerCutoutRenderLayer(Block block)
