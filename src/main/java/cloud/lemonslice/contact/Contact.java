@@ -8,6 +8,7 @@ import cloud.lemonslice.contact.common.handler.MailboxManager;
 import cloud.lemonslice.contact.common.handler.WanderingTraderSaleHandler;
 import cloud.lemonslice.contact.common.item.ItemRegistry;
 import cloud.lemonslice.contact.common.screenhandler.ScreenHandlerTypeRegistry;
+import cloud.lemonslice.contact.common.tileentity.BlockEntityTypeRegistry;
 import cloud.lemonslice.contact.network.NetworkHandler;
 import cloud.lemonslice.contact.resourse.PostcardHandler;
 import eu.midnightdust.lib.config.MidnightConfig;
@@ -62,6 +63,7 @@ public final class Contact implements ModInitializer
     {
         BlockRegistry.initBlocks();
         ItemRegistry.initItems();
+        BlockEntityTypeRegistry.init();
         NetworkHandler.init();
         ScreenHandlerTypeRegistry.init();
         CommandRegistrationCallback.EVENT.register(ContactCommand::register);
