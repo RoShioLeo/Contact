@@ -144,7 +144,29 @@ public final class RecipeProvider extends FabricRecipeProvider
                 .criterion("has_iron", conditionsFromTag(ConventionalItemTags.IRON_INGOTS))
                 .offerTo(exporter);
 
-        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.WRAPPING_PAPER)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.ENVELOPE, 2)
+                .input('x', Items.PAPER)
+                .pattern("xxx")
+                .pattern("xxx")
+                .group("envelope")
+                .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
+                .offerTo(exporter);
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.RED_PACKET_ENVELOPE, 3)
+                .input('x', Items.PAPER)
+                .input('*', ConventionalItemTags.RED_DYES)
+                .pattern("xxx")
+                .pattern("x*x")
+                .pattern("xxx")
+                .group("red_packet")
+                .criterion("has_red_dye", conditionsFromTag(ConventionalItemTags.RED_DYES))
+                .offerTo(exporter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.RED_PACKET_ENVELOPE)
+                .input(ConventionalItemTags.RED_DYES)
+                .input(ItemRegistry.ENVELOPE)
+                .group("red_packet")
+                .criterion("has_red_dye", conditionsFromTag(ConventionalItemTags.RED_DYES))
+                .offerTo(exporter, "red_packet_envelope_shapeless");
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.WRAPPING_PAPER, 3)
                 .input('*', Items.STRING)
                 .input('x', Items.PAPER)
                 .pattern("*x*")
@@ -153,12 +175,22 @@ public final class RecipeProvider extends FabricRecipeProvider
                 .group("wrapping_paper")
                 .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
                 .offerTo(exporter);
-        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.ENDER_WRAPPING_PAPER)
-                .input(ItemRegistry.WRAPPING_PAPER)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.ENDER_WRAPPING_PAPER, 3)
+                .input('*', Items.STRING)
+                .input('x', Items.PAPER)
+                .input('+', Items.ENDER_PEARL)
+                .pattern("*x*")
+                .pattern("x+x")
+                .pattern("*x*")
+                .group("wrapping_paper")
+                .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
+                .offerTo(exporter);
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ItemRegistry.ENDER_WRAPPING_PAPER, 3)
+                .input(ItemRegistry.WRAPPING_PAPER, 3)
                 .input(Items.ENDER_PEARL)
                 .group("wrapping_paper")
                 .criterion(hasItem(Items.ENDER_PEARL), conditionsFromItem(Items.ENDER_PEARL))
-                .offerTo(exporter);
+                .offerTo(exporter, "contact:ender_wrapping_paper_shapeless");
     }
 
     @Override

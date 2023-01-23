@@ -2,6 +2,7 @@ package cloud.lemonslice.contact.common.handler;
 
 import cloud.lemonslice.contact.common.item.PostcardItem;
 import cloud.lemonslice.contact.resourse.PostcardHandler;
+import cloud.lemonslice.contact.resourse.PostcardStyle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,9 +28,13 @@ public final class WanderingTraderSaleHandler
                 {
                     int i = world.getRandom().nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
                     trader.getScoreboardTags().add("SellPostcard");
-                    Identifier[] list = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new Identifier[0]);
-                    trader.getOffers().add(0, new TradeOffer(new ItemStack(Items.EMERALD), new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(list[i], true), 16, 10, 0.05F));
-                    trader.getOffers().add(0, new TradeOffer(new ItemStack(Items.EMERALD), PostcardItem.getPostcard(list[i], false), 16, 10, 0.05F));
+                    Identifier id = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new Identifier[0])[i];
+                    PostcardStyle style = PostcardHandler.POSTCARD_MANAGER.getPostcard(id);
+                    if (style.soldByTrader)
+                    {
+                        trader.getOffers().add(0, new TradeOffer(style.cardPrice, new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(id, true), 16, 10, 0.05F));
+                        trader.getOffers().add(0, new TradeOffer(style.cardPrice, PostcardItem.getPostcard(id, false), 16, 10, 0.05F));
+                    }
                 }
             }
         }

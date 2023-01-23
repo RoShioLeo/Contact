@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "red_packet",
+  "key": {
+    "*": {
+      "tag": "c:red_dyes"
+    },
+    "x": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "xxx",
+    "x*x",
+    "xxx"
+  ],
+  "result": {
+    "count": 3,
+    "item": "contact:red_packet_envelope"
+  }
+}

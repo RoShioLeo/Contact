@@ -1,4 +1,4 @@
-package cloud.lemonslice.contact.client.screen;
+package cloud.lemonslice.contact.client.gui.screen;
 
 import cloud.lemonslice.contact.resourse.PostcardStyle;
 import cloud.lemonslice.silveroak.client.widget.EditableTextBox;

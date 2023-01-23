@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "red_packet",
+  "ingredients": [
+    {
+      "tag": "c:red_dyes"
+    },
+    {
+      "item": "contact:envelope"
+    }
+  ],
+  "result": {
+    "item": "contact:red_packet_envelope"
+  }
+}

@@ -3,7 +3,6 @@ package cloud.lemonslice.contact.common.item;
 import cloud.lemonslice.contact.resourse.PostcardHandler;
 import cloud.lemonslice.silveroak.common.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.item.NormalBlockItem;
-import cloud.lemonslice.silveroak.common.item.NormalItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -12,15 +11,17 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 
 import static cloud.lemonslice.contact.Contact.ITEM_GROUP;
-import static cloud.lemonslice.contact.Contact.MODID;
 import static cloud.lemonslice.contact.common.block.BlockRegistry.*;
 import static cloud.lemonslice.contact.common.item.PostcardItem.getPostcard;
 import static cloud.lemonslice.silveroak.common.item.SilveroakRegistry.registerItem;
 
 public final class ItemRegistry
 {
-    public static final Item MAIL = new NormalItem(new Identifier(MODID, "mail"), ITEM_GROUP);
-    public static final Item OPENED_MAIL = new NormalItem(new Identifier(MODID, "opened_mail"), ITEM_GROUP);
+    public static final Item LETTER = new LetterItem();
+    public static final Item ENVELOPE = new EnvelopeItem();
+
+    public static final Item RED_PACKET = new RedPacketItem();
+    public static final Item RED_PACKET_ENVELOPE = new RedPacketEnvelopeItem();
 
     public static final Item PARCEL = new ParcelItem("parcel", false);
     public static final Item ENDER_PARCEL = new ParcelItem("ender_parcel", true);
@@ -63,8 +64,10 @@ public final class ItemRegistry
 
     public static void initItems()
     {
-        registerItem(MAIL);
-        registerItem(OPENED_MAIL);
+        registerItem(LETTER);
+        registerItem(ENVELOPE);
+        registerItem(RED_PACKET);
+        registerItem(RED_PACKET_ENVELOPE);
         registerItem(PARCEL);
         registerItem(ENDER_PARCEL);
         registerItem(WRAPPING_PAPER);

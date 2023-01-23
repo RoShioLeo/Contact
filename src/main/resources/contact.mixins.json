@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cloud.lemonslice.contact.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "TooltipComponentMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

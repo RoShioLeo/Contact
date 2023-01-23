@@ -1,7 +1,9 @@
 package cloud.lemonslice.contact.network;
 
 import cloud.lemonslice.contact.client.ClientProxy;
-import cloud.lemonslice.contact.common.screenhandler.WrappingPaperScreenHandler;
+import cloud.lemonslice.contact.common.screenhandler.PackageScreenHandler;
+import cloud.lemonslice.contact.common.screenhandler.PostboxScreenHandler;
+import cloud.lemonslice.contact.common.screenhandler.RedPacketEnvelopeScreenHandler;
 import cloud.lemonslice.silveroak.network.IToClientMessage;
 import cloud.lemonslice.silveroak.network.IToServerMessage;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -14,15 +16,21 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.Objects;
+
 import static cloud.lemonslice.contact.Contact.MODID;
 
 public class ActionMessage implements IToClientMessage, IToServerMessage
 {
-    private final int action;  // action = 0. From Server, means new mail arrived. From Client, means player is packing a parcel.
+    // From Server, 0 means new mail arrived.
+    // From Client, 0 means player is packing a parcel. 1 means mail sent successfully.
+    private final int action;
+    private final String extra;
 
-    public ActionMessage(int action)
+    ActionMessage(int action, String extra)
     {
         this.action = action;
+        this.extra = extra;
     }
 
     @Override
@@ -30,6 +38,7 @@ public class ActionMessage implements IToClientMessage, IToServerMessage
     {
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeInt(action);
+        buf.writeString(Objects.requireNonNullElse(extra, ""), 32767);
         return buf;
     }
 
@@ -39,6 +48,13 @@ public class ActionMessage implements IToClientMessage, IToServerMessage
         if (action == 0)
         {
             ClientProxy.notifyNewMail(client);
+        }
+        else if (action == 1)
+        {
+            if (client.player.currentScreenHandler instanceof PostboxScreenHandler container)
+            {
+                container.status = 2;
+            }
         }
     }
 
@@ -52,7 +68,7 @@ public class ActionMessage implements IToClientMessage, IToServerMessage
 
         if (action == 0)
         {
-            packParcel(server, player);
+            packParcel(server, player, extra);
         }
     }
 
@@ -64,21 +80,31 @@ public class ActionMessage implements IToClientMessage, IToServerMessage
     public static ActionMessage fromBytes(PacketByteBuf buf)
     {
         int action = buf.readInt();
-        return create(action);
+        String extra = buf.readString(32767);
+        return create(action, extra);
     }
 
     public static ActionMessage create(int action)
     {
-        return new ActionMessage(action);
+        return new ActionMessage(action, null);
     }
 
-    private static void packParcel(MinecraftServer server, ServerPlayerEntity player)
+    public static ActionMessage create(int action, String extra)
+    {
+        return new ActionMessage(action, extra);
+    }
+
+    private static void packParcel(MinecraftServer server, ServerPlayerEntity player, String extra)
     {
         server.executeSync(() ->
         {
-            if (player.currentScreenHandler instanceof WrappingPaperScreenHandler screenHandler)
+            if (player.currentScreenHandler instanceof PackageScreenHandler screenHandler)
             {
                 screenHandler.isPacked = true;
+                if (screenHandler instanceof RedPacketEnvelopeScreenHandler redPacket)
+                {
+                    redPacket.blessings = extra;
+                }
                 player.closeHandledScreen();
             }
         });

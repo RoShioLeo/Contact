@@ -1,22 +1,23 @@
 package cloud.lemonslice.contact.common.item;
 
-import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.client.ClientProxy;
+import cloud.lemonslice.contact.common.entity.PostcardEntity;
 import cloud.lemonslice.silveroak.common.item.NormalItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class PostcardItem extends NormalItem implements IMailItem
 
     public PostcardItem(String id, boolean isEnderType)
     {
-        super(new Identifier(MODID, id), new FabricItemSettings().maxCount(1), Contact.ITEM_GROUP);
+        super(new Identifier(MODID, id), new FabricItemSettings().maxCount(1), null);
         this.isEnderType = isEnderType;
     }
 
@@ -56,6 +57,47 @@ public class PostcardItem extends NormalItem implements IMailItem
         }
         user.incrementStat(Stats.USED.getOrCreateStat(this));
         return TypedActionResult.success(itemstack, world.isClient());
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context)
+    {
+        BlockPos blockPos = context.getBlockPos();
+        Direction direction = context.getSide();
+        BlockPos blockPos2 = blockPos.offset(direction);
+        PlayerEntity player = context.getPlayer();
+        ItemStack itemStack = context.getStack();
+        if (player != null)
+        {
+            if (!player.isSneaking())
+            {
+                return ActionResult.PASS;
+            }
+            if (!this.canPlaceOn(player, direction, itemStack, blockPos2))
+            {
+                return ActionResult.FAIL;
+            }
+        }
+        World world = context.getWorld();
+        PostcardEntity postcardEntity = new PostcardEntity(world, blockPos2, direction);
+        if (postcardEntity.canStayAttached())
+        {
+            if (!world.isClient)
+            {
+                postcardEntity.onPlace();
+                world.emitGameEvent(player, GameEvent.ENTITY_PLACE, postcardEntity.getPos());
+                world.spawnEntity(postcardEntity);
+                postcardEntity.setHeldItemStack(itemStack.copy());
+            }
+            itemStack.decrement(1);
+            return ActionResult.success(world.isClient);
+        }
+        return ActionResult.CONSUME;
+    }
+
+    protected boolean canPlaceOn(PlayerEntity player, Direction side, ItemStack stack, BlockPos pos)
+    {
+        return !player.world.isOutOfHeightLimit(pos) && player.canPlaceOn(pos, side, stack);
     }
 
 //    @Override
@@ -106,5 +148,14 @@ public class PostcardItem extends NormalItem implements IMailItem
     {
         postcard.setSubNbt("Text", NbtString.of(text));
         return postcard;
+    }
+
+    public static String getText(ItemStack postcard)
+    {
+        if (postcard.hasNbt())
+        {
+            return postcard.getOrCreateNbt().getString("Text");
+        }
+        return "";
     }
 }

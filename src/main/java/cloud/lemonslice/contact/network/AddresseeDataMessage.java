@@ -2,6 +2,7 @@ package cloud.lemonslice.contact.network;
 
 import cloud.lemonslice.contact.common.screenhandler.PostboxScreenHandler;
 import cloud.lemonslice.silveroak.network.IToClientMessage;
+import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
@@ -9,16 +10,18 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+
 import static cloud.lemonslice.contact.Contact.MODID;
 
 public class AddresseeDataMessage implements IToClientMessage
 {
-    private final String name;
-    private final int ticks; // Usually non-negative for send-ready, -1 for not-found, -2 for full-mailbox
+    private final List<String> names;
+    private final List<Integer> ticks; // -1 means mailbox is full, -2 means no mailbox
 
-    public AddresseeDataMessage(String name, int ticks)
+    AddresseeDataMessage(List<String> names, List<Integer> ticks)
     {
-        this.name = name;
+        this.names = names;
         this.ticks = ticks;
     }
 
@@ -26,8 +29,15 @@ public class AddresseeDataMessage implements IToClientMessage
     public PacketByteBuf toBytes()
     {
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeString(name, 32767);
-        buf.writeInt(ticks);
+        buf.writeInt(names.size());
+        for (String name : names)
+        {
+            buf.writeString(name, 32767);
+        }
+        for (int tick : ticks)
+        {
+            buf.writeInt(tick);
+        }
         return buf;
     }
 
@@ -38,24 +48,8 @@ public class AddresseeDataMessage implements IToClientMessage
         {
             if (client.player.currentScreenHandler instanceof PostboxScreenHandler container)
             {
-                container.playerName = name;
-                container.time = ticks;
-                if (ticks == -1)
-                {
-                    container.status = 3;
-                }
-                else if (ticks == -2)
-                {
-                    container.status = 4;
-                }
-                else if (ticks == -3)
-                {
-                    container.status = 5;
-                }
-                else
-                {
-                    container.status = 2;
-                }
+                container.names = names;
+                container.ticks = ticks;
             }
         });
     }
@@ -67,13 +61,22 @@ public class AddresseeDataMessage implements IToClientMessage
 
     public static AddresseeDataMessage fromBytes(PacketByteBuf buf)
     {
-        String name = buf.readString(32767);
-        int ticks = buf.readInt();
-        return create(name, ticks);
+        int size = buf.readInt();
+        List<String> names = Lists.newArrayList();
+        List<Integer> ticks = Lists.newArrayList();
+        for (int i = 0; i < size; i++)
+        {
+            names.add(buf.readString(32767));
+        }
+        for (int i = 0; i < size; i++)
+        {
+            ticks.add(buf.readInt());
+        }
+        return create(names, ticks);
     }
 
-    public static AddresseeDataMessage create(String name, int ticks)
+    public static AddresseeDataMessage create(List<String> names, List<Integer> ticks)
     {
-        return new AddresseeDataMessage(name, ticks);
+        return new AddresseeDataMessage(names, ticks);
     }
 }

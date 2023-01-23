@@ -20,6 +20,4 @@ public interface IMailItem
             tooltip.add(Text.translatable("tooltip.contact.mail.sender", stack.getOrCreateNbt().getString("Sender")).formatted(Formatting.GRAY));
         }
     }
-
-
 }

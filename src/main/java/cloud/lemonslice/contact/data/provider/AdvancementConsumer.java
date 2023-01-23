@@ -15,7 +15,7 @@ public final class AdvancementConsumer implements Consumer<Consumer<Advancement>
     public void accept(Consumer<Advancement> consumer)
     {
         Advancement root = Advancement.Builder.create()
-                .display(ItemRegistry.MAIL,
+                .display(ItemRegistry.LETTER,
                         Text.translatable("advancements.contact.root.title"),
                         Text.translatable("advancements.contact.root.description"),
                         new Identifier("textures/gui/advancements/backgrounds/stone.png"),
@@ -24,7 +24,7 @@ public final class AdvancementConsumer implements Consumer<Consumer<Advancement>
                 .build(consumer, "contact:root");
         Advancement receivePostcard = Advancement.Builder.create()
                 .parent(root)
-                .display(ItemRegistry.OPENED_MAIL,
+                .display(ItemRegistry.ENVELOPE,
                         Text.translatable("advancements.contact.receive_postcard.title"),
                         Text.translatable("advancements.contact.receive_postcard.description"),
                         null, AdvancementFrame.TASK, true, true, false)

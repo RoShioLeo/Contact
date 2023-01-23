@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "contact:item/mail"
+    "layer0": "contact:item/red_packet_envelope"
   }
 }

@@ -1,24 +1,29 @@
 package cloud.lemonslice.contact.common.screenhandler;
 
 import cloud.lemonslice.contact.common.item.IMailItem;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.List;
 
 import static cloud.lemonslice.contact.common.screenhandler.ScreenHandlerTypeRegistry.GREEN_POSTBOX_CONTAINER;
 import static cloud.lemonslice.contact.common.screenhandler.ScreenHandlerTypeRegistry.RED_POSTBOX_CONTAINER;
 
-public class PostboxScreenHandler extends ScreenHandler
+public class PostboxScreenHandler extends ContentScreenHandler
 {
     public final SimpleInventory parcel = new SimpleInventory(1);
-    public byte status = 0; // 0 for parcel-waiting, 1 for addressee-waiting, 2 for send-ready, 3 for not-found, 4 for full-mailbox, 5 for successful
-    public int time = 0;
+    // old: 0 for parcel-waiting, 1 for addressee-waiting, 2 for send-ready, 3 for not-found, 4 for full-mailbox, 5 for successful
+    // new: 0: waiting mail; 1: writing addressee; 2: successfully sent; 3: cannot send
+    public byte status = 0;
     public String playerName = "";
+    public List<String> names = Lists.newArrayList();
+    public List<Integer> ticks = Lists.newArrayList();
 
     public PostboxScreenHandler(int id, PlayerInventory inv, boolean isRed)
     {
@@ -27,9 +32,16 @@ public class PostboxScreenHandler extends ScreenHandler
         {
             if (parcel.getStack(0).getItem() instanceof IMailItem)
             {
-                status = 1;
+                if (!parcel.getStack(0).getOrCreateNbt().contains("Sender"))
+                {
+                    status = 1;
+                }
+                else
+                {
+                    status = 3;
+                }
             }
-            else if (status != 5)
+            else if (status != 2)
             {
                 status = 0;
             }
@@ -55,56 +67,6 @@ public class PostboxScreenHandler extends ScreenHandler
         {
             addSlot(new Slot(inv, i, 8 + i * 18, 125));
         }
-    }
-
-    @Override
-    public ItemStack quickMove(PlayerEntity player, int index)
-    {
-        Slot slot = this.slots.get(index);
-
-        if (!slot.hasStack())
-        {
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack newStack = slot.getStack(), oldStack = newStack.copy();
-
-        boolean isMerged;
-
-        // 0~1: Input; 1~28: Player Backpack; 28~37: Hot Bar.
-
-        if (index == 0)
-        {
-            isMerged = insertItem(newStack, 28, 37, true)
-                    || insertItem(newStack, 1, 28, false);
-        }
-        else if (index < 28)
-        {
-            isMerged = insertItem(newStack, 0, 1, false)
-                    || insertItem(newStack, 28, 37, true);
-        }
-        else
-        {
-            isMerged = insertItem(newStack, 0, 28, false);
-        }
-
-        if (!isMerged)
-        {
-            return ItemStack.EMPTY;
-        }
-
-        if (newStack.getCount() == 0)
-        {
-            slot.setStack(ItemStack.EMPTY);
-        }
-        else
-        {
-            slot.markDirty();
-        }
-
-        slot.onTakeItem(player, newStack);
-
-        return oldStack;
     }
 
     @Override
@@ -144,5 +106,11 @@ public class PostboxScreenHandler extends ScreenHandler
     {
         Item mail = parcel.getStack(0).getItem();
         return mail instanceof IMailItem && ((IMailItem) mail).isEnderType();
+    }
+
+    @Override
+    public int getContainerCount()
+    {
+        return 1;
     }
 }

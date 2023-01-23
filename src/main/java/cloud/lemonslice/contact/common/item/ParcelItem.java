@@ -1,14 +1,14 @@
 package cloud.lemonslice.contact.common.item;
 
 import cloud.lemonslice.contact.Contact;
+import cloud.lemonslice.contact.client.item.PackageTooltipData;
 import cloud.lemonslice.silveroak.common.item.NormalItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -17,10 +17,11 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static cloud.lemonslice.contact.Contact.MODID;
 
-public class ParcelItem extends NormalItem implements IMailItem
+public class ParcelItem extends NormalItem implements IMailItem, IPackageItem
 {
     private final boolean isEnderType;
 
@@ -33,15 +34,15 @@ public class ParcelItem extends NormalItem implements IMailItem
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand)
     {
-        SimpleInventory contents = new SimpleInventory(4);
-        ItemStack parcel = user.getStackInHand(hand);
-        NbtList list = parcel.getOrCreateNbt().getList("parcel", NbtElement.COMPOUND_TYPE);
-        contents.readNbtList(list);
-        for (int i = 0; i < 4; ++i)
-        {
-            user.getInventory().offerOrDrop(contents.getStack(i));
-        }
+        IPackageItem.openPackage(this, user, hand);
         return TypedActionResult.success(ItemStack.EMPTY);
+    }
+
+    @Override
+    public Optional<TooltipData> getTooltipData(ItemStack stack)
+    {
+        PackageTooltipData data = IPackageItem.getTooltipData(this, stack);
+        return data.contents().isEmpty() ? Optional.empty() : Optional.of(data);
     }
 
     @Override
@@ -65,5 +66,11 @@ public class ParcelItem extends NormalItem implements IMailItem
             parcel.getOrCreateNbt().putString("Sender", sender);
         }
         return parcel;
+    }
+
+    @Override
+    public int getCapacity()
+    {
+        return 4;
     }
 }

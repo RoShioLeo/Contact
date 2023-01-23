@@ -1,0 +1,68 @@
+{
+  "credit": "Made with Blockbench",
+  "textures": {
+    "0": "contact:block/postcard",
+    "particle": "contact:block/postcard"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        15.875
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0.25,
+            0.25,
+            16.25
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            0.25,
+            16
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            0.25
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

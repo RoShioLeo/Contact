@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "envelope",
+  "key": {
+    "x": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 2,
+    "item": "contact:envelope"
+  }
+}

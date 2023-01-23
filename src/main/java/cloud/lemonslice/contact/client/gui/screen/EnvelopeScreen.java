@@ -1,6 +1,6 @@
-package cloud.lemonslice.contact.client.screen;
+package cloud.lemonslice.contact.client.gui.screen;
 
-import cloud.lemonslice.contact.common.screenhandler.WrappingPaperScreenHandler;
+import cloud.lemonslice.contact.common.screenhandler.EnvelopeScreenHandler;
 import cloud.lemonslice.contact.network.ActionMessage;
 import cloud.lemonslice.silveroak.client.texture.TexturePos;
 import cloud.lemonslice.silveroak.client.widget.IconButton;
@@ -18,14 +18,14 @@ import net.minecraft.util.Identifier;
 
 import static cloud.lemonslice.contact.Contact.MODID;
 
-public class WrappingPaperScreen extends HandledScreen<WrappingPaperScreenHandler>
+public class EnvelopeScreen extends HandledScreen<EnvelopeScreenHandler>
 {
-    private static final Identifier TEXTURE = new Identifier(MODID, "textures/gui/wrapping_paper.png");
+    private static final Identifier TEXTURE = new Identifier(MODID, "textures/gui/envelope.png");
     private int offsetX;
     private int offsetY;
     private IconButton buttonPack;
 
-    public WrappingPaperScreen(WrappingPaperScreenHandler screenContainer, PlayerInventory inv, Text titleIn)
+    public EnvelopeScreen(EnvelopeScreenHandler screenContainer, PlayerInventory inv, Text titleIn)
     {
         super(screenContainer, inv, titleIn);
     }
@@ -37,7 +37,7 @@ public class WrappingPaperScreen extends HandledScreen<WrappingPaperScreenHandle
         this.offsetX = (this.width - 176) / 2;
         this.offsetY = (this.height - 166) / 2 + 16;
 
-        this.buttonPack = addDrawableChild(new IconButton(offsetX + 124, offsetY + 15, 18, 19, Text.translatable("tooltip.contact.wrapping_paper.pack"), button -> pack(), this::buttonTooltip));
+        this.buttonPack = addDrawableChild(new IconButton(offsetX + 100, offsetY + 16, 18, 19, Text.translatable("tooltip.contact.envelope.seal"), button -> seal(), this::buttonTooltip));
     }
 
     private void buttonTooltip(ButtonWidget button, MatrixStack matrixStack, int mouseX, int mouseY)
@@ -48,7 +48,7 @@ public class WrappingPaperScreen extends HandledScreen<WrappingPaperScreenHandle
         }
     }
 
-    private void pack()
+    private void seal()
     {
         ClientPlayNetworking.send(ActionMessage.getID(), ActionMessage.create(0).toBytes());
     }

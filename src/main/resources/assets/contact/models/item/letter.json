@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "contact:item/opened_mail"
+    "layer0": "contact:item/letter"
   }
 }

@@ -170,20 +170,34 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
             {
                 if (mailboxOwner != null)
                 {
-                    // 不是主人的话，如果有包裹和明信片，那么塞进去
-                    if (data.getData().isMailboxEmpty(mailboxOwner))
+                    ItemStack held = player.getStackInHand(handIn).copy();
+                    if (!held.getOrCreateNbt().contains("Sender"))
                     {
-                        ItemStack held = player.getStackInHand(handIn).copy();
-                        held.getOrCreateNbt().putString("Sender", player.getName().getString());
-                        data.getData().addMailboxContents(mailboxOwner, held);
-                        player.setStackInHand(handIn, ItemStack.EMPTY);
-                        player.sendMessage(Text.translatable("message.contact.mailbox.deliver"), false);
-                        AdvancementManager.givePlayerAdvancement(player.getServer(), (ServerPlayerEntity) player, new Identifier("contact:send_in_person"));
-                        MailboxManager.updateState(world, topPos);
+                        // 不是主人的话，如果有包裹和明信片，那么塞进去
+                        if (!data.getData().isMailboxFull(mailboxOwner))
+                        {
+                            if (world.getBlockEntity(topPos) instanceof MailboxBlockEntity mailbox && mailbox.checkToSend())
+                            {
+                                held.getOrCreateNbt().putString("Sender", player.getName().getString());
+                                data.getData().addMailboxContents(mailboxOwner, held);
+                                player.setStackInHand(handIn, ItemStack.EMPTY);
+                                player.sendMessage(Text.translatable("message.contact.mailbox.deliver"), false);
+                                AdvancementManager.givePlayerAdvancement(player.getServer(), (ServerPlayerEntity) player, new Identifier("contact:send_in_person"));
+                                MailboxManager.updateState(world, topPos);
+                            }
+                            else
+                            {
+                                player.sendMessage(Text.translatable("message.contact.mailbox.check"), false);
+                            }
+                        }
+                        else
+                        {
+                            player.sendMessage(Text.translatable("message.contact.mailbox.full"), false);
+                        }
                     }
                     else
                     {
-                        player.sendMessage(Text.translatable("message.contact.mailbox.full"), false);
+                        player.sendMessage(Text.translatable("message.contact.mailbox.used"), false);
                     }
                     return ActionResult.SUCCESS;
                 }

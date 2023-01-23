@@ -5,7 +5,7 @@
   "textures": {
     "0": "contact:block/mailbox_0",
     "1": "contact:block/mailbox_1",
-    "2": "contact:item/mail",
+    "2": "contact:item/letter",
     "particle": "contact:block/mailbox_0"
   },
   "elements": [

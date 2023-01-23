@@ -10,7 +10,7 @@ public class ContactConfig extends MidnightConfig
     @Comment(centered = true)
     public static MidnightConfig.Comment contraband;
     @Entry
-    public static List<String> blacklistID = Lists.newArrayList("contact:parcel", "minecraft:shulker_box", "minecraft:bundle",
+    public static List<String> blacklistID = Lists.newArrayList("contact:parcel", "contact:letter", "minecraft:shulker_box", "minecraft:bundle",
             "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
             "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
             "minecraft:light_gray_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",
@@ -26,6 +26,10 @@ public class ContactConfig extends MidnightConfig
     @Server
     @Entry(min = 0, max = 12000, isSlider = true)
     public static int ticksToAnotherWorld = 1200;
+
+    @Server
+    @Entry
+    public static boolean enableCenterMailbox = false;
 
     @Client
     @Comment(centered = true)

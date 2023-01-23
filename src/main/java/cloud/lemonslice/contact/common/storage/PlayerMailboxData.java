@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class PlayerMailboxData
 {
-    public final Map<String, UUID> nameToUUID = Maps.newHashMap();
+    public final Map<String, UUID> nameToUUID = Maps.newTreeMap();
     public final Map<UUID, SimpleInventory> uuidToContents = Maps.newHashMap();
     private final Map<UUID, GlobalPos> uuidToLocation = Maps.newHashMap();
     private final Map<GlobalPos, UUID> locationToPlayer = Maps.newHashMap();

@@ -1,14 +1,18 @@
 package cloud.lemonslice.contact.resourse;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class PostcardStyle
 {
-    public static final PostcardStyle DEFAULT = new PostcardStyle("contact:stripes", 200, 133, 10, 12, 180, 108, 0xff77787b, "contact:postmark", 142, -5, 64, 52, 0xcd77787b);
+    public static final PostcardStyle DEFAULT = new PostcardStyle("contact:stripes", 200, 133, new ItemStack(Items.EMERALD), true, 10, 12, 180, 108, 0xff77787b, "contact:postmark", 142, -5, 64, 52, 0xcd77787b);
     public final String cardTexture;
     public final int cardWidth;
     public final int cardHeight;
+    public final ItemStack cardPrice;
+    public final boolean soldByTrader;
     public final int textPosX;
     public final int textPosY;
     public final int textWidth;
@@ -21,13 +25,15 @@ public class PostcardStyle
     public final int postmarkHeight;
     public final int postmarkColor;
 
-    public PostcardStyle(String cardTexture, int cardWidth, int cardHeight,
+    public PostcardStyle(String cardTexture, int cardWidth, int cardHeight, ItemStack cardPrice, boolean soldByTrader,
                          int textPosX, int textPosY, int textWidth, int textHeight, int textColor,
                          String postmarkTexture, int postmarkPosX, int postmarkPosY, int postmarkWidth, int postmarkHeight, int postmarkColor)
     {
         this.cardTexture = cardTexture;
         this.cardWidth = cardWidth;
         this.cardHeight = cardHeight;
+        this.cardPrice = cardPrice;
+        this.soldByTrader = soldByTrader;
         this.textPosX = textPosX;
         this.textPosY = textPosY;
         this.textWidth = textWidth;
@@ -55,7 +61,7 @@ public class PostcardStyle
 
     public static PostcardStyle fromNBT(NbtCompound nbt)
     {
-        if (nbt.contains("Info"))
+        if (nbt.contains("Info"))  // old version
         {
             NbtCompound info = nbt.getCompound("Info");
             String id = "contact:" + info.getString("ID");
@@ -64,7 +70,7 @@ public class PostcardStyle
             int textWidth = info.getInt("Width");
             int textHeight = info.getInt("Height");
             int color = info.getInt("Color");
-            return new PostcardStyle(id, 200, 133, posX, posY, textWidth, textHeight, color, "contact:postmark", 142, -5, 64, 52, color & 0xcdffffff);
+            return new PostcardStyle(id, 200, 133, new ItemStack(Items.EMERALD), true, posX, posY, textWidth, textHeight, color, "contact:postmark", 142, -5, 64, 52, color & 0xcdffffff);
         }
         else if (nbt.contains("CardID"))
         {

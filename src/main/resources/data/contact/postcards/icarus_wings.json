@@ -4,6 +4,13 @@
     "width": 200,
     "height": 133
   },
+  "trade": {
+    "soldByTrader": true,
+    "price": {
+      "item": "minecraft:emerald",
+      "count": 1
+    }
+  },
   "text": {
     "x": 108,
     "y": 14,

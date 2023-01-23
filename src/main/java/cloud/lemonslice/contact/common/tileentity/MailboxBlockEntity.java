@@ -22,6 +22,7 @@ public class MailboxBlockEntity extends BlockEntity
     private boolean isOpened = false;
     private boolean needRefresh = false;
     private int refreshTicks = 20;
+    private int checkToSendTicks = 0;
     private int angel = 0;
 
     public MailboxBlockEntity(BlockPos pWorldPosition, BlockState pBlockState)
@@ -49,6 +50,19 @@ public class MailboxBlockEntity extends BlockEntity
         nbt.putBoolean("IsOpened", isOpened);
     }
 
+    public boolean checkToSend()
+    {
+        if (checkToSendTicks <= 0)
+        {
+            checkToSendTicks = 60;
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public void refreshStatus()
     {
         if (!world.isClient())
@@ -73,6 +87,10 @@ public class MailboxBlockEntity extends BlockEntity
             if (blockEntity.refreshTicks >= 0)
             {
                 blockEntity.refreshTicks--;
+            }
+            if (blockEntity.checkToSendTicks > 0)
+            {
+                blockEntity.checkToSendTicks--;
             }
             if (blockEntity.needRefresh || blockEntity.refreshTicks == 0)
             {

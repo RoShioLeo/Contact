@@ -1,5 +1,6 @@
 package cloud.lemonslice.contact.network;
 
+import cloud.lemonslice.contact.common.config.ContactConfig;
 import cloud.lemonslice.contact.common.handler.AdvancementManager;
 import cloud.lemonslice.contact.common.handler.MailboxManager;
 import cloud.lemonslice.contact.common.item.PostcardItem;
@@ -7,6 +8,7 @@ import cloud.lemonslice.contact.common.screenhandler.PostboxScreenHandler;
 import cloud.lemonslice.contact.common.storage.MailToBeSent;
 import cloud.lemonslice.contact.common.storage.MailboxDataStorage;
 import cloud.lemonslice.silveroak.network.IToServerMessage;
+import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -19,7 +21,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 import static cloud.lemonslice.contact.Contact.MODID;
@@ -29,16 +33,10 @@ public class EnquireAddresseeMessage implements IToServerMessage
     private final String nameIn;
     private final boolean shouldSend;
 
-    public EnquireAddresseeMessage(String name, boolean shouldSend)
+    EnquireAddresseeMessage(String name, boolean shouldSend)
     {
         this.nameIn = name;
         this.shouldSend = shouldSend;
-    }
-
-    public EnquireAddresseeMessage(PacketByteBuf buf)
-    {
-        this.nameIn = buf.readString(32767);
-        this.shouldSend = buf.readBoolean();
     }
 
     @Override
@@ -62,99 +60,110 @@ public class EnquireAddresseeMessage implements IToServerMessage
         {
             if (nameIn.isEmpty())
             {
-                ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(nameIn, -1).toBytes());
                 return;
             }
             MailboxDataStorage data = MailboxDataStorage.getMailboxData(server);
             String lowerIn = nameIn.toLowerCase(Locale.ROOT);
-            if (lowerIn.equals("@e") && player.server.getPermissionLevel(player.getGameProfile()) >= 2)
+            if (lowerIn.equals("@e") && player.server.getPermissionLevel(player.getGameProfile()) >= 2) // 管理员全服寄送
             {
                 if (shouldSend)
                 {
-                    if (player.currentScreenHandler instanceof PostboxScreenHandler)
+                    if (player.currentScreenHandler instanceof PostboxScreenHandler container)
                     {
-                        PostboxScreenHandler container = ((PostboxScreenHandler) player.currentScreenHandler);
                         ItemStack parcel = container.parcel.getStack(0).copy();
                         parcel.getOrCreateNbt().putString("Sender", player.getName().getString());
                         for (UUID uuid : data.getData().nameToUUID.values())
                         {
                             data.getData().mailList.add(new MailToBeSent(uuid, parcel.copy(), 0));
                         }
-                        ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(lowerIn, -3).toBytes());
+                        ServerPlayNetworking.send(player, ActionMessage.getID(), ActionMessage.create(1).toBytes());
                         container.parcel.setStack(0, ItemStack.EMPTY);
                     }
                 }
                 else
                 {
-                    ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(lowerIn, 0).toBytes());
+                    ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(Lists.newArrayList("@e"), Lists.newArrayList(0)).toBytes());
                 }
                 return;
             }
-            for (String name : data.getData().nameToUUID.keySet())
+            List<String> names = Lists.newArrayList();
+            for (String name : data.getData().nameToUUID.keySet())  //  查找符合前缀的用户
             {
                 if (name.toLowerCase(Locale.ROOT).startsWith(lowerIn))
                 {
-                    UUID uuid = data.getData().nameToUUID.get(name);
-                    if (data.getData().isMailboxFull(uuid))
+                    names.add(name);
+                }
+                if (names.size() == 4)
+                {
+                    break;
+                }
+            }
+            List<Integer> ticks = Lists.newArrayList();
+            for (String name : names)
+            {
+                UUID uuid = data.getData().nameToUUID.get(name);
+                if (data.getData().isMailboxFull(uuid))
+                {
+                    ticks.add(-1);
+                    continue;
+                }
+                GlobalPos mailboxPos = data.getData().getMailboxPos(uuid);
+                if (player.currentScreenHandler instanceof PostboxScreenHandler)
+                {
+                    int tick = 0;
+                    if (!((PostboxScreenHandler) player.currentScreenHandler).isEnderMail())
                     {
-                        ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(name, -2).toBytes());
-                        return;
-                    }
-                    GlobalPos mailboxPos = data.getData().getMailboxPos(uuid);
-                    if (player.currentScreenHandler instanceof PostboxScreenHandler)
-                    {
-                        int ticks = 0;
-                        if (!((PostboxScreenHandler) player.currentScreenHandler).isEnderMail())
+                        if (mailboxPos != null)
                         {
-                            if (mailboxPos != null)
-                            {
-                                ticks = MailboxManager.getDeliveryTicks(player.getWorld().getRegistryKey(), player.getBlockPos(), mailboxPos.getDimension(), mailboxPos.getPos());
-                            }
-                            else
-                            {
-                                ticks = MailboxManager.getDeliveryTicks(player.getWorld().getRegistryKey(), player.getBlockPos(), World.OVERWORLD, player.getWorld().getSpawnPos());
-                            }
-                        }
-
-                        if (shouldSend)
-                        {
-                            PostboxScreenHandler container = ((PostboxScreenHandler) player.currentScreenHandler);
-                            ItemStack parcel = container.parcel.getStack(0);
-                            parcel.getOrCreateNbt().putString("Sender", player.getName().getString());
-
-                            if (parcel.getItem() instanceof PostcardItem)
-                            {
-                                AdvancementManager.givePlayerAdvancement(player.server, player, new Identifier("contact:send_postcard"));
-                            }
-
-                            if (mailboxPos != null)
-                            {
-                                if (mailboxPos.getDimension() != player.getWorld().getRegistryKey())
-                                {
-                                    parcel.getOrCreateNbt().putBoolean("AnotherWorld", true);
-                                }
-                            }
-                            else
-                            {
-                                if (World.OVERWORLD != player.getWorld().getRegistryKey())
-                                {
-                                    parcel.getOrCreateNbt().putBoolean("AnotherWorld", true);
-                                }
-                            }
-
-                            data.getData().mailList.add(new MailToBeSent(uuid, parcel, ticks));
-                            ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(name, -3).toBytes());
-                            container.parcel.setStack(0, ItemStack.EMPTY);
+                            tick = MailboxManager.getDeliveryTicks(player.getWorld().getRegistryKey(), player.getBlockPos(), mailboxPos.getDimension(), mailboxPos.getPos());
                         }
                         else
                         {
-                            ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(name, ticks).toBytes());
+                            tick = ContactConfig.enableCenterMailbox ? MailboxManager.getDeliveryTicks(player.getWorld().getRegistryKey(), player.getBlockPos(), World.OVERWORLD, player.getWorld().getSpawnPos()) : -2;
                         }
-                        return;
                     }
+                    ticks.add(tick);
                 }
             }
-            ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(nameIn, -1).toBytes());
+            if (player.currentScreenHandler instanceof PostboxScreenHandler)
+            {
+                if (shouldSend && !names.isEmpty() && Objects.equals(names.get(0), nameIn) && ticks.get(0) >= 0)
+                {
+                    PostboxScreenHandler container = ((PostboxScreenHandler) player.currentScreenHandler);
+                    ItemStack parcel = container.parcel.getStack(0);
+                    parcel.getOrCreateNbt().putString("Sender", player.getName().getString());
+
+                    if (parcel.getItem() instanceof PostcardItem)
+                    {
+                        AdvancementManager.givePlayerAdvancement(player.server, player, new Identifier("contact:send_postcard"));
+                    }
+
+                    UUID uuid = data.getData().nameToUUID.get(names.get(0));
+                    GlobalPos mailboxPos = data.getData().getMailboxPos(uuid);
+                    if (mailboxPos != null)
+                    {
+                        if (mailboxPos.getDimension() != player.getWorld().getRegistryKey())
+                        {
+                            parcel.getOrCreateNbt().putBoolean("AnotherWorld", true);
+                        }
+                    }
+                    else
+                    {
+                        if (World.OVERWORLD != player.getWorld().getRegistryKey())
+                        {
+                            parcel.getOrCreateNbt().putBoolean("AnotherWorld", true);
+                        }
+                    }
+
+                    data.getData().mailList.add(new MailToBeSent(uuid, parcel, ticks.get(0)));
+                    ServerPlayNetworking.send(player, ActionMessage.getID(), ActionMessage.create(1).toBytes());
+                    container.parcel.setStack(0, ItemStack.EMPTY);
+                }
+                else
+                {
+                    ServerPlayNetworking.send(player, AddresseeDataMessage.getID(), AddresseeDataMessage.create(names, ticks).toBytes());
+                }
+            }
         });
     }
 

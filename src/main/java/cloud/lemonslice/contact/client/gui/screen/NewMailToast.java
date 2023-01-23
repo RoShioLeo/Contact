@@ -1,4 +1,4 @@
-package cloud.lemonslice.contact.client.screen;
+package cloud.lemonslice.contact.client.gui.screen;
 
 import cloud.lemonslice.contact.common.item.ItemRegistry;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -48,7 +48,7 @@ public class NewMailToast implements Toast
             }
         }
 
-        manager.getClient().getItemRenderer().renderGuiItemIcon(new ItemStack(ItemRegistry.MAIL), 8, 8);
+        manager.getClient().getItemRenderer().renderGuiItemIcon(new ItemStack(ItemRegistry.LETTER), 8, 8);
         return ticks >= 5000L ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }
 }

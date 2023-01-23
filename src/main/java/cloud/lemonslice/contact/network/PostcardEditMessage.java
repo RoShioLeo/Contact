@@ -19,7 +19,7 @@ public class PostcardEditMessage implements IToServerMessage
     private ItemStack postcard;
     private int held;
 
-    public PostcardEditMessage(ItemStack postcard, int held)
+    PostcardEditMessage(ItemStack postcard, int held)
     {
         this.postcard = postcard;
         this.held = held;

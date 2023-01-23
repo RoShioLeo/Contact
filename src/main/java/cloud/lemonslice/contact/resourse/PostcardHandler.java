@@ -6,9 +6,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 public final class PostcardHandler
@@ -29,6 +33,32 @@ public final class PostcardHandler
         String cardTexture = JsonHelper.getString(postcardData, "texture");
         int cardWidth = JsonHelper.getInt(postcardData, "width");
         int cardHeight = JsonHelper.getInt(postcardData, "height");
+
+        boolean soldByTrader = true;
+        ItemStack price = new ItemStack(Items.EMERALD);
+        if (json.has("trade"))
+        {
+            JsonObject tradeData = JsonHelper.getObject(json, "trade");
+            soldByTrader = JsonHelper.getBoolean(tradeData, "soldByTrader");
+            if (tradeData.has("price"))
+            {
+                JsonObject priceData = JsonHelper.getObject(tradeData, "price");
+                if (priceData.has("item"))
+                {
+                    String item = JsonHelper.getString(priceData, "item");
+                    int count = 1;
+                    if (priceData.has("count"))
+                    {
+                        count = JsonHelper.getInt(priceData, "count");
+                    }
+                    ItemStack item1 = new ItemStack(Registries.ITEM.get(new Identifier(item)), count);
+                    if (!item1.isEmpty())
+                    {
+                        price = item1;
+                    }
+                }
+            }
+        }
 
         int textPosX = 10;
         int textPosY = 12;
@@ -78,7 +108,7 @@ public final class PostcardHandler
             }
         }
 
-        return new PostcardStyle(cardTexture, cardWidth, cardHeight, textPosX, textPosY, textWidth, textHeight, textColor, postmarkTexture, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
+        return new PostcardStyle(cardTexture, cardWidth, cardHeight, price, soldByTrader, textPosX, textPosY, textWidth, textHeight, textColor, postmarkTexture, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
     }
 
     public static PostcardStyle read(PacketByteBuf buffer)
@@ -86,6 +116,9 @@ public final class PostcardHandler
         String cardID = buffer.readString(32767);
         int cardWidth = buffer.readInt();
         int cardHeight = buffer.readInt();
+
+        boolean soldByTrader = buffer.readBoolean();
+        ItemStack cardPrice = buffer.readItemStack();
 
         int textPosX = buffer.readInt();
         int textPosY = buffer.readInt();
@@ -100,7 +133,7 @@ public final class PostcardHandler
         int postmarkHeight = buffer.readInt();
         int postmarkColor = buffer.readInt();
 
-        return new PostcardStyle(cardID, cardWidth, cardHeight, textPosX, textPosY, textWidth, textHeight, textColor, postmarkID, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
+        return new PostcardStyle(cardID, cardWidth, cardHeight, cardPrice, soldByTrader, textPosX, textPosY, textWidth, textHeight, textColor, postmarkID, postmarkPosX, postmarkPosY, postmarkWidth, postmarkHeight, postmarkColor);
     }
 
     public static void write(PacketByteBuf buffer, PostcardStyle style)
@@ -108,11 +141,16 @@ public final class PostcardHandler
         buffer.writeString(style.cardTexture, 32767);
         buffer.writeInt(style.cardWidth);
         buffer.writeInt(style.cardHeight);
+
+        buffer.writeBoolean(style.soldByTrader);
+        buffer.writeItemStack(style.cardPrice);
+
         buffer.writeInt(style.textPosX);
         buffer.writeInt(style.textPosY);
         buffer.writeInt(style.textWidth);
         buffer.writeInt(style.textHeight);
         buffer.writeInt(style.textColor);
+
         buffer.writeString(style.postmarkTexture, 32767);
         buffer.writeInt(style.postmarkPosX);
         buffer.writeInt(style.postmarkPosY);

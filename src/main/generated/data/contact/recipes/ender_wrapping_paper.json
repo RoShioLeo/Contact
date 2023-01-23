@@ -1,16 +1,25 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
   "group": "wrapping_paper",
-  "ingredients": [
-    {
-      "item": "contact:wrapping_paper"
+  "key": {
+    "*": {
+      "item": "minecraft:string"
     },
-    {
+    "+": {
       "item": "minecraft:ender_pearl"
+    },
+    "x": {
+      "item": "minecraft:paper"
     }
+  },
+  "pattern": [
+    "*x*",
+    "x+x",
+    "*x*"
   ],
   "result": {
+    "count": 3,
     "item": "contact:ender_wrapping_paper"
   }
 }
