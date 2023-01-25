@@ -1,0 +1,40 @@
+{
+  "author": "Dzorro",
+  "postcard": {
+    "texture": "contact:let_me_look",
+    "width": 240,
+    "height": 160
+  },
+  "trade": {
+    "soldByTrader": true,
+    "price": {
+      "item": "minecraft:emerald",
+      "count": 1
+    }
+  },
+  "text": {
+    "x": 90,
+    "y": 16,
+    "width": 145,
+    "height": 142,
+    "color": {
+      "alpha": 255,
+      "red": 243,
+      "green": 145,
+      "blue": 169
+    }
+  },
+  "postmark": {
+    "texture": "contact:postmark",
+    "x": 22,
+    "y": -5,
+    "width": 64,
+    "height": 52,
+    "color": {
+      "alpha": 100,
+      "red": 199,
+      "green": 126,
+      "blue": 181
+    }
+  }
+}

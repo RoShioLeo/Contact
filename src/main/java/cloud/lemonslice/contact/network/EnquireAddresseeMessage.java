@@ -3,6 +3,7 @@ package cloud.lemonslice.contact.network;
 import cloud.lemonslice.contact.common.config.ContactConfig;
 import cloud.lemonslice.contact.common.handler.AdvancementManager;
 import cloud.lemonslice.contact.common.handler.MailboxManager;
+import cloud.lemonslice.contact.common.item.IPackageItem;
 import cloud.lemonslice.contact.common.item.PostcardItem;
 import cloud.lemonslice.contact.common.screenhandler.PostboxScreenHandler;
 import cloud.lemonslice.contact.common.storage.MailToBeSent;
@@ -133,7 +134,7 @@ public class EnquireAddresseeMessage implements IToServerMessage
                     ItemStack parcel = container.parcel.getStack(0);
                     parcel.getOrCreateNbt().putString("Sender", player.getName().getString());
 
-                    if (parcel.getItem() instanceof PostcardItem)
+                    if (IPackageItem.checkAndPostmarkPostcard(parcel, parcel.getCount(), player.getName().getString()) || parcel.getItem() instanceof PostcardItem)
                     {
                         AdvancementManager.givePlayerAdvancement(player.server, player, new Identifier("contact:send_postcard"));
                     }

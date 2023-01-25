@@ -1,6 +1,7 @@
 package cloud.lemonslice.contact.common.block;
 
 import cloud.lemonslice.contact.Contact;
+import cloud.lemonslice.contact.common.config.ContactConfig;
 import cloud.lemonslice.contact.common.storage.MailboxDataStorage;
 import cloud.lemonslice.silveroak.common.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
@@ -34,32 +35,42 @@ public class CenterMailboxBlock extends NormalHorizontalBlock implements ISilver
     {
         if (!world.isClient())
         {
-            MailboxDataStorage data = MailboxDataStorage.getMailboxData(world.getServer());
-            if (data.getData().getMailboxPos(player.getUuid()) == null)
+            if (ContactConfig.enableCenterMailbox)
             {
-                SimpleInventory contents = data.getData().getMailboxContents(player.getUuid());
-                boolean isEmpty = true;
-                for (int i = 0; i < contents.size(); ++i)
+                MailboxDataStorage data = MailboxDataStorage.getMailboxData(world.getServer());
+                if (data.getData().getMailboxPos(player.getUuid()) == null)
                 {
-                    if (!contents.getStack(i).isEmpty())
+                    SimpleInventory contents = data.getData().getMailboxContents(player.getUuid());
+                    boolean isEmpty = true;
+                    for (int i = 0; i < contents.size(); ++i)
                     {
-                        player.getInventory().offerOrDrop(contents.getStack(i));
-                        isEmpty = false;
+                        if (!contents.getStack(i).isEmpty())
+                        {
+                            player.getInventory().offerOrDrop(contents.getStack(i));
+                            isEmpty = false;
+                        }
                     }
-                }
 
-                data.getData().resetMailboxContents(player.getUuid());
-                if (!isEmpty)
-                {
-                    player.sendMessage(Text.translatable("message.contact.mailbox.pick_up"), false);
+                    data.getData().resetMailboxContents(player.getUuid());
+                    if (!isEmpty)
+                    {
+                        player.sendMessage(Text.translatable("message.contact.mailbox.pick_up"), true);
+                    }
+                    else
+                    {
+                        player.sendMessage(Text.translatable("message.contact.mailbox.empty"), true);
+                    }
+                    return ActionResult.SUCCESS;
                 }
                 else
                 {
-                    player.sendMessage(Text.translatable("message.contact.mailbox.empty"), false);
+                    player.sendMessage(Text.translatable("message.contact.mailbox.deny"), true);
                 }
-                return ActionResult.SUCCESS;
             }
-            else player.sendMessage(Text.translatable("message.contact.mailbox.deny"), false);
+            else
+            {
+                player.sendMessage(Text.translatable("message.contact.mailbox.disabled"), true);
+            }
             return ActionResult.FAIL;
         }
         return ActionResult.SUCCESS;

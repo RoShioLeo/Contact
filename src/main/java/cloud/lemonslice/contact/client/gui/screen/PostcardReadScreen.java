@@ -43,10 +43,10 @@ public class PostcardReadScreen extends Screen
     @Override
     protected void init()
     {
-        this.textBox = new ReadOnlyTextBox(postcard, (this.width - style.cardWidth) / 2 + style.textPosX, style.textPosY + (this.height / 2 - style.cardHeight * 2 / 3), style.textWidth, style.textHeight, 12, style.textColor, Text.literal("Postcard"));
+        this.textBox = new ReadOnlyTextBox(postcard, (this.width - style.cardWidth) / 2 + style.textPosX, style.textPosY + (this.height - style.cardHeight - 30) / 2, style.textWidth, style.textHeight, 12, style.textColor, Text.literal("Postcard"));
         this.buttonDone = this.addDrawableChild(ButtonWidget
                 .builder(ScreenTexts.DONE, (button) -> this.client.setScreen(null))
-                .position(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20)
+                .position(this.width / 2 - 48, (this.height + style.cardHeight) / 2 - 5)
                 .size(98, 20)
                 .build());
     }
@@ -60,13 +60,13 @@ public class PostcardReadScreen extends Screen
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, style.getCardTexture());
-        drawTexture(matrixStack, (this.width - style.cardWidth) / 2, (this.height / 2 - style.cardHeight * 2 / 3), style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
+        drawTexture(matrixStack, (this.width - style.cardWidth) / 2, (this.height - style.cardHeight - 30) / 2, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
 
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(ColorHelper.getRedF(style.postmarkColor), ColorHelper.getGreenF(style.postmarkColor), ColorHelper.getBlueF(style.postmarkColor), ColorHelper.getAlphaF(style.postmarkColor));
 
         RenderSystem.setShaderTexture(0, style.getPostmarkTexture());
-        drawTexture(matrixStack, (this.width - style.cardWidth) / 2 + style.postmarkPosX, (this.height / 2 - style.cardHeight * 2 / 3) + style.postmarkPosY, style.postmarkWidth, style.postmarkHeight, 0, 0, style.postmarkWidth, style.postmarkHeight, style.postmarkWidth, style.postmarkHeight);
+        drawTexture(matrixStack, (this.width - style.cardWidth) / 2 + style.postmarkPosX, (this.height - style.cardHeight - 30) / 2 + style.postmarkPosY, style.postmarkWidth, style.postmarkHeight, 0, 0, style.postmarkWidth, style.postmarkHeight, style.postmarkWidth, style.postmarkHeight);
         RenderSystem.disableBlend();
 
         textBox.render(matrixStack, mouseX, mouseY, partialTicks);

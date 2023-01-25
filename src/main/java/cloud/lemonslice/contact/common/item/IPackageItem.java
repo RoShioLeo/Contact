@@ -12,6 +12,35 @@ public interface IPackageItem
 {
     int getCapacity();
 
+    static boolean checkAndPostmarkPostcard(ItemStack parcel, int capacity, String sender)
+    {
+        if (parcel.getItem() instanceof IPackageItem)
+        {
+            SimpleInventory contents = new SimpleInventory(capacity);
+            NbtList list = parcel.getOrCreateNbt().getList("parcel", NbtElement.COMPOUND_TYPE);
+            contents.readNbtList(list);
+            boolean postcard = false;
+            for (int i = 0; i < capacity; ++i)
+            {
+                ItemStack item = contents.getStack(i);
+                if (item.getItem() instanceof IMailItem)
+                {
+                    if (item.getItem() instanceof PostcardItem)
+                    {
+                        postcard = true;
+                    }
+                    item.getOrCreateNbt().putString("Sender", sender);
+                }
+            }
+            parcel.getOrCreateNbt().put("parcel", contents.toNbtList());
+            return postcard;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     static void openPackage(IPackageItem item, PlayerEntity user, Hand hand)
     {
         SimpleInventory contents = new SimpleInventory(item.getCapacity());

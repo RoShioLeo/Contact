@@ -30,11 +30,14 @@ public final class WanderingTraderSaleHandler
                     trader.getScoreboardTags().add("SellPostcard");
                     Identifier id = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new Identifier[0])[i];
                     PostcardStyle style = PostcardHandler.POSTCARD_MANAGER.getPostcard(id);
-                    if (style.soldByTrader)
+                    while (!style.soldByTrader)
                     {
-                        trader.getOffers().add(0, new TradeOffer(style.cardPrice, new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(id, true), 16, 10, 0.05F));
-                        trader.getOffers().add(0, new TradeOffer(style.cardPrice, PostcardItem.getPostcard(id, false), 16, 10, 0.05F));
+                        i = world.getRandom().nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
+                        id = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new Identifier[0])[i];
+                        style = PostcardHandler.POSTCARD_MANAGER.getPostcard(id);
                     }
+                    trader.getOffers().add(0, new TradeOffer(style.cardPrice, new ItemStack(Items.ENDER_PEARL), PostcardItem.getPostcard(id, true), 16, 10, 0.05F));
+                    trader.getOffers().add(0, new TradeOffer(style.cardPrice, PostcardItem.getPostcard(id, false), 16, 10, 0.05F));
                 }
             }
         }

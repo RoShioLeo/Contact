@@ -82,7 +82,7 @@ public class PostcardEntityRenderer<T extends PostcardEntity> extends EntityRend
                 float blue = ColorHelper.getBlueF(postcardStyle.postmarkColor);
                 matrixStack.push();
                 matrixStack.translate(-0.5f, -0.5f, -0.5f);
-                matrixStack.translate(0.0f, -height / 256.0f, 0.0f);
+                matrixStack.translate(0.0f, -(128 - height) / 256.0f, 0.0f);
                 this.blockRenderManager.getModelRenderer().render(matrixStack.peek(), vertexConsumerProvider.getBuffer(TexturedRenderLayers.getEntitySolid()), null, bakedModelManager.getModel(PIN), red, green, blue, light, OverlayTexture.DEFAULT_UV);
                 matrixStack.pop();
             }

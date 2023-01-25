@@ -43,7 +43,7 @@ public class PostcardEditScreen extends Screen
             else style = PostcardStyle.DEFAULT;
         }
         else style = PostcardStyle.DEFAULT;
-        this.textBox = this.addDrawable(new EditableTextBox(postcard, editingPlayer, hand, (this.width - style.cardWidth) / 2 + style.textPosX, (this.height / 2 - style.cardHeight * 2 / 3) + style.textPosY, style.textWidth, style.textHeight, 12, style.textColor, Text.literal("Postcard")));
+        this.textBox = this.addDrawable(new EditableTextBox(postcard, editingPlayer, hand, (this.width - style.cardWidth) / 2 + style.textPosX, (this.height - style.cardHeight - 30) / 2 + style.textPosY, style.textWidth, style.textHeight, 12, style.textColor, Text.literal("Postcard")));
     }
 
     @Override
@@ -54,12 +54,12 @@ public class PostcardEditScreen extends Screen
                     this.client.setScreen(null);
                     textBox.sendTextToServer();
                 })
-                .position(this.width / 2 - 48, this.height / 2 + style.cardHeight / 3 + 20)
+                .position(this.width / 2 - 48, (this.height + style.cardHeight) / 2 - 5)
                 .size(98, 20)
                 .build());
 
         this.textBox.setX((this.width - style.cardWidth) / 2 + style.textPosX);
-        this.textBox.setY((this.height / 2 - style.cardHeight * 2 / 3) + style.textPosY);
+        this.textBox.setY((this.height - style.cardHeight - 30) / 2 + style.textPosY);
         this.textBox.shouldRefresh();
 
         this.setInitialFocus(textBox);
@@ -99,7 +99,7 @@ public class PostcardEditScreen extends Screen
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         RenderSystem.setShaderTexture(0, style.getCardTexture());
-        drawTexture(matrices, (this.width - style.cardWidth) / 2, this.height / 2 - style.cardHeight * 2 / 3, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
+        drawTexture(matrices, (this.width - style.cardWidth) / 2, (this.height - style.cardHeight - 30) / 2, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
 
         textBox.render(matrices, mouseX, mouseY, delta);
 

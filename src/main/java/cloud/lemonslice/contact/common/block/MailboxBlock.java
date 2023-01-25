@@ -118,11 +118,11 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                 {
                     if (data.getData().getMailboxPos(player.getUuid()) == null)
                     {
-                        player.sendMessage(Text.translatable("message.contact.mailbox.binding"), false);
+                        player.sendMessage(Text.translatable("message.contact.mailbox.binding"), true);
                     }
                     else
                     {
-                        player.sendMessage(Text.translatable("message.contact.mailbox.switch"), false);
+                        player.sendMessage(Text.translatable("message.contact.mailbox.switch"), true);
                     }
                     data.getData().setMailboxData(player.getUuid(), world.getRegistryKey(), topPos);
                     MailboxManager.updateState(world, topPos);
@@ -157,11 +157,11 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                 data.getData().resetMailboxContents(mailboxOwner);
                 if (!isEmpty)
                 {
-                    player.sendMessage(Text.translatable("message.contact.mailbox.pick_up"), false);
+                    player.sendMessage(Text.translatable("message.contact.mailbox.pick_up"), true);
                 }
                 else
                 {
-                    player.sendMessage(Text.translatable("message.contact.mailbox.empty"), false);
+                    player.sendMessage(Text.translatable("message.contact.mailbox.empty"), true);
                 }
                 MailboxManager.updateState(world, topPos);
                 return ActionResult.SUCCESS;
@@ -181,39 +181,39 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                                 held.getOrCreateNbt().putString("Sender", player.getName().getString());
                                 data.getData().addMailboxContents(mailboxOwner, held);
                                 player.setStackInHand(handIn, ItemStack.EMPTY);
-                                player.sendMessage(Text.translatable("message.contact.mailbox.deliver"), false);
+                                player.sendMessage(Text.translatable("message.contact.mailbox.deliver"), true);
                                 AdvancementManager.givePlayerAdvancement(player.getServer(), (ServerPlayerEntity) player, new Identifier("contact:send_in_person"));
                                 MailboxManager.updateState(world, topPos);
                             }
                             else
                             {
-                                player.sendMessage(Text.translatable("message.contact.mailbox.check"), false);
+                                player.sendMessage(Text.translatable("message.contact.mailbox.check"), true);
                             }
                         }
                         else
                         {
-                            player.sendMessage(Text.translatable("message.contact.mailbox.full"), false);
+                            player.sendMessage(Text.translatable("message.contact.mailbox.full"), true);
                         }
                     }
                     else
                     {
-                        player.sendMessage(Text.translatable("message.contact.mailbox.used"), false);
+                        player.sendMessage(Text.translatable("message.contact.mailbox.used"), true);
                     }
                     return ActionResult.SUCCESS;
                 }
                 else
                 {
-                    player.sendMessage(Text.translatable("message.contact.mailbox.no_owner"), false);
+                    player.sendMessage(Text.translatable("message.contact.mailbox.no_owner"), true);
                 }
                 return ActionResult.SUCCESS;
             }
             else if (mailboxOwner != null)
             {
                 SilveroakOutpost.getCurrentServer().getUserCache().getByUuid(mailboxOwner).ifPresent(gameProfile ->
-                        player.sendMessage(Text.translatable("message.contact.mailbox.others", gameProfile.getName()), false));
+                        player.sendMessage(Text.translatable("message.contact.mailbox.others", gameProfile.getName()), true));
                 return ActionResult.SUCCESS;
             }
-            player.sendMessage(Text.translatable("message.contact.mailbox.no_owner_tips"), false);
+            player.sendMessage(Text.translatable("message.contact.mailbox.no_owner_tips"), true);
             return ActionResult.FAIL;
         }
         return ActionResult.SUCCESS;

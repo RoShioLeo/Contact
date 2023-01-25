@@ -1,0 +1,40 @@
+{
+  "author": "Mu437",
+  "postcard": {
+    "texture": "contact:new_year_2023",
+    "width": 267,
+    "height": 179
+  },
+  "trade": {
+    "soldByTrader": true,
+    "price": {
+      "item": "minecraft:emerald",
+      "count": 1
+    }
+  },
+  "text": {
+    "x": 19,
+    "y": 19,
+    "width": 229,
+    "height": 143,
+    "color": {
+      "alpha": 255,
+      "red": 0,
+      "green": 0,
+      "blue": 0
+    }
+  },
+  "postmark": {
+    "texture": "contact:postmark",
+    "x": 202,
+    "y": -5,
+    "width": 64,
+    "height": 52,
+    "color": {
+      "alpha": 160,
+      "red": 132,
+      "green": 2,
+      "blue": 40
+    }
+  }
+}
