@@ -134,12 +134,9 @@ public class EnquireAddresseeMessage implements IToServerMessage
                     ItemStack parcel = container.parcel.getStack(0);
                     parcel.getOrCreateNbt().putString("Sender", player.getName().getString());
 
-                    if (parcel.getItem() instanceof IPackageItem packageItem)
+                    if (IPackageItem.checkAndPostmarkPostcard(parcel, player.getName().getString()) || parcel.getItem() instanceof PostcardItem)
                     {
-                        if (IPackageItem.checkAndPostmarkPostcard(parcel, packageItem.getCapacity(), player.getName().getString()) || parcel.getItem() instanceof PostcardItem)
-                        {
-                            AdvancementManager.givePlayerAdvancement(player.server, player, new Identifier("contact:send_postcard"));
-                        }
+                        AdvancementManager.givePlayerAdvancement(player.server, player, new Identifier("contact:send_postcard"));
                     }
 
                     UUID uuid = data.getData().nameToUUID.get(names.get(0));

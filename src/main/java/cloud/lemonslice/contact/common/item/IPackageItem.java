@@ -12,15 +12,15 @@ public interface IPackageItem
 {
     int getCapacity();
 
-    static boolean checkAndPostmarkPostcard(ItemStack parcel, int capacity, String sender)
+    static boolean checkAndPostmarkPostcard(ItemStack parcel, String sender)
     {
-        if (parcel.getItem() instanceof IPackageItem)
+        if (parcel.getItem() instanceof IPackageItem packageItem)
         {
-            SimpleInventory contents = new SimpleInventory(capacity);
+            SimpleInventory contents = new SimpleInventory(packageItem.getCapacity());
             NbtList list = parcel.getOrCreateNbt().getList("parcel", NbtElement.COMPOUND_TYPE);
             contents.readNbtList(list);
             boolean postcard = false;
-            for (int i = 0; i < capacity; ++i)
+            for (int i = 0; i < packageItem.getCapacity(); ++i)
             {
                 ItemStack item = contents.getStack(i);
                 if (item.getItem() instanceof IMailItem)
