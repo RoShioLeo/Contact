@@ -35,9 +35,7 @@ public class MailboxDataStorage extends PersistentState
     public static MailboxDataStorage getMailboxData(MinecraftServer server)
     {
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-        MailboxDataStorage storage = persistentStateManager.getOrCreate(MailboxDataStorage::readFromNbt, MailboxDataStorage::new, MODID + ":mailbox");
-        storage.markDirty();
-        return storage;
+        return persistentStateManager.getOrCreate(MailboxDataStorage::readFromNbt, MailboxDataStorage::new, MODID);
     }
 
 }

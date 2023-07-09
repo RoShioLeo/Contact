@@ -48,8 +48,12 @@ public final class MailboxManager
                     }
                 }
             }
-            data.getData().mailList.removeAll(READY_TO_REMOVE);
-            READY_TO_REMOVE.clear();
+            if (!READY_TO_REMOVE.isEmpty())
+            {
+                data.getData().mailList.removeAll(READY_TO_REMOVE);
+                READY_TO_REMOVE.clear();
+                data.markDirty();
+            }
         }
     }
 

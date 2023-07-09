@@ -22,6 +22,7 @@ public final class AddresseeSignInHandler
         if (data.getData().uuidToContents.get(uuid) == null)
         {
             data.getData().resetMailboxContents(uuid);
+            data.markDirty();
         }
         else
         {

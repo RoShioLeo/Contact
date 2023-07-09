@@ -127,6 +127,7 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                     data.getData().setMailboxData(player.getUuid(), world.getRegistryKey(), topPos);
                     MailboxManager.updateState(world, topPos);
                     AdvancementManager.givePlayerAdvancement(world.getServer(), (ServerPlayerEntity) player, new Identifier("contact:root"));
+                    data.markDirty();
                     return ActionResult.SUCCESS;
                 }
             }
@@ -164,6 +165,7 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                     player.sendMessage(Text.translatable("message.contact.mailbox.empty"), true);
                 }
                 MailboxManager.updateState(world, topPos);
+                data.markDirty();
                 return ActionResult.SUCCESS;
             }
             else if (player.getStackInHand(handIn).getItem() instanceof IMailItem)
@@ -199,12 +201,14 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
                     {
                         player.sendMessage(Text.translatable("message.contact.mailbox.used"), true);
                     }
+                    data.markDirty();
                     return ActionResult.SUCCESS;
                 }
                 else
                 {
                     player.sendMessage(Text.translatable("message.contact.mailbox.no_owner"), true);
                 }
+                data.markDirty();
                 return ActionResult.SUCCESS;
             }
             else if (mailboxOwner != null)
@@ -228,6 +232,7 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
             MailboxDataStorage data = MailboxDataStorage.getMailboxData(world.getServer());
             BlockPos topPos = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
             data.getData().removeMailboxData(GlobalPos.create(world.getRegistryKey(), topPos));
+            data.markDirty();
         }
     }
 

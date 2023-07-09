@@ -60,6 +60,7 @@ public class CenterMailboxBlock extends NormalHorizontalBlock implements ISilver
                     {
                         player.sendMessage(Text.translatable("message.contact.mailbox.empty"), true);
                     }
+                    data.markDirty();
                     return ActionResult.SUCCESS;
                 }
                 else

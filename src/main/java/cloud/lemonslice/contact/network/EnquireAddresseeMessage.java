@@ -76,6 +76,7 @@ public class EnquireAddresseeMessage implements IToServerMessage
                         for (UUID uuid : data.getData().nameToUUID.values())
                         {
                             data.getData().mailList.add(new MailToBeSent(uuid, parcel.copy(), 0));
+                            data.markDirty();
                         }
                         ServerPlayNetworking.send(player, ActionMessage.getID(), ActionMessage.create(1).toBytes());
                         container.parcel.setStack(0, ItemStack.EMPTY);

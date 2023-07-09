@@ -257,6 +257,7 @@ public class ContactCommand
             {
                 data.getData().mailList.add(new MailToBeSent(uuid, parcel, ticks));
                 n.getAndIncrement();
+                data.markDirty();
             }
             else
             {
@@ -278,6 +279,7 @@ public class ContactCommand
         {
             MailboxDataStorage data = MailboxDataStorage.getMailboxData(source.getServer());
             data.getData().nameToUUID.keySet().forEach(name -> deliverToPlayerMailbox(source, name, ticks, n, parcel));
+            data.markDirty();
         }
         else
         {
