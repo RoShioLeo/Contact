@@ -24,10 +24,10 @@ public final class WanderingTraderSaleHandler
         {
             if (entity instanceof WanderingTraderEntity trader)
             {
-                if (!trader.getScoreboardTags().contains("SellPostcard"))
+                if (!trader.getCommandTags().contains("SellPostcard"))
                 {
                     int i = world.getRandom().nextInt(PostcardHandler.POSTCARD_MANAGER.getPostcards().size());
-                    trader.getScoreboardTags().add("SellPostcard");
+                    trader.addCommandTag("SellPostcard");
                     Identifier id = PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet().toArray(new Identifier[0])[i];
                     PostcardStyle style = PostcardHandler.POSTCARD_MANAGER.getPostcard(id);
                     while (!style.soldByTrader)

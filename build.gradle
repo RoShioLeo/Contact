@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -111,7 +111,7 @@ publishing {
             }
 
             pom {
-                name = 'Contact for Minecraft 1.19'
+                name = 'Contact for Minecraft 1.20'
                 description = 'A Minecraft mod.'
                 url = 'https://github.com/lemon-slice-studio/Contact'
                 licenses {

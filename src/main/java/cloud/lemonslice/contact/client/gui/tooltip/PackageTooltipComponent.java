@@ -2,13 +2,10 @@ package cloud.lemonslice.contact.client.gui.tooltip;
 
 import cloud.lemonslice.contact.client.item.PackageTooltipData;
 import cloud.lemonslice.silveroak.client.texture.TexturePos;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.BundleTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -43,53 +40,51 @@ public class PackageTooltipComponent implements TooltipComponent
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z)
+    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context)
     {
         int i = this.contents.size();
         for (int m = 0; m < i; ++m)
         {
             int n = x + m * 18 + 1;
             int o = y + 1;
-            this.drawSlot(n, o, m, textRenderer, matrices, itemRenderer, z);
+            this.drawSlot(n, o, m, context, textRenderer);
         }
-        this.drawOutline(x, y, i, 1, matrices, z);
+        this.drawOutline(x, y, i, 1, context);
     }
 
-    private void drawSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer, int z)
+    private void drawSlot(int x, int y, int index, DrawContext context, TextRenderer textRenderer)
     {
         if (index >= 4)
         {
             return;
         }
         ItemStack itemStack = this.contents.get(index);
-        this.draw(matrices, x, y, z, SLOT);
-        itemRenderer.renderInGuiWithOverrides(itemStack, x + 1, y + 1, index);
-        itemRenderer.renderGuiItemOverlay(textRenderer, itemStack, x + 1, y + 1);
+        this.draw(context, x, y, SLOT);
+        context.drawItem(itemStack, x + 1, y + 1, index);
+        context.drawItemInSlot(textRenderer, itemStack, x + 1, y + 1);
     }
 
-    private void drawOutline(int x, int y, int columns, int rows, MatrixStack matrices, int z)
+    private void drawOutline(int x, int y, int columns, int rows, DrawContext context)
     {
         int i;
-        this.draw(matrices, x, y, z, BORDER_CORNER_TOP);
-        this.draw(matrices, x + columns * 18 + 1, y, z, BORDER_CORNER_TOP);
+        this.draw(context, x, y, BORDER_CORNER_TOP);
+        this.draw(context, x + columns * 18 + 1, y, BORDER_CORNER_TOP);
         for (i = 0; i < columns; ++i)
         {
-            this.draw(matrices, x + 1 + i * 18, y, z, BORDER_HORIZONTAL_TOP);
-            this.draw(matrices, x + 1 + i * 18, y + rows * 20, z, BORDER_HORIZONTAL_BOTTOM);
+            this.draw(context, x + 1 + i * 18, y, BORDER_HORIZONTAL_TOP);
+            this.draw(context, x + 1 + i * 18, y + rows * 20, BORDER_HORIZONTAL_BOTTOM);
         }
         for (i = 0; i < rows; ++i)
         {
-            this.draw(matrices, x, y + i * 20 + 1, z, BORDER_VERTICAL);
-            this.draw(matrices, x + columns * 18 + 1, y + i * 20 + 1, z, BORDER_VERTICAL);
+            this.draw(context, x, y + i * 20 + 1, BORDER_VERTICAL);
+            this.draw(context, x + columns * 18 + 1, y + i * 20 + 1, BORDER_VERTICAL);
         }
-        this.draw(matrices, x, y + rows * 20, z, BORDER_CORNER_BOTTOM);
-        this.draw(matrices, x + columns * 18 + 1, y + rows * 20, z, BORDER_CORNER_BOTTOM);
+        this.draw(context, x, y + rows * 20, BORDER_CORNER_BOTTOM);
+        this.draw(context, x + columns * 18 + 1, y + rows * 20, BORDER_CORNER_BOTTOM);
     }
 
-    private void draw(MatrixStack matrices, int x, int y, int z, TexturePos pos)
+    private void draw(DrawContext context, int x, int y, TexturePos pos)
     {
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        DrawableHelper.drawTexture(matrices, x, y, z, pos.getX(), pos.getY(), pos.getWidth(), pos.getHeight(), 128, 128);
+        context.drawTexture(TEXTURE, x, y, 0, pos.getX(), pos.getY(), pos.getWidth(), pos.getHeight(), 128, 128);
     }
 }

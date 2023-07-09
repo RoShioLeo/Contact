@@ -260,7 +260,7 @@ public class ContactCommand
             }
             else
             {
-                source.sendFeedback(Text.translatable("command.contact.deliver.full", target), true);
+                source.sendFeedback(() -> Text.translatable("command.contact.deliver.full", target), true);
             }
         }
     }
@@ -286,11 +286,11 @@ public class ContactCommand
 
         if (n.get() == 1 && target.equals("@e"))
         {
-            source.sendFeedback(Text.translatable("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), target), true);
+            source.sendFeedback(() -> Text.translatable("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), target), true);
         }
         else
         {
-            source.sendFeedback(Text.translatable("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), n.get()), true);
+            source.sendFeedback(() -> Text.translatable("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), n.get()), true);
         }
         return n.get();
     }
@@ -308,11 +308,11 @@ public class ContactCommand
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(Text.translatable("commands.give.success.single", 1, new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), targets.iterator().next().getDisplayName()), true);
+            source.sendFeedback(() -> Text.translatable("commands.give.success.single", 1, new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendFeedback(Text.translatable("commands.give.success.single", 1, new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), targets.size()), true);
+            source.sendFeedback(() -> Text.translatable("commands.give.success.single", 1, new ItemStack(isEnder ? ItemRegistry.ENDER_PARCEL : ItemRegistry.PARCEL).getName(), targets.size()), true);
         }
 
         return targets.size();
@@ -339,11 +339,11 @@ public class ContactCommand
 
         if (n.get() == 1 && !target.equals("@e"))
         {
-            source.sendFeedback(Text.translatable("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD).getName(), target), true);
+            source.sendFeedback(() -> Text.translatable("command.contact.deliver.success.single", new ItemStack(isEnder ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD).getName(), target), true);
         }
         else
         {
-            source.sendFeedback(Text.translatable("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD).getName(), n.get()), true);
+            source.sendFeedback(() -> Text.translatable("command.contact.deliver.success.multiple", new ItemStack(isEnder ? ItemRegistry.ENDER_POSTCARD : ItemRegistry.POSTCARD).getName(), n.get()), true);
         }
         return n.get();
     }
@@ -365,11 +365,11 @@ public class ContactCommand
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(Text.translatable("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getName(), targets.iterator().next().getDisplayName()), true);
+            source.sendFeedback(() -> Text.translatable("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getName(), targets.iterator().next().getDisplayName()), true);
         }
         else
         {
-            source.sendFeedback(Text.translatable("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getName(), targets.size()), true);
+            source.sendFeedback(() -> Text.translatable("commands.give.success.single", 1, new ItemStack(ItemRegistry.POSTCARD).getName(), targets.size()), true);
         }
 
         return targets.size();

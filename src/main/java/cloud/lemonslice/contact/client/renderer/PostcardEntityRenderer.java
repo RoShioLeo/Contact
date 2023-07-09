@@ -159,7 +159,7 @@ public class PostcardEntityRenderer<T extends PostcardEntity> extends EntityRend
                 matrixStack.translate(0.0f, 0.0f, -0.1f);
                 for (String t : list)
                 {
-                    textRenderer.draw(t, 0.0f, 0.0f, postcardStyle.textColor, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, false, 0, light);
+                    textRenderer.draw(t, 0.0f, 0.0f, postcardStyle.textColor, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, TextRenderer.TextLayerType.NORMAL, 0, light);
                     matrixStack.translate(0.0f, 12.0f, 0.0f);
                 }
                 matrixStack.pop();

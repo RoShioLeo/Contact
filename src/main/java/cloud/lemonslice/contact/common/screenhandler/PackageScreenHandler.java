@@ -23,8 +23,9 @@ public abstract class PackageScreenHandler extends ContentScreenHandler
 
     public abstract ItemStack getPackedItem();
 
+
     @Override
-    public void close(PlayerEntity player)
+    public void onClosed(PlayerEntity player)
     {
         if (player instanceof ServerPlayerEntity)
         {

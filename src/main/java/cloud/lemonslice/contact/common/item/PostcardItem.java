@@ -97,7 +97,7 @@ public class PostcardItem extends NormalItem implements IMailItem
 
     protected boolean canPlaceOn(PlayerEntity player, Direction side, ItemStack stack, BlockPos pos)
     {
-        return !player.world.isOutOfHeightLimit(pos) && player.canPlaceOn(pos, side, stack);
+        return !player.getWorld().isOutOfHeightLimit(pos) && player.canPlaceOn(pos, side, stack);
     }
 
 //    @Override

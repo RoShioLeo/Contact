@@ -4,6 +4,7 @@ import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -12,8 +13,8 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -113,16 +114,16 @@ public class PostcardEntity extends AbstractDecorationEntity
         {
             return true;
         }
-        if (!this.world.isSpaceEmpty(this))
+        if (!this.getWorld().isSpaceEmpty(this))
         {
             return false;
         }
-        BlockState blockState = this.world.getBlockState(this.attachmentPos.offset(this.facing.getOpposite()));
-        if (!(blockState.getMaterial().isSolid() || this.facing.getAxis().isHorizontal() && AbstractRedstoneGateBlock.isRedstoneGate(blockState)))
+        BlockState blockState = this.getWorld().getBlockState(this.attachmentPos.offset(this.facing.getOpposite()));
+        if (!(blockState.isSolid() || this.facing.getAxis().isHorizontal() && AbstractRedstoneGateBlock.isRedstoneGate(blockState)))
         {
             return false;
         }
-        return this.world.getOtherEntities(this, this.getBoundingBox(), PREDICATE).isEmpty();
+        return this.getWorld().getOtherEntities(this, this.getBoundingBox(), PREDICATE).isEmpty();
     }
 
     @Override
@@ -154,7 +155,7 @@ public class PostcardEntity extends AbstractDecorationEntity
     {
         if (this.fixed)
         {
-            if (source == DamageSource.OUT_OF_WORLD || source.isSourceCreativePlayer())
+            if (source.getTypeRegistryEntry().matchesKey(DamageTypes.OUT_OF_WORLD) || source.isSourceCreativePlayer())
             {
                 return super.damage(source, amount);
             }
@@ -217,7 +218,7 @@ public class PostcardEntity extends AbstractDecorationEntity
         }
         ItemStack postcard = this.getPostcard();
         this.setHeldItemStack(ItemStack.EMPTY);
-        if (!this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
+        if (!this.getWorld().getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
         {
             return;
         }
@@ -317,13 +318,13 @@ public class PostcardEntity extends AbstractDecorationEntity
         {
             return ActionResult.PASS;
         }
-        if (this.world.isClient)
+        if (this.getWorld().isClient)
         {
             return isEmpty ? ActionResult.SUCCESS : ActionResult.PASS;
         }
         else if (!isEmpty)
         {
-            this.damage(DamageSource.player(player), 1);
+            this.damage(this.getDamageSources().playerAttack(player), 1);
         }
         this.playSound(this.getRotateItemSound(), 1.0f, 1.0f);
         if (getHorizontalFacing().getId() > 1)

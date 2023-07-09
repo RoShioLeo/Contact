@@ -8,8 +8,8 @@ import cloud.lemonslice.contact.common.item.PostcardItem;
 import cloud.lemonslice.contact.common.storage.MailboxDataStorage;
 import cloud.lemonslice.contact.common.tileentity.MailboxBlockEntity;
 import cloud.lemonslice.silveroak.SilveroakOutpost;
-import cloud.lemonslice.silveroak.common.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.block.DoubleHorizontalBlock;
+import cloud.lemonslice.silveroak.common.inter.ISilveroakEntry;
 import cloud.lemonslice.silveroak.helper.VoxelShapeHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -54,7 +54,7 @@ public class MailboxBlock extends DoubleHorizontalBlock implements BlockEntityPr
 
     public MailboxBlock(DyeColor boxColor, DyeColor flagColor)
     {
-        super(Settings.of(Material.STONE, boxColor).nonOpaque().sounds(BlockSoundGroup.STONE).strength(1.5F, 6.0F));
+        super(Settings.create().mapColor(boxColor).nonOpaque().sounds(BlockSoundGroup.STONE).strength(1.5F, 6.0F));
         this.boxColor = boxColor;
         this.flagColor = flagColor;
         this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER).with(OPEN, false));

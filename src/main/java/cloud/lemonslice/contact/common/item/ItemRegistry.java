@@ -1,7 +1,7 @@
 package cloud.lemonslice.contact.common.item;
 
 import cloud.lemonslice.contact.resourse.PostcardHandler;
-import cloud.lemonslice.silveroak.common.ISilveroakEntry;
+import cloud.lemonslice.silveroak.common.inter.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.item.NormalBlockItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
@@ -97,15 +97,15 @@ public final class ItemRegistry
         registerItem(GREEN_POSTBOX_ITEM);
     }
 
-    public static void initPostcardStyles(ItemGroup.Entries contents)
+    public static void initPostcardStyles(ItemGroup.DisplayContext displayContext, ItemGroup.Entries entries)
     {
         for (Identifier id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
         {
-            contents.add(getPostcard(id, false));
+            entries.add(getPostcard(id, false));
         }
         for (Identifier id : PostcardHandler.POSTCARD_MANAGER.getPostcards().keySet())
         {
-            contents.add(getPostcard(id, true));
+            entries.add(getPostcard(id, true));
         }
     }
 }

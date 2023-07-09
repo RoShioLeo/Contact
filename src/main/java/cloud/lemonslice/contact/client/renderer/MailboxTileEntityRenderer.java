@@ -7,7 +7,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -37,7 +37,7 @@ public class MailboxTileEntityRenderer implements BlockEntityRenderer<MailboxBlo
             matrixStackIn.scale(0.6F, 0.6F, 0.6F);
             matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-MinecraftClient.getInstance().player.headYaw));
 
-            itemRenderer.renderItem(mail, ModelTransformation.Mode.FIXED, 15728880, overlay, matrixStackIn, vertexConsumers, 0);
+            itemRenderer.renderItem(mail, ModelTransformationMode.FIXED, 15728880, overlay, matrixStackIn, vertexConsumers, tileEntityIn.getWorld(), 0);
 
             matrixStackIn.pop();
         }

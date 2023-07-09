@@ -70,7 +70,7 @@ public class PostboxScreenHandler extends ContentScreenHandler
     }
 
     @Override
-    public void close(PlayerEntity player)
+    public void onClosed(PlayerEntity player)
     {
         if (player instanceof ServerPlayerEntity)
         {

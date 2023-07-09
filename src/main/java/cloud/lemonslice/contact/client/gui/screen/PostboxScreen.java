@@ -8,11 +8,11 @@ import cloud.lemonslice.silveroak.helper.GuiHelper;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -62,11 +62,11 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
         this.setInitialFocus(this.nameField);
     }
 
-    private void buttonTooltip(ButtonWidget button, MatrixStack matrixStack, int mouseX, int mouseY)
+    private void buttonTooltip(ButtonWidget button, DrawContext drawContext, int mouseX, int mouseY)
     {
         if (button.isHovered())
         {
-            GuiHelper.drawTooltip(this, matrixStack, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
+            GuiHelper.drawTooltip(drawContext, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
         }
     }
 
@@ -99,7 +99,7 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
         {
             handler.status = 0;
         }
-        this.nameField.setTextFieldFocused(false);
+        this.nameField.setFocused(false);
     }
 
     private boolean isAddresseeValid()
@@ -144,14 +144,14 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(matrixStack);
+        this.renderBackground(drawContext);
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(drawContext, mouseX, mouseY, partialTicks);
 
-        matrixStack.push();
-        matrixStack.translate(0.0f, 0.0f, 400.0f);
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().translate(0.0f, 0.0f, 400.0f);
         boolean flag = false;
         if (handler.status == 1 && nameField.isFocused())
         {
@@ -163,37 +163,38 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
                 maxWidth = Math.max(this.textRenderer.getWidth(handler.names.get(i)) + 8, maxWidth);
             }
 
+            int z = 5000;
             if (size != 0)
             {
                 Identifier texture = isRed ? RED_TEXTURE : GREEN_TEXTURE;
-                RenderSystem.setShaderTexture(0, texture);
+//                RenderSystem.setShaderTexture(0, texture);
                 int renderWidth = maxWidth;
                 if (renderWidth == 55)
                 {
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 38, offsetY + 36, new TexturePos(176, 18, 55, 3 + 11 * size));
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 38, offsetY + 39 + 11 * size, new TexturePos(176, 65, 55, 2));
+                    GuiHelper.drawLayer(drawContext, offsetX + 38, offsetY + 36, texture, new TexturePos(176, 18, 55, 3 + 11 * size));
+                    GuiHelper.drawLayer(drawContext, offsetX + 38, offsetY + 39 + 11 * size, texture, new TexturePos(176, 65, 55, 2));
                 }
                 else
                 {
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 38, offsetY + 36, new TexturePos(176, 18, 15, 3 + 11 * size));
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 38, offsetY + 39 + 11 * size, new TexturePos(176, 65, 15, 2));
+                    GuiHelper.drawLayer(drawContext, offsetX + 38, offsetY + 36, texture, new TexturePos(176, 18, 15, 3 + 11 * size));
+                    GuiHelper.drawLayer(drawContext, offsetX + 38, offsetY + 39 + 11 * size, texture, new TexturePos(176, 65, 15, 2));
 
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 23 + renderWidth, offsetY + 36, new TexturePos(216, 18, 15, 3 + 11 * size));
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 23 + renderWidth, offsetY + 39 + 11 * size, new TexturePos(216, 65, 15, 2));
+                    GuiHelper.drawLayer(drawContext, offsetX + 23 + renderWidth, offsetY + 36, texture, new TexturePos(216, 18, 15, 3 + 11 * size));
+                    GuiHelper.drawLayer(drawContext, offsetX + 23 + renderWidth, offsetY + 39 + 11 * size, texture, new TexturePos(216, 65, 15, 2));
 
                     renderWidth -= 30;
                     int pos = 0;
 
                     while (renderWidth > 15)
                     {
-                        GuiHelper.drawLayer(this, matrixStack, offsetX + 53 + pos, offsetY + 36, new TexturePos(191, 18, 15, 3 + 11 * size));
-                        GuiHelper.drawLayer(this, matrixStack, offsetX + 53 + pos, offsetY + 39 + 11 * size, new TexturePos(191, 65, 15, 2));
+                        GuiHelper.drawLayer(drawContext, offsetX + 53 + pos, offsetY + 36, texture, new TexturePos(191, 18, 15, 3 + 11 * size));
+                        GuiHelper.drawLayer(drawContext, offsetX + 53 + pos, offsetY + 39 + 11 * size, texture, new TexturePos(191, 65, 15, 2));
 
                         renderWidth -= 15;
                         pos += 15;
                     }
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 53 + pos, offsetY + 36, new TexturePos(191, 18, renderWidth, 3 + 11 * size));
-                    GuiHelper.drawLayer(this, matrixStack, offsetX + 53 + pos, offsetY + 39 + 11 * size, new TexturePos(191, 65, renderWidth, 2));
+                    GuiHelper.drawLayer(drawContext, offsetX + 53 + pos, offsetY + 36, texture, new TexturePos(191, 18, renderWidth, 3 + 11 * size));
+                    GuiHelper.drawLayer(drawContext, offsetX + 53 + pos, offsetY + 39 + 11 * size, texture, new TexturePos(191, 65, renderWidth, 2));
                 }
             }
 
@@ -204,42 +205,42 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
                     selected = i;
                     flag = true;
                 }
-                this.textRenderer.draw(matrixStack, handler.names.get(i), offsetX + 42, offsetY + 40 + i * 11, selected == i ? Formatting.YELLOW.getColorValue() : Formatting.WHITE.getColorValue());
+                drawContext.drawText(this.textRenderer, handler.names.get(i), offsetX + 42, offsetY + 40 + i * 11, selected == i ? Formatting.YELLOW.getColorValue() : Formatting.WHITE.getColorValue(), false);
             }
         }
-        matrixStack.pop();
+        drawContext.getMatrices().pop();
 
         if (!flag)
         {
-            this.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+            this.drawMouseoverTooltip(drawContext, mouseX, mouseY);
         }
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y)
+    protected void drawBackground(DrawContext drawContext, float partialTicks, int x, int y)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         Identifier texture = isRed ? RED_TEXTURE : GREEN_TEXTURE;
         RenderSystem.setShaderTexture(0, texture);
 
-        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, new TexturePos(0, 0, 176, 133));
+        GuiHelper.drawLayer(drawContext.getMatrices(), offsetX, offsetY, new TexturePos(0, 0, 176, 133));
 
-        GuiHelper.renderButton(matrixStack, partialTicks, x, y, this.getZOffset(), texture, buttonSend,
+        GuiHelper.renderButton(drawContext, partialTicks, x, y, 0, texture, buttonSend,
                 new TexturePos(176, 0, 10, 9),
                 new TexturePos(176, 9, 10, 9));
     }
 
     @Override
-    protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void drawForeground(DrawContext drawContext, int mouseX, int mouseY)
     {
-        this.textRenderer.draw(matrixStack, Text.translatable("info.contact.postbox.addressee"), 40, 30, 0xE6E6E6);
+        drawContext.drawText(this.textRenderer, Text.translatable("info.contact.postbox.addressee"), 40, 30, 0xE6E6E6, false);
         switch (handler.status)
         {
             case 0 ->
             {
                 MutableText text = Text.translatable("info.contact.postbox.need_mail");
-                renderTips(matrixStack, text);
+                renderTips(drawContext, text);
             }
             case 1 ->
             {
@@ -249,7 +250,7 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
                     if (tick < 0)
                     {
                         MutableText text = Text.translatable("info.contact.postbox.no_mailbox");
-                        renderTips(matrixStack, text);
+                        renderTips(drawContext, text);
                     }
                     else
                     {
@@ -259,26 +260,26 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
                         int sec = tick % 1200 / 20;
                         if (width > 38)
                         {
-                            this.textRenderer.draw(matrixStack, text, 141 - width / 2, 26, 0x1A1A1A);
+                            drawContext.drawText(this.textRenderer, text, 141 - width / 2, 26, 0x1A1A1A, false);
                             if (tick < 20)
                             {
-                                this.textRenderer.draw(matrixStack, Text.translatable("info.contact.postbox.instant"), 141 - width / 2, 38, 0x1A1A1A);
+                                drawContext.drawText(this.textRenderer, Text.translatable("info.contact.postbox.instant"), 141 - width / 2, 38, 0x1A1A1A, false);
                             }
                             else
                             {
-                                this.textRenderer.draw(matrixStack, Text.translatable("info.contact.postbox.time", min, sec), 141 - width / 2, 38, 0x1A1A1A);
+                                drawContext.drawText(this.textRenderer, Text.translatable("info.contact.postbox.time", min, sec), 141 - width / 2, 38, 0x1A1A1A, false);
                             }
                         }
                         else
                         {
-                            this.textRenderer.draw(matrixStack, text, 122, 26, 0x1A1A1A);
+                            drawContext.drawText(this.textRenderer, text, 122, 26, 0x1A1A1A, false);
                             if (tick < 20)
                             {
-                                this.textRenderer.draw(matrixStack, Text.translatable("info.contact.postbox.instant"), 122, 38, 0x1A1A1A);
+                                drawContext.drawText(this.textRenderer, Text.translatable("info.contact.postbox.instant"), 122, 38, 0x1A1A1A, false);
                             }
                             else
                             {
-                                this.textRenderer.draw(matrixStack, Text.translatable("info.contact.postbox.time", min, sec), 122, 38, 0x1A1A1A);
+                                drawContext.drawText(this.textRenderer, Text.translatable("info.contact.postbox.time", min, sec), 122, 38, 0x1A1A1A, false);
                             }
                         }
                     }
@@ -286,7 +287,7 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
                 else
                 {
                     MutableText text = Text.translatable("info.contact.postbox.need_addressee");
-                    renderTips(matrixStack, text);
+                    renderTips(drawContext, text);
 //                    MutableText text = Text.translatable("info.contact.postbox.need_addressee");
 //                    int width = this.textRenderer.getWidth(text.getString());
 //                    if (width > 38)
@@ -302,17 +303,17 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
             case 2 ->
             {
                 MutableText text = Text.translatable("info.contact.postbox.success");
-                renderTips(matrixStack, text);
+                renderTips(drawContext, text);
             }
             case 3 ->
             {
                 MutableText text = Text.translatable("info.contact.postbox.cannot_send");
-                renderTips(matrixStack, text);
+                renderTips(drawContext, text);
             }
         }
     }
 
-    private void renderTips(MatrixStack matrixStack, MutableText text)
+    private void renderTips(DrawContext drawContext, MutableText text)
     {
         int width = this.textRenderer.getWidth(text.getString());
         if (width > 38)
@@ -320,12 +321,12 @@ public class PostboxScreen extends HandledScreen<PostboxScreenHandler>
             List<OrderedText> list = this.textRenderer.wrapLines(text, 50);
             for (int i = 0; i < list.size(); i++)
             {
-                this.textRenderer.draw(matrixStack, list.get(i), 118, 38 - list.size() * 6 + i * 12, 0x1A1A1A);
+                drawContext.drawText(this.textRenderer, list.get(i), 118, 38 - list.size() * 6 + i * 12, 0x1A1A1A, false);
             }
         }
         else
         {
-            this.textRenderer.draw(matrixStack, text, 122, 32, 0x1A1A1A);
+            drawContext.drawText(this.textRenderer, text, 122, 32, 0x1A1A1A, false);
         }
     }
 

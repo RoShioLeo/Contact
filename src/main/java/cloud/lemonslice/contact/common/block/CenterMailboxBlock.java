@@ -3,15 +3,15 @@ package cloud.lemonslice.contact.common.block;
 import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.common.config.ContactConfig;
 import cloud.lemonslice.contact.common.storage.MailboxDataStorage;
-import cloud.lemonslice.silveroak.common.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.block.NormalHorizontalBlock;
+import cloud.lemonslice.silveroak.common.inter.ISilveroakEntry;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -26,7 +26,7 @@ public class CenterMailboxBlock extends NormalHorizontalBlock implements ISilver
 {
     public CenterMailboxBlock()
     {
-        super(Settings.of(Material.METAL));
+        super(Settings.create().sounds(BlockSoundGroup.METAL));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CenterMailboxBlock extends NormalHorizontalBlock implements ISilver
 
     @Override
     @SuppressWarnings("deprecation")
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder)
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder)
     {
         return Lists.newArrayList(new ItemStack(this));
     }

@@ -8,10 +8,10 @@ import cloud.lemonslice.silveroak.helper.GuiHelper;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -40,11 +40,11 @@ public class EnvelopeScreen extends HandledScreen<EnvelopeScreenHandler>
         this.buttonPack = addDrawableChild(new IconButton(offsetX + 100, offsetY + 16, 18, 19, Text.translatable("tooltip.contact.envelope.seal"), button -> seal(), this::buttonTooltip));
     }
 
-    private void buttonTooltip(ButtonWidget button, MatrixStack matrixStack, int mouseX, int mouseY)
+    private void buttonTooltip(ButtonWidget button, DrawContext drawContext, int mouseX, int mouseY)
     {
         if (button.isHovered())
         {
-            GuiHelper.drawTooltip(this, matrixStack, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
+            GuiHelper.drawTooltip(drawContext, mouseX, mouseY, button.getX(), button.getY(), button.getWidth(), button.getHeight(), Lists.newArrayList(button.getMessage()));
         }
     }
 
@@ -54,29 +54,29 @@ public class EnvelopeScreen extends HandledScreen<EnvelopeScreenHandler>
     }
 
     @Override
-    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY)
+    protected void drawForeground(DrawContext drawContext, int mouseX, int mouseY)
     {
 
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta)
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float delta)
     {
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, delta);
-        this.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+        this.renderBackground(drawContext);
+        super.render(drawContext, mouseX, mouseY, delta);
+        this.drawMouseoverTooltip(drawContext, mouseX, mouseY);
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, float delta, int mouseX, int mouseY)
+    protected void drawBackground(DrawContext drawContext, float delta, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiHelper.drawLayer(matrixStack, offsetX, offsetY, new TexturePos(0, 0, 176, 133));
+        GuiHelper.drawLayer(drawContext.getMatrices(), offsetX, offsetY, new TexturePos(0, 0, 176, 133));
 
-        GuiHelper.renderButton(matrixStack, delta, x, y, this.getZOffset(), TEXTURE, buttonPack,
+        GuiHelper.renderButton(drawContext, delta, x, y, 0, TEXTURE, buttonPack,
                 new TexturePos(176, 0, 18, 19),
                 new TexturePos(176, 19, 18, 19));
     }

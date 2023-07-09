@@ -1,13 +1,15 @@
 package cloud.lemonslice.contact.client.gui.screen;
 
 import cloud.lemonslice.contact.resourse.PostcardStyle;
+import cloud.lemonslice.silveroak.client.texture.TexturePos;
 import cloud.lemonslice.silveroak.client.widget.ReadOnlyTextBox;
 import cloud.lemonslice.silveroak.helper.ColorHelper;
+import cloud.lemonslice.silveroak.helper.GuiHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
@@ -53,24 +55,22 @@ public class PostcardReadScreen extends Screen
 
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(matrixStack);
+        this.renderBackground(drawContext);
         this.setFocused(null);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, style.getCardTexture());
-        drawTexture(matrixStack, (this.width - style.cardWidth) / 2, (this.height - style.cardHeight - 30) / 2, style.cardWidth, style.cardHeight, 0, 0, style.cardWidth, style.cardHeight, style.cardWidth, style.cardHeight);
+        GuiHelper.drawLayerBySize(drawContext, style.getCardTexture(), (this.width - style.cardWidth) / 2, (this.height - style.cardHeight - 30) / 2, new TexturePos(0, 0, style.cardWidth, style.cardHeight), style.cardWidth, style.cardHeight);
 
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(ColorHelper.getRedF(style.postmarkColor), ColorHelper.getGreenF(style.postmarkColor), ColorHelper.getBlueF(style.postmarkColor), ColorHelper.getAlphaF(style.postmarkColor));
 
-        RenderSystem.setShaderTexture(0, style.getPostmarkTexture());
-        drawTexture(matrixStack, (this.width - style.cardWidth) / 2 + style.postmarkPosX, (this.height - style.cardHeight - 30) / 2 + style.postmarkPosY, style.postmarkWidth, style.postmarkHeight, 0, 0, style.postmarkWidth, style.postmarkHeight, style.postmarkWidth, style.postmarkHeight);
+        GuiHelper.drawLayerBySize(drawContext, style.getPostmarkTexture(), (this.width - style.cardWidth) / 2 + style.postmarkPosX, (this.height - style.cardHeight - 30) / 2 + style.postmarkPosY, new TexturePos(0, 0, style.postmarkWidth, style.postmarkHeight), style.postmarkWidth, style.postmarkHeight);
         RenderSystem.disableBlend();
 
-        textBox.render(matrixStack, mouseX, mouseY, partialTicks);
+        textBox.render(drawContext, mouseX, mouseY, partialTicks);
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(drawContext, mouseX, mouseY, partialTicks);
     }
 }

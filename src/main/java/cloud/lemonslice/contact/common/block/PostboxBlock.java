@@ -2,11 +2,10 @@ package cloud.lemonslice.contact.common.block;
 
 import cloud.lemonslice.contact.Contact;
 import cloud.lemonslice.contact.common.screenhandler.PostboxScreenHandler;
-import cloud.lemonslice.silveroak.common.ISilveroakEntry;
 import cloud.lemonslice.silveroak.common.block.DoubleHorizontalBlock;
+import cloud.lemonslice.silveroak.common.inter.ISilveroakEntry;
 import cloud.lemonslice.silveroak.helper.VoxelShapeHelper;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -21,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class PostboxBlock extends DoubleHorizontalBlock implements ISilveroakEntry
@@ -33,15 +31,9 @@ public class PostboxBlock extends DoubleHorizontalBlock implements ISilveroakEnt
 
     public PostboxBlock(boolean isRed)
     {
-        super(Settings.of(Material.STONE).nonOpaque().sounds(BlockSoundGroup.STONE).strength(1.5F, 6.0F));
+        super(Settings.create().nonOpaque().sounds(BlockSoundGroup.STONE).strength(1.5F, 6.0F));
         this.isRed = isRed;
         this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.UPPER));
-    }
-
-    @Override
-    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos)
-    {
-        return true;
     }
 
     @Override
